@@ -1,0 +1,190 @@
+{
+  "id": "py-functions-basics",
+  "moduleId": "functions",
+  "title": "Defining Functions",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **function** is a named block of code you can run whenever you need it. You define it once with `def`, then *call* it by name. Functions can take inputs (parameters) and give back a result with `return`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`def` starts a function. The indented lines underneath are its body. Nothing runs until the function is called.",
+      "exampleCode": "def greet(name):\n    return \"Hi, \" + name + \"!\"\n\nprint(greet(\"Sam\"))\nprint(greet(\"Noor\"))",
+      "explanation": "`name` is a parameter; `\"Sam\"` and `\"Noor\"` are the arguments passed in."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write a function `double(n)` that **returns** `n` multiplied by 2.",
+      "starterCode": "def double(n):\n    pass\n",
+      "solution": "def double(n):\n    return n * 2\n",
+      "tests": [
+        {
+          "name": "small",
+          "code": "assert double(4) == 8, 'double(4) should return 8.'",
+          "message": "double(4) should be 8."
+        },
+        {
+          "name": "negative",
+          "code": "assert double(-3) == -6, 'double should work for negative numbers too.'",
+          "message": "Try a negative number."
+        },
+        {
+          "name": "returns not prints",
+          "code": "assert double(0) is not None and double(0) == 0, 'Use return, not print.'",
+          "message": "Return the value."
+        }
+      ],
+      "hint": "Replace `pass` with `return n * 2`.",
+      "explanation": "`return` hands the value back to whoever called the function."
+    },
+    {
+      "id": "q03",
+      "type": "multiple_choice",
+      "prompt": "What does a function return if it never reaches a `return` statement?",
+      "options": [
+        {
+          "id": "a",
+          "text": "0"
+        },
+        {
+          "id": "b",
+          "text": "An empty string"
+        },
+        {
+          "id": "c",
+          "text": "None"
+        },
+        {
+          "id": "d",
+          "text": "It raises an error"
+        }
+      ],
+      "answer": "c",
+      "hint": "Python has a special value meaning \"nothing\".",
+      "explanation": "Functions without `return` give back `None`. That's why printing inside a function isn't the same as returning."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`area` should return the area of a rectangle, but `result` ends up as `None`. Fix the function.",
+      "starterCode": "def area(width, height):\n    print(width * height)\n\nresult = area(3, 4)\n",
+      "solution": "def area(width, height):\n    return width * height\n\nresult = area(3, 4)\n",
+      "tests": [
+        {
+          "name": "result",
+          "code": "assert result == 12, 'result should be 12 — the function must return the area.'",
+          "message": "Return the area."
+        },
+        {
+          "name": "general",
+          "code": "assert area(5, 2) == 10, 'area(5, 2) should be 10.'",
+          "message": "Check another rectangle."
+        }
+      ],
+      "hint": "Printing shows a value on screen; returning gives it back to the caller.",
+      "explanation": "Swap `print(...)` for `return ...`."
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def shout(word):\n    return word.upper() + \"!\"\n\nmessage = shout(\"go\")\nprint(message, len(message))",
+      "expectedOutput": "GO! 3",
+      "hint": "`upper()` makes capitals; then count the characters including `!`.",
+      "explanation": "`\"GO!\"` has 3 characters."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `is_even(n)` that returns `True` when `n` is even and `False` otherwise.",
+      "starterCode": "def is_even(n):\n    pass\n",
+      "solution": "def is_even(n):\n    return n % 2 == 0\n",
+      "tests": [
+        {
+          "name": "even",
+          "code": "assert is_even(10) is True, 'is_even(10) should return True.'",
+          "message": "10 is even."
+        },
+        {
+          "name": "odd",
+          "code": "assert is_even(7) is False, 'is_even(7) should return False.'",
+          "message": "7 is odd."
+        },
+        {
+          "name": "zero",
+          "code": "assert is_even(0) is True, 'Zero counts as even.'",
+          "message": "0 is even."
+        }
+      ],
+      "hint": "`n % 2` is the remainder after dividing by 2. Even numbers leave 0.",
+      "explanation": "A comparison like `n % 2 == 0` is already True or False, so you can return it directly."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Write `average(numbers)` that returns the mean of a list of numbers. Return `0` for an empty list.",
+      "starterCode": "def average(numbers):\n    pass\n",
+      "solution": "def average(numbers):\n    if not numbers:\n        return 0\n    return sum(numbers) / len(numbers)\n",
+      "tests": [
+        {
+          "name": "basic",
+          "code": "assert average([2, 4, 6]) == 4, 'average([2, 4, 6]) should be 4.'",
+          "message": "Check a simple list."
+        },
+        {
+          "name": "decimal",
+          "code": "assert abs(average([1, 2]) - 1.5) < 1e-9, 'average([1, 2]) should be 1.5.'",
+          "message": "Check a non-whole result."
+        },
+        {
+          "name": "empty",
+          "code": "assert average([]) == 0, 'An empty list should return 0, not crash.'",
+          "message": "Handle an empty list."
+        }
+      ],
+      "hint": "`sum()` and `len()` do most of the work. Check for an empty list first to avoid dividing by zero.",
+      "explanation": "Guarding the empty case first keeps the main line simple."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Complete the function so it adds `amount` to `balance` and returns the new balance.",
+      "template": "def deposit(balance, amount):\n    ___ balance + amount",
+      "blanks": [
+        "return"
+      ],
+      "tests": [
+        {
+          "name": "deposit",
+          "code": "assert deposit(100, 25) == 125, 'deposit(100, 25) should give 125.'",
+          "message": "Return the new balance."
+        }
+      ],
+      "hint": "Which keyword sends a value back to the caller?",
+      "explanation": "Without `return`, the result would be calculated and then thrown away."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Write `label(name, score)` that returns a string like `\"Ava: 92 points\"`. Then call it with `\"Ava\"` and `92` and print the result.",
+      "starterCode": "def label(name, score):\n    pass\n\n",
+      "solution": "def label(name, score):\n    return f\"{name}: {score} points\"\n\nprint(label(\"Ava\", 92))",
+      "tests": [
+        {
+          "name": "returns",
+          "code": "assert label('Li', 7) == 'Li: 7 points', 'label(\"Li\", 7) should return \"Li: 7 points\".'",
+          "message": "Check the returned format."
+        },
+        {
+          "name": "printed",
+          "code": "assert __output__.strip() == 'Ava: 92 points', 'Print label(\"Ava\", 92).'",
+          "message": "Print the result for Ava."
+        }
+      ],
+      "hint": "An f-string makes this easy: `f\"{name}: {score} points\"`.",
+      "explanation": "Returning the string keeps the function reusable; printing happens outside it."
+    }
+  ]
+}

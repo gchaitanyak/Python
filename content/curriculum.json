@@ -1,0 +1,2367 @@
+{
+  "$comment": "Source of truth for module and lesson order, access and scope. References are for SCOPE ONLY: never copy their text or exercises.",
+  "version": 1,
+  "language": "python",
+  "pythonVersion": "3.12+ (Pyodide)",
+  "lessonCount": 79,
+  "moduleCount": 14,
+  "modules": [
+    {
+      "id": "getting-started",
+      "order": 1,
+      "title": "Getting Started",
+      "summary": "Run your first Python code and learn how a program is read.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-intro-first-program",
+          "order": 1,
+          "title": "Your First Python Program",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Explain what Python is used for",
+            "Run code and read its output",
+            "Recognise indentation and statements"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_intro.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_syntax.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/appetite.html"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/interpreter.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/first-program"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Hello%2C_World%21"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/introduction"
+            }
+          ]
+        },
+        {
+          "id": "py-print-and-comments",
+          "order": 2,
+          "title": "Printing and Comments",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use print() with several values",
+            "Control separators and line endings",
+            "Write single-line comments and docstrings"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_output.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_comments.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/comments"
+            }
+          ]
+        },
+        {
+          "id": "py-getting-started-summary",
+          "order": 3,
+          "title": "Getting Started: Skill Summary",
+          "free": true,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Combine printing, comments and simple statements"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "variables-types",
+      "order": 2,
+      "title": "Variables and Types",
+      "summary": "Store values, understand Python's core types and talk to the user.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-variables",
+          "order": 1,
+          "title": "Variables",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "written",
+          "objectives": [
+            "Create and reassign variables",
+            "Follow naming rules",
+            "Assign several variables at once"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_variables.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_variables_names.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_variables_multiple.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/introduction.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/variables-constants-literals"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-variables/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Variables_and_Types"
+            }
+          ]
+        },
+        {
+          "id": "py-numbers-math",
+          "order": 2,
+          "title": "Numbers and Arithmetic",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use int and float",
+            "Apply //, % and **",
+            "Round and format numbers"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_numbers.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/introduction.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/numbers"
+            }
+          ]
+        },
+        {
+          "id": "py-type-conversion",
+          "order": 3,
+          "title": "Type Conversion",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Convert between str, int and float",
+            "Predict conversion errors",
+            "Check a value's type"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_casting.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/type-conversion-and-casting"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-data-types/"
+            }
+          ]
+        },
+        {
+          "id": "py-booleans-none",
+          "order": 4,
+          "title": "Booleans and None",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Evaluate truthiness",
+            "Use None as 'no value'",
+            "Compare with is None"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_booleans.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_none.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-input-output",
+          "order": 5,
+          "title": "Input and Output",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Read text with input()",
+            "Convert input to numbers",
+            "Print readable results"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_user_input.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/input-output-import"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/input-and-output-in-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Input_and_Output"
+            }
+          ]
+        },
+        {
+          "id": "py-variables-types-summary",
+          "order": 6,
+          "title": "Variables and Types: Skill Summary",
+          "free": true,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Combine variables, conversion and I/O in a small program"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "operators",
+      "order": 3,
+      "title": "Operators",
+      "summary": "Calculate, compare and combine conditions.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-arithmetic-assignment",
+          "order": 1,
+          "title": "Arithmetic and Assignment Operators",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use + - * / // % **",
+            "Use += and friends"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_arithmetic.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_assign.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/operators"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-operators/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Basic_Operators"
+            }
+          ]
+        },
+        {
+          "id": "py-comparison-logical",
+          "order": 2,
+          "title": "Comparison and Logical Operators",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Compare values",
+            "Combine conditions with and/or/not",
+            "Use chained comparisons"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_comparison.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_logical.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            }
+          ]
+        },
+        {
+          "id": "py-identity-membership",
+          "order": 3,
+          "title": "Identity and Membership",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Tell is from ==",
+            "Test membership with in"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_identity.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_membership.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-precedence-ternary",
+          "order": 4,
+          "title": "Precedence and One-Line If",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Predict evaluation order",
+            "Write conditional expressions"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_operators_precedence.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_ternary_operator.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/precedence-associativity"
+            }
+          ]
+        },
+        {
+          "id": "py-operators-summary",
+          "order": 5,
+          "title": "Operators: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Mix operators to solve small calculations"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "strings",
+      "order": 4,
+      "title": "Strings",
+      "summary": "Slice, transform and format text.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-strings-basics",
+          "order": 1,
+          "title": "String Basics",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create strings with quotes",
+            "Index characters",
+            "Concatenate and repeat"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings_concatenate.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/introduction.html"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-string/"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/strings"
+            }
+          ]
+        },
+        {
+          "id": "py-string-slicing",
+          "order": 2,
+          "title": "Slicing Strings",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Slice with start:stop:step",
+            "Use negative indexes",
+            "Reverse a string"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings_slicing.asp"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Basic_String_Operations"
+            }
+          ]
+        },
+        {
+          "id": "py-string-methods",
+          "order": 3,
+          "title": "String Methods",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Clean text with strip/lower/replace",
+            "Split and join",
+            "Search with find/startswith"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings_modify.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings_methods.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-f-strings",
+          "order": 4,
+          "title": "f-strings and Formatting",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Embed expressions in f-strings",
+            "Format numbers and widths",
+            "Escape characters"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_string_formatting.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_strings_escape.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/inputoutput.html"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/String_Formatting"
+            }
+          ]
+        },
+        {
+          "id": "py-strings-summary",
+          "order": 5,
+          "title": "Strings: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Process and format messy text"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "control-flow",
+      "order": 5,
+      "title": "Control Flow",
+      "summary": "Make decisions and repeat work.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-if-elif-else",
+          "order": 1,
+          "title": "if, elif and else",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Branch on conditions",
+            "Nest conditions sensibly"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_conditions.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_if_elif.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_if_nested_if.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/if-elif-else"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/conditional-statements-in-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Conditions"
+            }
+          ]
+        },
+        {
+          "id": "py-match-statement",
+          "order": 2,
+          "title": "match Statements",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Match literal values",
+            "Use wildcard and guards"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_match.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            }
+          ]
+        },
+        {
+          "id": "py-for-range",
+          "order": 3,
+          "title": "for Loops and range()",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Loop over sequences",
+            "Generate numbers with range",
+            "Use enumerate"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_for_loops.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_range.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/for-loop"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/loops-in-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Loops"
+            }
+          ]
+        },
+        {
+          "id": "py-while-loops",
+          "order": 4,
+          "title": "while Loops",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Repeat until a condition changes",
+            "Avoid infinite loops"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_while_loops.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/while-loop"
+            }
+          ]
+        },
+        {
+          "id": "py-break-continue-pass",
+          "order": 5,
+          "title": "break, continue and pass",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Exit loops early",
+            "Skip iterations",
+            "Use loop else"
+          ],
+          "references": [
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/break-continue"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/pass-statement"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_if_pass.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-control-flow-summary",
+          "order": 6,
+          "title": "Control Flow: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Combine branching and loops"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "data-structures",
+      "order": 6,
+      "title": "Data Structures",
+      "summary": "Organise data with lists, tuples, sets and dictionaries.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-lists-basics",
+          "order": 1,
+          "title": "Lists",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "written",
+          "objectives": [
+            "Create, index and slice lists",
+            "Change, add and remove items",
+            "Loop over a list"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_access.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_add.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/list"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-lists/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Lists"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/lists"
+            }
+          ]
+        },
+        {
+          "id": "py-list-methods",
+          "order": 2,
+          "title": "List Methods",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use append, extend, insert, pop",
+            "Copy lists safely"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_methods.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_copy.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_join.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-sorting",
+          "order": 3,
+          "title": "Sorting",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Sort with sort() and sorted()",
+            "Sort by a key",
+            "Reverse order"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_sort.asp"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/sorting"
+            }
+          ]
+        },
+        {
+          "id": "py-tuples",
+          "order": 4,
+          "title": "Tuples",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create and unpack tuples",
+            "Know when to choose a tuple"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_tuples.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_tuples_unpack.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/tuple"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-tuples/"
+            }
+          ]
+        },
+        {
+          "id": "py-sets",
+          "order": 5,
+          "title": "Sets",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Remove duplicates",
+            "Use union, intersection, difference"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_sets.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/set"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/sets-in-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Sets"
+            }
+          ]
+        },
+        {
+          "id": "py-dictionaries",
+          "order": 6,
+          "title": "Dictionaries",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Store key-value pairs",
+            "Read safely with get",
+            "Loop over items"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dictionaries.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dictionaries_loop.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dictionaries_nested.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/dictionary"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-dictionary/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Dictionaries"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/dict-files"
+            }
+          ]
+        },
+        {
+          "id": "py-comprehensions",
+          "order": 7,
+          "title": "Comprehensions",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Write list comprehensions",
+            "Filter inside comprehensions",
+            "Build dicts and sets the same way"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lists_comprehension.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/list-comprehension"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-list-comprehension/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/List_Comprehensions"
+            }
+          ]
+        },
+        {
+          "id": "py-collections-module",
+          "order": 8,
+          "title": "The collections Module",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Count with Counter",
+            "Use defaultdict and deque"
+          ],
+          "references": [
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/counters-in-python-set-1/"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/defaultdict-in-python/"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/deque-in-python/"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/datastructures.html"
+            }
+          ]
+        },
+        {
+          "id": "py-data-structures-summary",
+          "order": 9,
+          "title": "Data Structures: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Pick the right structure for a task"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "functions",
+      "order": 7,
+      "title": "Functions",
+      "summary": "Package logic into reusable, testable functions.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-functions-basics",
+          "order": 1,
+          "title": "Defining Functions",
+          "free": true,
+          "daily": true,
+          "type": "lesson",
+          "status": "written",
+          "objectives": [
+            "Define and call functions",
+            "Return values",
+            "Write docstrings"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_functions.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/function"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-functions/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Functions"
+            }
+          ]
+        },
+        {
+          "id": "py-arguments",
+          "order": 2,
+          "title": "Arguments and Defaults",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use positional and keyword arguments",
+            "Set default values safely"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_arguments.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/controlflow.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/function-argument"
+            }
+          ]
+        },
+        {
+          "id": "py-args-kwargs",
+          "order": 3,
+          "title": "*args and **kwargs",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Accept any number of arguments",
+            "Unpack arguments into calls"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_args_kwargs.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/args-and-kwargs"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/args-kwargs-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Multiple_Function_Arguments"
+            }
+          ]
+        },
+        {
+          "id": "py-scope",
+          "order": 4,
+          "title": "Scope",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Tell local from global",
+            "Use global and nonlocal sparingly"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_scope.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/classes.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/global-local-nonlocal-variables"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/global-local-variables-python/"
+            }
+          ]
+        },
+        {
+          "id": "py-lambda-map-filter",
+          "order": 5,
+          "title": "Lambda, map and filter",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Write lambdas",
+            "Transform with map",
+            "Select with filter"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_lambda.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/anonymous-function"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-lambda-anonymous-functions-filter-map-reduce/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Lambda_functions"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Map%2C_Filter%2C_Reduce"
+            }
+          ]
+        },
+        {
+          "id": "py-recursion",
+          "order": 6,
+          "title": "Recursion",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Write a base case and a recursive case",
+            "Trace a recursive call"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_recursion.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/recursion"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/recursion-in-python/"
+            }
+          ]
+        },
+        {
+          "id": "py-closures-decorators",
+          "order": 7,
+          "title": "Closures and Decorators",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Return functions from functions",
+            "Write a simple decorator"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_decorators.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/closure"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/decorator"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/decorators-in-python/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Closures"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Decorators"
+            }
+          ]
+        },
+        {
+          "id": "py-iterators-generators",
+          "order": 8,
+          "title": "Iterators and Generators",
+          "free": false,
+          "daily": true,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use iter and next",
+            "Write generators with yield"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_iterators.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_generators.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/classes.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/iterator"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/generator"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Generators"
+            }
+          ]
+        },
+        {
+          "id": "py-functions-summary",
+          "order": 9,
+          "title": "Functions: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Design small functions that work together"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "modules-packages",
+      "order": 8,
+      "title": "Modules and Environments",
+      "summary": "Split code into files and use other people's code.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-modules-imports",
+          "order": 1,
+          "title": "Modules and Imports",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Import modules and names",
+            "Explore with dir() and help()"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_modules.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/modules.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/modules"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Modules_and_Packages"
+            }
+          ]
+        },
+        {
+          "id": "py-packages-main",
+          "order": 2,
+          "title": "Packages and __main__",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Organise a package",
+            "Guard script code with if __name__ == '__main__'"
+          ],
+          "references": [
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/modules.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/package"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/main-function"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-packages/"
+            }
+          ]
+        },
+        {
+          "id": "py-pip-venv",
+          "order": 3,
+          "title": "pip and Virtual Environments",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create a virtual environment",
+            "Install and pin packages"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_pip.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_virtualenv.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/venv.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/pip"
+            }
+          ]
+        },
+        {
+          "id": "py-modules-packages-summary",
+          "order": 4,
+          "title": "Modules: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Structure a small multi-file program"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "errors-exceptions",
+      "order": 9,
+      "title": "Errors and Exceptions",
+      "summary": "Handle failure gracefully.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-try-except",
+          "order": 1,
+          "title": "try, except, else, finally",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Catch specific exceptions",
+            "Clean up with finally"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_try_except.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/errors.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/exception-handling"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-exception-handling/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Exception_Handling"
+            }
+          ]
+        },
+        {
+          "id": "py-raising-custom",
+          "order": 2,
+          "title": "Raising and Custom Exceptions",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Raise exceptions with clear messages",
+            "Define your own exception classes"
+          ],
+          "references": [
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/errors.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/user-defined-exception"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/user-defined-exceptions-python-examples/"
+            }
+          ]
+        },
+        {
+          "id": "py-assert-debugging",
+          "order": 3,
+          "title": "assert and Debugging",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use assert for invariants",
+            "Read a traceback"
+          ],
+          "references": [
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/assert-statement"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_ref_exceptions.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-errors-exceptions-summary",
+          "order": 4,
+          "title": "Errors: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Make a program robust to bad input"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "files-data",
+      "order": 10,
+      "title": "Files and Data Formats",
+      "summary": "Read and write files, CSV and JSON.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-read-write-files",
+          "order": 1,
+          "title": "Reading and Writing Files",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Open files with with",
+            "Read lines",
+            "Write and append"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_file_handling.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_file_open.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_file_write.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/inputoutput.html"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/file-handling-python/"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/dict-files"
+            }
+          ]
+        },
+        {
+          "id": "py-paths-folders",
+          "order": 2,
+          "title": "Paths and Folders",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Build paths with pathlib",
+            "List and filter files"
+          ],
+          "references": [
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/pathlib-module-in-python/"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/os-module-python-examples/"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/utilities"
+            }
+          ]
+        },
+        {
+          "id": "py-csv-files",
+          "order": 3,
+          "title": "CSV Files",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Read rows with csv",
+            "Write CSV safely"
+          ],
+          "references": [
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/csv"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/reading-csv-files"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/writing-csv-files"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Parsing_CSV_Files"
+            }
+          ]
+        },
+        {
+          "id": "py-json-data",
+          "order": 4,
+          "title": "JSON",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Convert between JSON and Python",
+            "Read and write JSON files"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_json.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/inputoutput.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/json"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Serialization"
+            }
+          ]
+        },
+        {
+          "id": "py-files-data-summary",
+          "order": 5,
+          "title": "Files: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Load, transform and save a dataset"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "oop",
+      "order": 11,
+      "title": "Object-Oriented Programming",
+      "summary": "Model things with classes.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-classes-objects",
+          "order": 1,
+          "title": "Classes and Objects",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Define a class",
+            "Use __init__ and self",
+            "Create instances"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_classes.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_class_init.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_class_self.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/classes.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/class"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-classes-and-objects/"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Classes_and_Objects"
+            }
+          ]
+        },
+        {
+          "id": "py-methods-properties",
+          "order": 2,
+          "title": "Methods and Properties",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Write instance and class methods",
+            "Use @property"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_class_methods.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_class_properties.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/property"
+            }
+          ]
+        },
+        {
+          "id": "py-inheritance",
+          "order": 3,
+          "title": "Inheritance",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Extend a class",
+            "Call super()",
+            "Understand multiple inheritance"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_inheritance.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/classes.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/inheritance"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/multiple-inheritance"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/inheritance-in-python/"
+            }
+          ]
+        },
+        {
+          "id": "py-polymorphism",
+          "order": 4,
+          "title": "Polymorphism",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use one interface for many types"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_polymorphism.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/polymorphism"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/polymorphism-in-python/"
+            }
+          ]
+        },
+        {
+          "id": "py-encapsulation",
+          "order": 5,
+          "title": "Encapsulation",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Hide internals with naming conventions",
+            "Validate in setters"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_encapsulation.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/classes.html"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/encapsulation-in-python/"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/data-abstraction-in-python/"
+            }
+          ]
+        },
+        {
+          "id": "py-magic-methods",
+          "order": 6,
+          "title": "Magic Methods",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Implement __str__ and __repr__",
+            "Overload operators with __add__ and __eq__"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_magic_methods.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/operator-overloading"
+            }
+          ]
+        },
+        {
+          "id": "py-oop-summary",
+          "order": 7,
+          "title": "OOP: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Design a small class hierarchy"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "standard-library",
+      "order": 12,
+      "title": "Standard Library Essentials",
+      "summary": "Use the batteries that come with Python.",
+      "optional": false,
+      "requiredForCertificate": true,
+      "lessons": [
+        {
+          "id": "py-dates-times",
+          "order": 1,
+          "title": "Dates and Times",
+          "free": true,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create and format datetimes",
+            "Do date arithmetic"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_datetime.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/datetime"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/datetime/strftime"
+            }
+          ]
+        },
+        {
+          "id": "py-math-random",
+          "order": 2,
+          "title": "math, random and statistics",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Use math functions",
+            "Generate random values reproducibly"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_math.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/module_random.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/module_statistics.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            }
+          ]
+        },
+        {
+          "id": "py-regex",
+          "order": 3,
+          "title": "Regular Expressions",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Search and extract with re",
+            "Use groups"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_regex.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/regex"
+            },
+            {
+              "site": "LearnPython.org",
+              "url": "https://www.learnpython.org/en/Regular_Expressions"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/regular-expressions"
+            }
+          ]
+        },
+        {
+          "id": "py-http-requests",
+          "order": 4,
+          "title": "Working with Web APIs",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Call an HTTP API",
+            "Parse a JSON response"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/module_requests.asp"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            },
+            {
+              "site": "Google's Python Class",
+              "url": "https://developers.google.com/edu/python/utilities"
+            }
+          ]
+        },
+        {
+          "id": "py-logging-testing",
+          "order": 5,
+          "title": "Logging and Testing",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Log instead of print",
+            "Write unit tests"
+          ],
+          "references": [
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib.html"
+            },
+            {
+              "site": "Python.org Tutorial",
+              "url": "https://docs.python.org/3/tutorial/stdlib2.html"
+            }
+          ]
+        },
+        {
+          "id": "py-standard-library-summary",
+          "order": 6,
+          "title": "Standard Library: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Combine dates, regex and files"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "data-ai",
+      "order": 13,
+      "title": "Data and AI Foundations",
+      "summary": "Analyse data and train a first model.",
+      "optional": false,
+      "requiredForCertificate": false,
+      "lessons": [
+        {
+          "id": "py-numpy-basics",
+          "order": 1,
+          "title": "NumPy Basics",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create arrays",
+            "Vectorise calculations"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/numpy/default.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/numpy"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/introduction-to-numpy/"
+            }
+          ]
+        },
+        {
+          "id": "py-pandas-basics",
+          "order": 2,
+          "title": "Pandas DataFrames",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Load a CSV into a DataFrame",
+            "Select rows and columns"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/pandas/default.asp"
+            },
+            {
+              "site": "Programiz",
+              "url": "https://www.programiz.com/python-programming/pandas"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/pandas/introduction-to-pandas-in-python/"
+            },
+            {
+              "site": "Kaggle Learn",
+              "url": "https://www.kaggle.com/learn"
+            }
+          ]
+        },
+        {
+          "id": "py-pandas-analysis",
+          "order": 3,
+          "title": "Analysing Data with Pandas",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Clean missing values",
+            "Group and aggregate"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/pandas/default.asp"
+            },
+            {
+              "site": "Kaggle Learn",
+              "url": "https://www.kaggle.com/learn"
+            }
+          ]
+        },
+        {
+          "id": "py-plotting",
+          "order": 4,
+          "title": "Plotting with Matplotlib",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Draw line, bar and scatter plots",
+            "Label charts clearly"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/matplotlib_intro.asp"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-introduction-matplotlib/"
+            }
+          ]
+        },
+        {
+          "id": "py-first-ml-model",
+          "order": 5,
+          "title": "Your First Machine Learning Model",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Split train and test data",
+            "Fit and evaluate a model with scikit-learn"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_ml_getting_started.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_ml_train_test.asp"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/machine-learning/learning-model-building-scikit-learn-python-machine-learning-library/"
+            },
+            {
+              "site": "Kaggle Learn",
+              "url": "https://www.kaggle.com/learn"
+            }
+          ]
+        },
+        {
+          "id": "py-data-ai-summary",
+          "order": 6,
+          "title": "Data and AI: Skill Summary",
+          "free": false,
+          "daily": false,
+          "type": "summary",
+          "status": "to-write",
+          "objectives": [
+            "Go from raw CSV to a chart and a model"
+          ],
+          "references": []
+        }
+      ]
+    },
+    {
+      "id": "optional-tracks",
+      "order": 14,
+      "title": "Optional Tracks",
+      "summary": "Algorithms, databases and web APIs.",
+      "optional": true,
+      "requiredForCertificate": false,
+      "lessons": [
+        {
+          "id": "py-algorithms-search-sort",
+          "order": 1,
+          "title": "Searching and Sorting Algorithms",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Implement binary search",
+            "Compare sorting algorithms"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dsa_binarysearch.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dsa_mergesort.asp"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/dsa/python-data-structures-and-algorithms/"
+            }
+          ]
+        },
+        {
+          "id": "py-stacks-queues-trees",
+          "order": 2,
+          "title": "Stacks, Queues and Trees",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Implement a stack and a queue",
+            "Walk a binary tree"
+          ],
+          "references": [
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dsa_stacks.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dsa_queues.asp"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_dsa_trees.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-sqlite-databases",
+          "order": 3,
+          "title": "Databases with sqlite3",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Create tables and insert rows",
+            "Query with parameters"
+          ],
+          "references": [
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-sqlite-connecting-to-database/"
+            },
+            {
+              "site": "W3Schools",
+              "url": "https://www.w3schools.com/python/python_mysql_getstarted.asp"
+            }
+          ]
+        },
+        {
+          "id": "py-flask-api",
+          "order": 4,
+          "title": "Build a Web API with Flask",
+          "free": false,
+          "daily": false,
+          "type": "lesson",
+          "status": "to-write",
+          "objectives": [
+            "Define routes",
+            "Return JSON"
+          ],
+          "references": [
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-introduction-to-web-development-using-flask/"
+            },
+            {
+              "site": "GeeksforGeeks",
+              "url": "https://www.geeksforgeeks.org/python/python-build-a-rest-api-using-flask/"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

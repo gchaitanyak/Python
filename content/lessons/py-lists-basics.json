@@ -1,0 +1,176 @@
+{
+  "id": "py-lists-basics",
+  "moduleId": "data-structures",
+  "title": "Lists",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **list** holds several values in order, inside square brackets: `[\"bread\", \"eggs\", \"milk\"]`. Lists can grow and shrink, and each item has a position (index) starting at **0**.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Use an index in square brackets to read one item. Negative indexes count from the end, so `-1` is the last item.",
+      "exampleCode": "shopping = [\"bread\", \"eggs\", \"milk\"]\nprint(shopping[0])\nprint(shopping[-1])\nprint(len(shopping))",
+      "explanation": "`len()` tells you how many items a list has."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create a list called `primes` containing the numbers `2, 3, 5, 7` in that order.",
+      "starterCode": "primes = \n",
+      "solution": "primes = [2, 3, 5, 7]",
+      "tests": [
+        {
+          "name": "is list",
+          "code": "assert isinstance(primes, list), 'primes should be a list — use square brackets.'",
+          "message": "Use square brackets."
+        },
+        {
+          "name": "values",
+          "code": "assert primes == [2, 3, 5, 7], 'primes should contain 2, 3, 5, 7 in that order.'",
+          "message": "Check the values and order."
+        }
+      ],
+      "hint": "Separate items with commas inside `[ ]`.",
+      "explanation": "Order matters in a list: `[2, 3]` and `[3, 2]` are different lists."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "colors = [\"red\", \"green\", \"blue\", \"gold\"]\nprint(colors[2])",
+      "expectedOutput": "blue",
+      "hint": "Indexes start at 0: red is 0, green is 1…",
+      "explanation": "Index 2 is the third item."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`queue` holds people waiting. Store the **last** person in a variable called `last` using a negative index.",
+      "starterCode": "queue = [\"Ana\", \"Ben\", \"Chen\", \"Dev\"]\nlast = \n",
+      "solution": "queue = [\"Ana\", \"Ben\", \"Chen\", \"Dev\"]\nlast = queue[-1]",
+      "tests": [
+        {
+          "name": "last",
+          "code": "assert last == 'Dev', 'last should be the final item in queue.'",
+          "message": "last should be Dev."
+        }
+      ],
+      "hint": "`queue[-1]` is the last item, whatever the list's length.",
+      "explanation": "Negative indexes keep working when the list grows."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "Add `\"oats\"` to the **end** of `pantry`, then change the first item from `\"rice\"` to `\"pasta\"`.",
+      "starterCode": "pantry = [\"rice\", \"beans\", \"flour\"]\n",
+      "solution": "pantry = [\"rice\", \"beans\", \"flour\"]\npantry.append(\"oats\")\npantry[0] = \"pasta\"",
+      "tests": [
+        {
+          "name": "result",
+          "code": "assert pantry == ['pasta', 'beans', 'flour', 'oats'], 'pantry should be [\"pasta\", \"beans\", \"flour\", \"oats\"].'",
+          "message": "Check both changes."
+        }
+      ],
+      "hint": "`list.append(x)` adds to the end. Assign to an index to replace an item: `pantry[0] = ...`.",
+      "explanation": "Lists are mutable: you change them in place rather than making a new one."
+    },
+    {
+      "id": "q06",
+      "type": "multiple_choice",
+      "prompt": "`nums = [4, 8, 15]`. What does `nums[3]` do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Returns 15"
+        },
+        {
+          "id": "b",
+          "text": "Returns None"
+        },
+        {
+          "id": "c",
+          "text": "Raises IndexError"
+        },
+        {
+          "id": "d",
+          "text": "Returns 4"
+        }
+      ],
+      "answer": "c",
+      "hint": "With 3 items the valid indexes are 0, 1 and 2.",
+      "explanation": "Reading past the end raises `IndexError: list index out of range`."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "This should remove `\"spam\"` from `inbox`, but it crashes. Fix it so `\"spam\"` is removed.",
+      "starterCode": "inbox = [\"bill\", \"spam\", \"photo\"]\ninbox.remove(1)\n",
+      "solution": "inbox = [\"bill\", \"spam\", \"photo\"]\ninbox.remove(\"spam\")\n",
+      "tests": [
+        {
+          "name": "removed",
+          "code": "assert inbox == ['bill', 'photo'], 'inbox should be [\"bill\", \"photo\"].'",
+          "message": "Remove the spam item."
+        }
+      ],
+      "hint": "`remove()` takes the **value** to delete, not its position. (`pop(1)` would remove by position.)",
+      "explanation": "Use `remove(value)` when you know the value and `pop(index)` when you know the position."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Loop over `temps` and print each temperature on its own line followed by `°C` — for example `21°C`.",
+      "starterCode": "temps = [21, 19, 24]\n",
+      "solution": "temps = [21, 19, 24]\nfor t in temps:\n    print(f\"{t}°C\")",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split() == ['21°C', '19°C', '24°C'], 'Expected three lines: 21°C, 19°C, 24°C.'",
+          "message": "Print each temperature with °C."
+        }
+      ],
+      "hint": "`for t in temps:` then an indented `print(f\"{t}°C\")`.",
+      "explanation": "A `for` loop visits each item in order; the f-string glues the unit on."
+    },
+    {
+      "id": "q09",
+      "type": "fill_blank",
+      "prompt": "Fill in the blank so `count` holds the number of items in `guests`.",
+      "template": "guests = [\"Ira\", \"Jo\", \"Kai\", \"Lu\", \"Mo\"]\ncount = ___",
+      "blanks": [
+        "len(guests)"
+      ],
+      "tests": [
+        {
+          "name": "count",
+          "code": "assert count == 5, 'count should be the length of guests.'",
+          "message": "count should be 5."
+        }
+      ],
+      "hint": "One built-in function returns the length of a list.",
+      "explanation": "`len()` works on lists, strings, tuples, dictionaries and sets."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Create `top_three` holding the first three items of `scores` using a slice.",
+      "starterCode": "scores = [98, 91, 87, 76, 70]\ntop_three = \n",
+      "solution": "scores = [98, 91, 87, 76, 70]\ntop_three = scores[:3]",
+      "tests": [
+        {
+          "name": "slice",
+          "code": "assert top_three == [98, 91, 87], 'top_three should be the first three scores.'",
+          "message": "Use a slice for the first three."
+        },
+        {
+          "name": "original untouched",
+          "code": "assert scores == [98, 91, 87, 76, 70], 'Do not change scores itself.'",
+          "message": "Leave scores unchanged."
+        }
+      ],
+      "hint": "`list[start:stop]` — leave start empty to begin at 0; stop is not included.",
+      "explanation": "Slicing makes a new list and leaves the original alone."
+    }
+  ]
+}

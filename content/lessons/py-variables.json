@@ -1,0 +1,163 @@
+{
+  "id": "py-variables",
+  "moduleId": "variables-types",
+  "title": "Variables",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **variable** is a name that points to a value. You create one by writing a name, an equals sign and a value: `city = \"Lisbon\"`. Later you can use the name instead of the value, and change what it points to at any time.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Python reads `=` as *\"make this name point to this value\"*, not as maths equality. The right-hand side is worked out first, then the name is attached to the result.",
+      "exampleCode": "cups = 2\ncups = cups + 1\nprint(cups)",
+      "explanation": "The second line reads the current value (2), adds 1, then points `cups` at 3."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create a variable called `planet` that holds the text `Mars`, then print it.",
+      "starterCode": "# create planet here\n",
+      "solution": "planet = \"Mars\"\nprint(planet)",
+      "tests": [
+        {
+          "name": "planet exists",
+          "code": "assert 'planet' in dir(), 'Create a variable named planet.'",
+          "message": "Create a variable named planet."
+        },
+        {
+          "name": "planet is Mars",
+          "code": "assert planet == 'Mars', 'planet should hold the text Mars (capital M).'",
+          "message": "planet should hold Mars."
+        },
+        {
+          "name": "printed",
+          "code": "assert __output__.strip() == 'Mars', 'Print planet so Mars appears in the output.'",
+          "message": "Print planet."
+        }
+      ],
+      "hint": "Text goes in quotes: `name = \"value\"`. Then call `print(name)`.",
+      "explanation": "Quotes make `Mars` a string. Without them Python would look for a variable called Mars."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "score = 4\nscore = score * 3\nscore = score - 2\nprint(score)",
+      "expectedOutput": "10",
+      "hint": "Work line by line: 4, then 4 × 3, then subtract 2.",
+      "explanation": "4 → 12 → 10. Each line replaces the old value."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "Which of these is a **valid** variable name?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`2nd_place`"
+        },
+        {
+          "id": "b",
+          "text": "`total-cost`"
+        },
+        {
+          "id": "c",
+          "text": "`total_cost`"
+        },
+        {
+          "id": "d",
+          "text": "`class`"
+        }
+      ],
+      "answer": "c",
+      "hint": "Names can't start with a digit, can't contain `-`, and can't be a reserved keyword.",
+      "explanation": "`total_cost` uses letters and underscores only. `class` is a keyword, `-` means subtraction, and names can't start with a number."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "A café sells a coffee for `3` and a muffin for `2.5`. Store each price in a variable (`coffee` and `muffin`), then store their sum in `bill`.",
+      "starterCode": "coffee = \nmuffin = \nbill = \n",
+      "solution": "coffee = 3\nmuffin = 2.5\nbill = coffee + muffin",
+      "tests": [
+        {
+          "name": "prices",
+          "code": "assert coffee == 3 and muffin == 2.5, 'coffee should be 3 and muffin 2.5.'",
+          "message": "Check the two prices."
+        },
+        {
+          "name": "bill uses the variables",
+          "code": "assert bill == 5.5, 'bill should be the sum of coffee and muffin.'",
+          "message": "bill should be 5.5."
+        }
+      ],
+      "hint": "Numbers don't need quotes. Add the two variables: `bill = coffee + muffin`.",
+      "explanation": "Using the variable names (not 5.5 typed directly) means the bill updates if a price changes."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This code should swap the values of `left` and `right`, but both end up the same. Fix it.",
+      "starterCode": "left = \"tea\"\nright = \"juice\"\nleft = right\nright = left\n",
+      "solution": "left = \"tea\"\nright = \"juice\"\nleft, right = right, left\n",
+      "tests": [
+        {
+          "name": "swapped",
+          "code": "assert left == 'juice' and right == 'tea', 'left should end as juice and right as tea.'",
+          "message": "The values should be swapped."
+        }
+      ],
+      "hint": "After `left = right`, the original `tea` is gone. Python can assign two names at once: `a, b = b, a`.",
+      "explanation": "Multiple assignment evaluates the whole right side first, so nothing is lost."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Give all three variables the value `0` in one line.",
+      "template": "wins = losses = draws = ___",
+      "blanks": [
+        "0"
+      ],
+      "tests": [
+        {
+          "name": "all zero",
+          "code": "assert wins == 0 and losses == 0 and draws == 0, 'All three should be 0.'",
+          "message": "All three should be 0."
+        }
+      ],
+      "hint": "Chained assignment gives every name the same value.",
+      "explanation": "`a = b = c = 0` points all three names at 0."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Store your step goal `10000` in `goal` and the steps walked so far, `6250`, in `walked`. Create `remaining` with how many steps are left, then print exactly: `Steps left: 3750` (use the variable, not the number).",
+      "starterCode": "goal = 10000\nwalked = 6250\n",
+      "solution": "goal = 10000\nwalked = 6250\nremaining = goal - walked\nprint(\"Steps left:\", remaining)",
+      "tests": [
+        {
+          "name": "remaining",
+          "code": "assert remaining == 3750, 'remaining should be goal minus walked.'",
+          "message": "remaining should be 3750."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Steps left: 3750', 'Print exactly: Steps left: 3750'",
+          "message": "Print exactly: Steps left: 3750"
+        }
+      ],
+      "hint": "`print()` puts a space between items: `print(\"Steps left:\", remaining)`.",
+      "explanation": "Printing several items separated by commas is the quickest way to label a value."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "Python names are case-sensitive. What does this print?",
+      "code": "Total = 5\ntotal = 8\nprint(Total + total)",
+      "expectedOutput": "13",
+      "hint": "`Total` and `total` are two different variables.",
+      "explanation": "5 + 8 = 13. Stick to lowercase names to avoid confusing yourself."
+    }
+  ]
+}
