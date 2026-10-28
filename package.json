@@ -1,0 +1,37 @@
+{
+  "name": "python-exercises",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "npm --prefix functions install --no-audit --no-fund",
+    "dev": "concurrently -k -n web,fb -c cyan,yellow \"npm:dev:web\" \"npm:dev:emulators\"",
+    "dev:web": "vite",
+    "dev:emulators": "npm --prefix functions run build && firebase emulators:start --project demo-python-exercises",
+    "build": "tsc --noEmit && vite build && tsx scripts/generate-sitemap.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit && npm --prefix functions run typecheck",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-python-exercises \"vitest run --config vitest.rules.config.ts\"",
+    "validate:content": "python3 content/tools/validate.py",
+    "deploy": "npm run build && firebase deploy --only hosting,functions,firestore:rules,firestore:indexes"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^26.6.6",
+    "concurrently": "^10.0.6",
+    "firebase-tools": "^15.34.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "firebase": "^13.1.0"
+  }
+}

@@ -1,0 +1,79 @@
+rules_version = '2';
+// Outline from docs/ARCHITECTURE.md §5.1. Phase 3 completes these with full tests.
+// Anything not matched below is denied.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+    function user() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function isPremium() {
+      return signedIn() && exists(/databases/$(db)/documents/users/$(request.auth.uid))
+        && user().get('entitlement', 'free') == 'premium'
+        && (user().get('premiumUntil', null) == null || user().premiumUntil > request.time);
+    }
+
+    match /users/{uid} {
+      allow read: if isSelf(uid);
+      allow create: if isSelf(uid) && request.resource.data.keys().hasOnly(['firstName', 'tz', 'createdAt']);
+      allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName', 'tz']);
+
+      match /progress/{lessonId} {
+        allow read: if isSelf(uid);
+        allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['questionState']);
+      }
+      match /attempts/{id} {
+        allow read: if isSelf(uid);
+        allow write: if false;
+      }
+    }
+
+    match /lessonContent/{lessonId} {
+      allow read: if isPremium();
+      allow write: if false;
+    }
+
+    match /dailyScores/{day}/users/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /dailyChallenges/{day} {
+      allow read: if true;
+      allow write: if false;
+      match /results/{uid} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    match /certificates/{id} {
+      allow read: if resource.data.public == true || isSelf(resource.data.uid);
+      allow write: if false;
+    }
+
+    match /groups/{gid} {
+      allow read: if signedIn() && request.auth.uid in resource.data.adminUids;
+      allow write: if false;
+      match /members/{uid} {
+        allow read: if isSelf(uid)
+          || (signedIn() && request.auth.uid in get(/databases/$(db)/documents/groups/$(gid)).data.adminUids);
+        allow write: if false;
+      }
+    }
+
+    match /feedback/{id} {
+      allow create: if signedIn();
+      allow read, update, delete: if false;
+    }
+
+    match /hintLogs/{id} {
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpful']);
+    }
+
+    match /usernames/{u} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
