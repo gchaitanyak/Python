@@ -39,10 +39,21 @@ All questions have `id`, `type`, `prompt` (markdown), optional `points` (overrid
 - Messages are public: describe *what* is wrong, never reveal hidden inputs or the full answer.
 - Every gradable question needs at least one test that the `starterCode` fails and the `solution` passes (checked by `content/tools/validate.py`).
 
+## Questions that read input
+
+`input()` reads lines from a string. For **Check**, a question's `setupCode` sets `__input__` to the lines the tests type, one per `input()` call:
+
+```json
+"setupCode": "__input__ = \"Priya\\n\""
+```
+
+Each line is echoed into the output like a terminal, so `__output__` reads `What's your name? Priya\nHello, Priya!`. On **Run**, the learner can type their own lines in the Input box; if it's empty, `__input__` is used. `explain` and `predict_output` code can't read input — keep `input()` out of them.
+
 ## Validating
 
 ```bash
-pip install jsonschema
-python content/tools/validate.py            # all lessons
-python content/tools/validate.py py-lists-basics
+npm run validate:content                     # all lessons (Pyodide in Node — the same harness as the browser)
+npm run validate:content -- py-lists-basics  # one lesson
 ```
+
+`npm run build` runs this first and stops if any lesson is invalid. `content/tools/validate.py` remains as a Python-only reference (`pip install jsonschema`).

@@ -14,7 +14,7 @@ export interface TestResult {
 
 export type ToWorker =
   | { type: 'init' }
-  | { type: 'run'; id: number; code: string; setupCode?: string }
+  | { type: 'run'; id: number; code: string; setupCode?: string; stdin?: string }
   | { type: 'grade'; id: number; code: string; tests: Test[]; setupCode?: string };
 
 export interface RunResult {

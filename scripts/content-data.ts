@@ -2,7 +2,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-export const contentDir = resolve(import.meta.dirname, '../content');
+/** content/ by default; CONTENT_DIR points the validator at another tree (used by its own tests). */
+export const contentDir = process.env.CONTENT_DIR ? resolve(process.env.CONTENT_DIR) : resolve(import.meta.dirname, '../content');
 
 interface RawCurriculum {
   modules: { id: string; lessons: { id: string; free: boolean; references?: unknown }[] }[];
@@ -32,3 +33,8 @@ export const lessonPath = (id: string): string => resolve(contentDir, 'lessons',
 /** Files from the pyodide npm package needed to run Python (no extra packages yet). */
 export const PYODIDE_FILES = ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json'];
 export const pyodideDir = resolve(import.meta.dirname, '../node_modules/pyodide');
+
+/** Full curriculum (with references) for build-time page rendering. */
+export function loadCurriculumFile(): import('../src/player/types').Curriculum {
+  return JSON.parse(readFileSync(resolve(contentDir, 'curriculum.json'), 'utf8'));
+}

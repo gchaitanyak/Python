@@ -1,6 +1,8 @@
 import '../../styles/main.css';
 import '../../styles/player.css';
+import { anonymous } from '../../lib/curriculum';
 import { loadLesson } from '../../player/lesson-loader';
+import { loadProgress } from '../../player/progress';
 import { Player } from '../../player/player';
 import { PythonClient } from '../../player/python-client';
 
@@ -22,6 +24,10 @@ const python = new PythonClient(
 player = new Player(root, python);
 player.setPythonStatus(...pending);
 
-loadLesson(lessonId)
+const progress = loadProgress();
+const visitor = anonymous(progress.lessons);
+const preview = import.meta.env.DEV && new URLSearchParams(location.search).has('preview');
+
+loadLesson(lessonId, visitor, { preview })
   .then((result) => player!.show(result))
   .catch(() => player!.show({ status: 'not-found' }));

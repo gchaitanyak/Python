@@ -21,7 +21,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Explain what Python is used for",
             "Run code and read its output",
@@ -65,7 +65,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use print() with several values",
             "Control separators and line endings",
@@ -93,7 +93,7 @@
           "free": true,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine printing, comments and simple statements"
           ],
@@ -160,7 +160,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use int and float",
             "Apply //, % and **",
@@ -188,7 +188,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Convert between str, int and float",
             "Predict conversion errors",
@@ -216,7 +216,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Evaluate truthiness",
             "Use None as 'no value'",
@@ -240,7 +240,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Read text with input()",
             "Convert input to numbers",
@@ -272,7 +272,7 @@
           "free": true,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine variables, conversion and I/O in a small program"
           ],
@@ -295,7 +295,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use + - * / // % **",
             "Use += and friends"
@@ -330,7 +330,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Compare values",
             "Combine conditions with and/or/not",
@@ -358,7 +358,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Tell is from ==",
             "Test membership with in"
@@ -381,7 +381,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Predict evaluation order",
             "Write conditional expressions"
@@ -408,7 +408,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Mix operators to solve small calculations"
           ],

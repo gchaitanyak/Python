@@ -16,7 +16,7 @@ sys.modules["harness"] = harness
 
 def _api_run(payload):
     p = json.loads(payload)
-    return json.dumps(harness.run_public(p["code"], p.get("setupCode") or ""))
+    return json.dumps(harness.run_public(p["code"], p.get("setupCode") or "", p.get("stdin")))
 
 def _api_grade(payload):
     p = json.loads(payload)

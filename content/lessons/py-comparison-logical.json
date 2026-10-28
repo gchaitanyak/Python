@@ -1,0 +1,190 @@
+{
+  "id": "py-comparison-logical",
+  "moduleId": "operators",
+  "title": "Comparison and Logical Operators",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "**Comparison operators** ask questions and answer with `True` or `False`: `==` (equal), `!=` (not equal), `<`, `>`, `<=` and `>=`. **Logical operators** combine answers: `and` needs both sides true, `or` needs at least one, and `not` flips a value.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`=` stores a value; `==` compares two values. You can chain comparisons like maths: `13 <= age <= 19` checks both limits at once.",
+      "exampleCode": "age = 17\nprint(age >= 18)\nprint(age == 17, age != 17)\nprint(13 <= age <= 19)\nprint(age >= 16 and age < 18)\nprint(not age >= 18)",
+      "explanation": "Each comparison produces a boolean that you can store, print or combine."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`temp` holds today's temperature. Store in `is_hot` whether it's **above** 30.",
+      "starterCode": "is_hot = \n",
+      "solution": "is_hot = temp > 30",
+      "setupCode": "temp = 31",
+      "tests": [
+        {
+          "name": "bool",
+          "code": "assert isinstance(is_hot, bool), 'is_hot should be True or False — store the comparison itself.'",
+          "message": "is_hot should be a boolean."
+        },
+        {
+          "name": "value",
+          "code": "assert is_hot == (temp > 30), 'is_hot should be True only when temp is above 30.'",
+          "message": "Check the comparison."
+        }
+      ],
+      "hint": "A comparison like `x > 5` is already `True` or `False`.",
+      "explanation": "No need for `True`/`False` by hand — the comparison does the work."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(5 == 5.0, \"5\" == 5)",
+      "expectedOutput": "True False",
+      "hint": "Is 5 the same number as 5.0? Is text ever equal to a number?",
+      "explanation": "Numbers compare by value, so 5 equals 5.0. Text is never equal to a number."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`correct` should say whether the guess matches the secret (it doesn't). Instead `guess` gets overwritten. Fix it.",
+      "starterCode": "guess = 4\nsecret = 7\ncorrect = guess = secret\n",
+      "solution": "guess = 4\nsecret = 7\ncorrect = guess == secret\n",
+      "tests": [
+        {
+          "name": "guess",
+          "code": "assert guess == 4, 'guess should still be 4 — compare, don’t assign.'",
+          "message": "Don't change guess."
+        },
+        {
+          "name": "correct",
+          "code": "assert correct is False, 'correct should be False because 4 is not 7.'",
+          "message": "correct should be False."
+        }
+      ],
+      "hint": "One `=` stores; two `==` compare.",
+      "explanation": "`a = b = c` assigns to both names. `a = b == c` stores the result of a comparison."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is `not (3 > 5)`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`True`"
+        },
+        {
+          "id": "b",
+          "text": "`False`"
+        },
+        {
+          "id": "c",
+          "text": "`3`"
+        },
+        {
+          "id": "d",
+          "text": "An error"
+        }
+      ],
+      "answer": "a",
+      "hint": "Work out the brackets first, then flip it.",
+      "explanation": "`3 > 5` is False, and `not False` is True."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "A shop is open from 9 until 17 (closed at 17). `hour` holds the current hour. Store in `is_open` whether the shop is open, using a **chained** comparison.",
+      "starterCode": "is_open = \n",
+      "solution": "is_open = 9 <= hour < 17",
+      "setupCode": "hour = 14",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert is_open == (9 <= hour < 17), 'is_open should be True from 9 up to (not including) 17.'",
+          "message": "Check the opening hours."
+        },
+        {
+          "name": "bool",
+          "code": "assert isinstance(is_open, bool), 'Store the comparison itself.'",
+          "message": "is_open should be a boolean."
+        }
+      ],
+      "hint": "`a <= x < b` checks both limits.",
+      "explanation": "Chained comparisons read like maths and avoid repeating the variable."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "A club needs guests to be at least 18 **and** have a ticket. `age` and `has_ticket` are set. Store the answer in `can_enter`.",
+      "starterCode": "can_enter = \n",
+      "solution": "can_enter = age >= 18 and has_ticket",
+      "setupCode": "age = 25\nhas_ticket = True",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert can_enter == (age >= 18 and has_ticket), 'can_enter should need both: age 18+ and a ticket.'",
+          "message": "Both conditions must be true."
+        }
+      ],
+      "hint": "Use `and` between the two conditions.",
+      "explanation": "`and` is True only when both sides are True."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the blank so `is_weekend` is `True` on Saturday or Sunday.",
+      "template": "day = \"Sun\"\nis_weekend = day == \"Sat\" ___ day == \"Sun\"",
+      "blanks": [
+        "or"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert is_weekend is True, 'is_weekend should be True for Sun.'",
+          "message": "is_weekend should be True."
+        }
+      ],
+      "hint": "Only one of the two needs to be true.",
+      "explanation": "`or` is True when at least one side is True."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "This should check that `score` is above 1 and below 10, but it's a *SyntaxError*. Fix it.",
+      "starterCode": "score = 7\nin_range = score > 1 and < 10\n",
+      "solution": "score = 7\nin_range = score > 1 and score < 10\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert in_range is True, 'in_range should be True for a score of 7.'",
+          "message": "in_range should be True."
+        }
+      ],
+      "hint": "Each side of `and` must be a complete comparison.",
+      "explanation": "Python can't guess that `< 10` refers to `score`. A chain like `1 < score < 10` also works."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Orders get free shipping when the `total` is at least 50 **or** the customer `is_member`. Store the answer in `free_shipping` and print it like `Free shipping: False`.",
+      "starterCode": "free_shipping = \n",
+      "solution": "free_shipping = total >= 50 or is_member\nprint(\"Free shipping:\", free_shipping)",
+      "setupCode": "total = 64.0\nis_member = False",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert free_shipping == (total >= 50 or is_member), 'free_shipping should be True if total is 50+ or the customer is a member.'",
+          "message": "Check the condition."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Free shipping: ' + str(total >= 50 or is_member), 'Print Free shipping: followed by True or False.'",
+          "message": "Print the result."
+        }
+      ],
+      "hint": "Combine the two conditions with `or`.",
+      "explanation": "Naming the result makes the rule easy to read later."
+    }
+  ]
+}

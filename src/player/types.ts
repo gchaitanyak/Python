@@ -67,13 +67,18 @@ export interface CurriculumLesson {
   order: number;
   title: string;
   free: boolean;
-  status: string;
+  daily?: boolean;
+  type?: 'lesson' | 'summary';
+  status: 'written' | 'to-write' | string;
+  objectives?: string[];
 }
 
 export interface CurriculumModule {
   id: string;
   order: number;
   title: string;
+  summary?: string;
+  optional?: boolean;
   lessons: CurriculumLesson[];
 }
 

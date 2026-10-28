@@ -1,0 +1,187 @@
+{
+  "id": "py-variables-types-summary",
+  "moduleId": "variables-types",
+  "title": "Variables and Types: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: variables, numbers and arithmetic, converting types, booleans, `None`, and reading input.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Store the text `Nairobi` in `city` and the number `4.4` in `population` (millions). Then print both on one line: `Nairobi 4.4`.",
+      "starterCode": "# your code\n",
+      "solution": "city = \"Nairobi\"\npopulation = 4.4\nprint(city, population)",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert city == 'Nairobi' and population == 4.4, 'city should be Nairobi and population 4.4.'",
+          "message": "Check city and population."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Nairobi 4.4', 'Print city and population, separated by a space.'",
+          "message": "Print Nairobi 4.4."
+        }
+      ],
+      "hint": "Text needs quotes; numbers don't.",
+      "explanation": "`print()` with two values puts a space between them."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 7\ny = x // 2\nx = x % 2\nprint(x, y)",
+      "expectedOutput": "1 3",
+      "hint": "`y` uses the old `x` (7). Then `x` is replaced.",
+      "explanation": "7 // 2 is 3; 7 % 2 is 1."
+    },
+    {
+      "id": "q03",
+      "type": "fix_code",
+      "prompt": "`score` should be 15, but this crashes. Fix it.",
+      "starterCode": "points = \"12\"\nbonus = 3\nscore = points + bonus\n",
+      "solution": "points = \"12\"\nbonus = 3\nscore = int(points) + bonus\n",
+      "tests": [
+        {
+          "name": "score",
+          "code": "assert score == 15, 'score should be 15.'",
+          "message": "score should be 15."
+        }
+      ],
+      "hint": "One of the values is text.",
+      "explanation": "Convert the text to a number before adding."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "What does `bool(None)` give?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`True`"
+        },
+        {
+          "id": "b",
+          "text": "`False`"
+        },
+        {
+          "id": "c",
+          "text": "`None`"
+        },
+        {
+          "id": "d",
+          "text": "An error"
+        }
+      ],
+      "answer": "b",
+      "hint": "None means *nothing*.",
+      "explanation": "None counts as false, like 0 and empty text."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "`km` holds a race distance in kilometres. Store the distance in miles, rounded to 1 decimal place, in `miles` (1 km = 0.621371 miles).",
+      "starterCode": "miles = \n",
+      "solution": "miles = round(km * 0.621371, 1)",
+      "setupCode": "km = 42.195",
+      "tests": [
+        {
+          "name": "miles",
+          "code": "assert miles == round(km * 0.621371, 1), 'miles should be km × 0.621371, rounded to 1 decimal place.'",
+          "message": "Check the conversion and rounding."
+        }
+      ],
+      "hint": "Multiply, then `round(…, 1)`.",
+      "explanation": "Using `km` instead of a typed-in number keeps the code reusable."
+    },
+    {
+      "id": "q06",
+      "type": "fill_blank",
+      "prompt": "A coupon code was entered. Fill in the blank so `has_coupon` is `True` when the code isn't empty.",
+      "template": "code = \"SAVE10\"\nhas_coupon = ___(code)",
+      "blanks": [
+        "bool"
+      ],
+      "tests": [
+        {
+          "name": "bool",
+          "code": "assert has_coupon is True, 'has_coupon should be True.'",
+          "message": "has_coupon should be True."
+        }
+      ],
+      "hint": "Which function turns a value into True or False?",
+      "explanation": "Non-empty text is truthy, so `bool(code)` is True."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Ask `Birth year? `, store the age the user turns in 2026 in `age`, and print it like `You turn 30 this year`.",
+      "starterCode": "# your code\n",
+      "solution": "year = int(input(\"Birth year? \"))\nage = 2026 - year\nprint(\"You turn\", age, \"this year\")",
+      "setupCode": "__input__ = \"1990\\n\"",
+      "tests": [
+        {
+          "name": "age",
+          "code": "assert age == 36, 'age should be 2026 minus the birth year.'",
+          "message": "age should be 2026 minus the birth year."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip().endswith('You turn 36 this year'), 'Print You turn <age> this year.'",
+          "message": "Print You turn <age> this year."
+        }
+      ],
+      "hint": "Convert the input to `int` before subtracting.",
+      "explanation": "Reading, converting and calculating in three short lines."
+    },
+    {
+      "id": "q08",
+      "type": "fix_code",
+      "prompt": "This should add 2.5 degrees to the temperature the user types, but crashes. Fix it.",
+      "starterCode": "temperature = input(\"Temp? \")\nwarmer = temperature + 2.5\n",
+      "solution": "temperature = float(input(\"Temp? \"))\nwarmer = temperature + 2.5\n",
+      "setupCode": "__input__ = \"18.5\\n\"",
+      "tests": [
+        {
+          "name": "warmer",
+          "code": "assert warmer == 21.0, 'warmer should be the typed temperature plus 2.5.'",
+          "message": "warmer should be the temperature + 2.5."
+        }
+      ],
+      "hint": "Temperatures can have decimals — pick the right conversion.",
+      "explanation": "`float()` handles values like 18.5."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "A savings planner. Ask `Goal? ` and `Saved per week? ` (both whole numbers). Print how many **full** weeks of saving fit in the goal, then how much is still to save after those weeks:\n\n```\nFull weeks: 8\nStill to save: 20\n```",
+      "starterCode": "# your code\n",
+      "solution": "goal = int(input(\"Goal? \"))\nweekly = int(input(\"Saved per week? \"))\nprint(\"Full weeks:\", goal // weekly)\nprint(\"Still to save:\", goal % weekly)",
+      "setupCode": "__input__ = \"500\\n60\\n\"",
+      "tests": [
+        {
+          "name": "weeks",
+          "code": "assert 'Full weeks: 8' in __output__, 'Full weeks should be goal // weekly.'",
+          "message": "Check the number of full weeks."
+        },
+        {
+          "name": "left",
+          "code": "assert __output__.strip().splitlines()[-1] == 'Still to save: 20', 'The last line should be Still to save: followed by goal % weekly.'",
+          "message": "Check the amount still to save."
+        }
+      ],
+      "hint": "`//` for whole weeks, `%` for what's left.",
+      "explanation": "The `//` and `%` pair splits an amount into whole groups and a remainder."
+    },
+    {
+      "id": "q10",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "a = b = 4\nb = b + 1\nprint(a, b)",
+      "expectedOutput": "4 5",
+      "hint": "Changing `b` later doesn't change `a`.",
+      "explanation": "Both names started at 4; only `b` was then pointed at 5."
+    }
+  ]
+}

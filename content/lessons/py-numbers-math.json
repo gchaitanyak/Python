@@ -1,0 +1,172 @@
+{
+  "id": "py-numbers-math",
+  "moduleId": "variables-types",
+  "title": "Numbers and Arithmetic",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Python has two main kinds of number. An **int** is a whole number like `12` or `-3`. A **float** has a decimal point, like `2.5` or `12.0`. Beyond `+ - *` you get `/` (divide), `//` (whole-number divide), `%` (remainder) and `**` (power).",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`/` always gives a float, even when the answer is whole. `//` drops everything after the decimal point and `%` gives what's left over. `**` raises to a power. `round(x, 2)` rounds to 2 decimal places.",
+      "exampleCode": "print(7 / 2)\nprint(7 // 2)\nprint(7 % 2)\nprint(2 ** 10)\nprint(round(3.14159, 2))",
+      "explanation": "7 split into 2s is 3 whole times (`//`) with 1 left over (`%`)."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`minutes` already holds a number of minutes (print it if you're curious). Store the whole hours in `hours` and the minutes left over in `leftover`.",
+      "starterCode": "hours = \nleftover = \n",
+      "solution": "hours = minutes // 60\nleftover = minutes % 60",
+      "setupCode": "minutes = 135",
+      "tests": [
+        {
+          "name": "hours",
+          "code": "assert hours == minutes // 60, 'hours should be the number of whole hours in minutes.'",
+          "message": "hours should be the whole hours."
+        },
+        {
+          "name": "leftover",
+          "code": "assert leftover == minutes % 60, 'leftover should be the minutes that do not fill a whole hour.'",
+          "message": "leftover should be the minutes left over."
+        }
+      ],
+      "hint": "`//` counts how many whole 60s fit; `%` gives the remainder.",
+      "explanation": "`//` and `%` are a pair: together they split a number into whole groups and a remainder."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(9 / 3)",
+      "expectedOutput": "3.0",
+      "hint": "Think about what type `/` always returns.",
+      "explanation": "Division with `/` always produces a float, so you get `3.0`, not `3`."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "What is the value of `17 % 5`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`3`"
+        },
+        {
+          "id": "b",
+          "text": "`2`"
+        },
+        {
+          "id": "c",
+          "text": "`3.4`"
+        },
+        {
+          "id": "d",
+          "text": "`85`"
+        }
+      ],
+      "answer": "b",
+      "hint": "How many are left after taking out as many 5s as possible?",
+      "explanation": "Three 5s make 15, leaving 2."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "A savings pot of `500` grows by 3% each year, so after 4 years it's `500 * 1.03 ** 4`. Store that value **rounded to 2 decimal places** in `pot`.",
+      "starterCode": "pot = \n",
+      "solution": "pot = round(500 * 1.03 ** 4, 2)",
+      "tests": [
+        {
+          "name": "pot",
+          "code": "assert pot == 562.75, 'pot should be 500 * 1.03 ** 4 rounded to 2 decimal places.'",
+          "message": "pot should be 562.75."
+        }
+      ],
+      "hint": "`**` is worked out before `*`. Wrap the whole sum in `round(…, 2)`.",
+      "explanation": "`1.03 ** 4` is the growth over four years; multiplying by 500 applies it to the pot."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`average` should be the mean of 4, 6 and 8 (which is 6), but it comes out wrong. Fix it.",
+      "starterCode": "average = 4 + 6 + 8 / 3\n",
+      "solution": "average = (4 + 6 + 8) / 3\n",
+      "tests": [
+        {
+          "name": "average",
+          "code": "assert average == 6, 'average should be 6 — add the three numbers before dividing.'",
+          "message": "average should be 6."
+        }
+      ],
+      "hint": "Python divides before it adds. Brackets make something happen first.",
+      "explanation": "Without brackets only the 8 was divided by 3. Brackets force the sum first."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "47 photos go into an album with 6 photos per page. Fill in the operator so `pages` is the number of **full** pages.",
+      "template": "pages = 47 ___ 6",
+      "blanks": [
+        "//"
+      ],
+      "tests": [
+        {
+          "name": "pages",
+          "code": "assert pages == 7, 'pages should be the number of full pages: 7.'",
+          "message": "pages should be 7."
+        }
+      ],
+      "hint": "You want the whole number of times 6 fits, without the remainder.",
+      "explanation": "`47 // 6` is 7 full pages (42 photos), with 5 photos left over."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`price` already holds a price with several decimal places. Store it rounded to **2** decimal places in `shown`.",
+      "starterCode": "shown = \n",
+      "solution": "shown = round(price, 2)",
+      "setupCode": "price = 7.4562",
+      "tests": [
+        {
+          "name": "rounded",
+          "code": "assert shown == round(price, 2), 'shown should be price rounded to 2 decimal places.'",
+          "message": "shown should be price rounded to 2 places."
+        }
+      ],
+      "hint": "`round()` takes the number and how many decimal places to keep.",
+      "explanation": "Rounding is for showing numbers neatly; keep the full value for further maths."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(10 // 3, 10 % 3)",
+      "expectedOutput": "3 1",
+      "hint": "How many whole 3s fit in 10, and what's left?",
+      "explanation": "Three 3s make 9, with 1 left over."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Four friends split a restaurant bill. `bill` and `people` are already set. Store each person's share, rounded to 2 decimal places, in `share`. Then print it like `Each pays: 21.5`.",
+      "starterCode": "share = \n",
+      "solution": "share = round(bill / people, 2)\nprint(\"Each pays:\", share)",
+      "setupCode": "bill = 86.5\npeople = 3",
+      "tests": [
+        {
+          "name": "share",
+          "code": "assert share == round(bill / people, 2), 'share should be bill divided by people, rounded to 2 places.'",
+          "message": "share should be bill / people, rounded to 2 places."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Each pays: ' + str(round(bill / people, 2)), 'Print Each pays: followed by the share.'",
+          "message": "Print Each pays: followed by the share."
+        }
+      ],
+      "hint": "Divide, round, then `print(\"Each pays:\", share)`.",
+      "explanation": "Using the variables means the same code works for any bill and group size."
+    }
+  ]
+}

@@ -431,3 +431,18 @@
   justify-content: flex-end;
   gap: var(--space-2);
 }
+
+.note {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+}
+
+.stdin {
+  margin-top: var(--space-4);
+}
+
+.stdin .work__label {
+  display: block;
+}

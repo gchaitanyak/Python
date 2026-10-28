@@ -1,0 +1,185 @@
+{
+  "id": "py-identity-membership",
+  "moduleId": "operators",
+  "title": "Identity and Membership",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "`in` asks whether something is **inside** something else: `\"@\" in email`. `not in` asks the opposite. `is` asks whether two names point to the **very same object** — use it to check for `None`. For everyday comparisons of values, use `==`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "With text, `in` checks for a piece of text anywhere inside. `is None` and `is not None` are the clearest way to test for a missing value.",
+      "exampleCode": "result = None\nprint(result is None)\nprint(result is not None)\nprint(\"@\" in \"maya@example.org\")\nprint(\"z\" not in \"pizza\")",
+      "explanation": "`not in` is one operator: it reads like English and gives the opposite of `in`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`email` holds an email address someone typed. Store in `has_at` whether it contains `@`.",
+      "starterCode": "has_at = \n",
+      "solution": "has_at = \"@\" in email",
+      "setupCode": "email = \"lee.park@example.com\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert has_at == ('@' in email), 'has_at should be True only if email contains @.'",
+          "message": "Check for @ with in."
+        },
+        {
+          "name": "bool",
+          "code": "assert isinstance(has_at, bool), 'Store the result of the in check itself.'",
+          "message": "has_at should be a boolean."
+        }
+      ],
+      "hint": "`\"x\" in text` is True if the text contains x.",
+      "explanation": "`in` saves you from searching through the text yourself."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"cat\" in \"concatenate\", \"Cat\" in \"concatenate\")",
+      "expectedOutput": "True False",
+      "hint": "`in` is case-sensitive.",
+      "explanation": "`cat` appears inside the word, but capital `C` doesn't."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "Which is the recommended way to check whether `x` has no value?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`x == None`"
+        },
+        {
+          "id": "b",
+          "text": "`x is None`"
+        },
+        {
+          "id": "c",
+          "text": "`x = None`"
+        },
+        {
+          "id": "d",
+          "text": "`not x`"
+        }
+      ],
+      "answer": "b",
+      "hint": "There is only one `None` object.",
+      "explanation": "`is None` checks for that exact object. `not x` is also True for 0 or empty text, and `x = None` assigns."
+    },
+    {
+      "id": "q05",
+      "type": "fix_code",
+      "prompt": "This should check whether `name` contains a space, but it's a *SyntaxError*. Fix it.",
+      "starterCode": "name = \"Ana Lima\"\nhas_space = \" \" is in name\n",
+      "solution": "name = \"Ana Lima\"\nhas_space = \" \" in name\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert has_space is True, 'has_space should be True for Ana Lima.'",
+          "message": "has_space should be True."
+        }
+      ],
+      "hint": "Membership uses `in` on its own.",
+      "explanation": "`is` and `in` are separate operators; `is in` isn't Python."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Passwords may not contain spaces. `password` is set. Store in `no_spaces` whether it has **no** space in it, using `not in`.",
+      "starterCode": "no_spaces = \n",
+      "solution": "no_spaces = \" \" not in password",
+      "setupCode": "password = \"sunflower42\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert no_spaces == (' ' not in password), 'no_spaces should be True when the password has no space.'",
+          "message": "Use not in to check for a space."
+        }
+      ],
+      "hint": "`not in` is the opposite of `in`.",
+      "explanation": "`\" \" not in password` reads almost like English."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "No reply has arrived yet. Fill in the blank so `missing` is `True` when `reply` is `None`.",
+      "template": "reply = None\nmissing = reply ___ None",
+      "blanks": [
+        "is"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert missing is True, 'missing should be True.'",
+          "message": "missing should be True."
+        }
+      ],
+      "hint": "Which operator checks for the very same object?",
+      "explanation": "`reply is None` is True when reply holds None."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`letter` holds a single lowercase letter. Store in `is_vowel` whether it's one of `a e i o u`, using one `in` check.",
+      "starterCode": "is_vowel = \n",
+      "solution": "is_vowel = letter in \"aeiou\"",
+      "setupCode": "letter = \"k\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert is_vowel == (letter in 'aeiou'), 'is_vowel should be True only for a, e, i, o or u.'",
+          "message": "Check letter against the vowels."
+        }
+      ],
+      "hint": "Put all the vowels in one piece of text and check whether `letter` is in it.",
+      "explanation": "One `in` replaces five separate `==` checks."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "`has_digit` should be `True` only if `code` contains a `1` or a `2`. It's always truthy instead. Fix it.",
+      "starterCode": "code = \"ABC\"\nhas_digit = \"1\" or \"2\" in code\n",
+      "solution": "code = \"ABC\"\nhas_digit = \"1\" in code or \"2\" in code\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert has_digit is False, 'has_digit should be False for ABC.'",
+          "message": "has_digit should be False for ABC."
+        }
+      ],
+      "hint": "Each side of `or` needs its own complete `in` check.",
+      "explanation": "`\"1\" or …` is just the text `\"1\"`, which is truthy. Write `\"1\" in code or \"2\" in code`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A sign-up form gives `email` and `nickname` (which may be `None`). Store `needs_nickname` (True when nickname is None) and `valid_email` (True when email contains both `@` and `.`). Print both like `True False`.",
+      "starterCode": "needs_nickname = \nvalid_email = \n",
+      "solution": "needs_nickname = nickname is None\nvalid_email = \"@\" in email and \".\" in email\nprint(needs_nickname, valid_email)",
+      "setupCode": "email = \"sam@example\"\nnickname = None",
+      "tests": [
+        {
+          "name": "nickname",
+          "code": "assert needs_nickname == (nickname is None), 'needs_nickname should be True when nickname is None.'",
+          "message": "Check nickname with is None."
+        },
+        {
+          "name": "email",
+          "code": "assert valid_email == ('@' in email and '.' in email), 'valid_email needs both @ and . in email.'",
+          "message": "Check email with in and and."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.split() == [str(nickname is None), str('@' in email and '.' in email)], 'Print needs_nickname and valid_email.'",
+          "message": "Print both values."
+        }
+      ],
+      "hint": "Use `is None` for the first and two `in` checks joined by `and` for the second.",
+      "explanation": "Small, well-named booleans make form checks easy to read."
+    }
+  ]
+}

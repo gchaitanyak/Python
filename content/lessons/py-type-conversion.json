@@ -1,0 +1,176 @@
+{
+  "id": "py-type-conversion",
+  "moduleId": "variables-types",
+  "title": "Type Conversion",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Every value has a **type**: `str` for text, `int` for whole numbers, `float` for decimals. Text that looks like a number is still text: `\"42\"` is not `42`. Use `int()`, `float()` and `str()` to convert, and `type()` to check.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`type()` tells you what kind of value you have. Converting lets you do maths with text digits, or join numbers onto text with `+`.",
+      "exampleCode": "count = \"42\"\nprint(type(count))\nprint(int(count) + 1)\nprint(str(7) + \" days\")\nprint(float(\"2.5\") * 2)",
+      "explanation": "`+` adds numbers but joins text. To join a number onto text, turn it into text first with `str()`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`age_text` holds an age as text. Store it as a whole number in `age`, then store the age next year in `next_year`.",
+      "starterCode": "age_text = \"29\"\nage = \nnext_year = \n",
+      "solution": "age_text = \"29\"\nage = int(age_text)\nnext_year = age + 1\n",
+      "tests": [
+        {
+          "name": "age",
+          "code": "assert age == 29 and isinstance(age, int), 'age should be the int 29 — convert age_text with int().'",
+          "message": "age should be the number 29."
+        },
+        {
+          "name": "next",
+          "code": "assert next_year == 30, 'next_year should be age + 1.'",
+          "message": "next_year should be 30."
+        }
+      ],
+      "hint": "`int(\"29\")` gives the number 29.",
+      "explanation": "Once it's an `int`, `+ 1` does arithmetic instead of failing."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(int(7.9))",
+      "expectedOutput": "7",
+      "hint": "`int()` doesn't round — it chops.",
+      "explanation": "`int()` drops the decimal part, so 7.9 becomes 7. Use `round()` if you want the nearest whole number."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This should print `Total: 12` but crashes with a *TypeError*. Fix it.",
+      "starterCode": "total = 12\nprint(\"Total: \" + total)\n",
+      "solution": "total = 12\nprint(\"Total: \" + str(total))\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Total: 12', 'The output should be: Total: 12'",
+          "message": "The output should be: Total: 12"
+        }
+      ],
+      "hint": "`+` can't join text and a number. Turn the number into text first.",
+      "explanation": "`str(total)` makes `\"12\"`, so `+` joins two pieces of text."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What happens when Python runs `int(\"3.5\")`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It gives `3`"
+        },
+        {
+          "id": "b",
+          "text": "It gives `4`"
+        },
+        {
+          "id": "c",
+          "text": "It gives `3.5`"
+        },
+        {
+          "id": "d",
+          "text": "It stops with a *ValueError*"
+        }
+      ],
+      "answer": "d",
+      "hint": "`int()` reads text only if it's a whole number.",
+      "explanation": "Text with a decimal point isn't a valid whole number. Use `float(\"3.5\")`, or `int(float(\"3.5\"))` if you really want 3."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "`height_text` holds a height in metres as text. Store it as a decimal number in `height`.",
+      "starterCode": "height = \n",
+      "solution": "height = float(height_text)",
+      "setupCode": "height_text = \"1.82\"",
+      "tests": [
+        {
+          "name": "float",
+          "code": "assert isinstance(height, float), 'height should be a float — use float().'",
+          "message": "height should be a float."
+        },
+        {
+          "name": "value",
+          "code": "assert height == float(height_text), 'height should hold the same value as height_text.'",
+          "message": "height should match height_text."
+        }
+      ],
+      "hint": "Which conversion keeps the decimal part?",
+      "explanation": "`float()` keeps the decimals that `int()` would refuse."
+    },
+    {
+      "id": "q07",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(type(3.0))",
+      "expectedOutput": "<class 'float'>",
+      "hint": "The decimal point decides the type, even if it's `.0`.",
+      "explanation": "`3.0` is a float. `type()` shows types as `<class '…'>`."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the blank so `label` holds `Room 214`.",
+      "template": "label = \"Room \" + ___(214)",
+      "blanks": [
+        "str"
+      ],
+      "tests": [
+        {
+          "name": "label",
+          "code": "assert label == 'Room 214', 'label should be Room 214.'",
+          "message": "label should be Room 214."
+        }
+      ],
+      "hint": "You need to turn the number into text.",
+      "explanation": "`str(214)` is `\"214\"`, which `+` can join onto `\"Room \"`."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "`steps` should be the total of two walks (a number), but it ends up as the text `\"40003500\"`. Fix it.",
+      "starterCode": "morning = \"4000\"\nevening = \"3500\"\nsteps = morning + evening\n",
+      "solution": "morning = \"4000\"\nevening = \"3500\"\nsteps = int(morning) + int(evening)\n",
+      "tests": [
+        {
+          "name": "steps",
+          "code": "assert steps == 7500, 'steps should be the number 7500.'",
+          "message": "steps should be 7500."
+        }
+      ],
+      "hint": "`+` on two pieces of text glues them together. Convert both first.",
+      "explanation": "Converting with `int()` turns the digits into numbers, so `+` adds them."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "An online form gives you `price_text` and `qty_text` as text. Store the cost in `total` (price × quantity, as a number). Then print it like `Total: 37.5` by joining text with `+`.",
+      "starterCode": "total = \n",
+      "solution": "total = float(price_text) * int(qty_text)\nprint(\"Total: \" + str(total))",
+      "setupCode": "price_text = \"12.50\"\nqty_text = \"3\"",
+      "tests": [
+        {
+          "name": "total",
+          "code": "assert total == float(price_text) * int(qty_text), 'total should be the price times the quantity, as a number.'",
+          "message": "total should be price × quantity."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Total: ' + str(float(price_text) * int(qty_text)), 'Print Total: followed by the total.'",
+          "message": "Print Total: followed by the total."
+        }
+      ],
+      "hint": "Convert each value, multiply, then use `str()` to join the result onto `\"Total: \"`.",
+      "explanation": "Data from forms and files arrives as text, so converting is usually the first step."
+    }
+  ]
+}

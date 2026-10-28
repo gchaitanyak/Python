@@ -1,0 +1,150 @@
+{
+  "id": "py-intro-first-program",
+  "moduleId": "getting-started",
+  "title": "Your First Python Program",
+  "estimatedMinutes": 8,
+  "basePoints": 10,
+  "intro": "**Python** is a programming language used to build websites, automate dull tasks, analyse data and train AI models. A Python **program** is a list of instructions. Python runs them one at a time, from the top line down. Your first instruction is `print()`, which shows something on the screen.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Each line is one **statement** — one instruction. `print()` shows whatever you put between its brackets. Text goes inside quotes; numbers and sums don't need them. Press **Run** to see the output, then try changing the code.",
+      "exampleCode": "print(\"Hello from Python!\")\nprint(7 * 6)\nprint(\"Done\")",
+      "explanation": "Python ran the three lines in order. `7 * 6` was worked out first, so `42` was printed."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Print exactly `Hello, world!`",
+      "starterCode": "# Write your print() below\n",
+      "solution": "print(\"Hello, world!\")",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Hello, world!', 'The output should be exactly: Hello, world!'",
+          "message": "The output should be exactly: Hello, world!"
+        }
+      ],
+      "hint": "Put the text in quotes inside the brackets: `print(\"…\")`.",
+      "explanation": "The quotes tell Python this is text to show, not an instruction to run."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "Quotes change everything. What does this print?",
+      "code": "print(3 + 4)\nprint(\"3 + 4\")",
+      "expectedOutput": "7\n3 + 4",
+      "hint": "Without quotes Python does the sum. With quotes it shows the characters as they are.",
+      "explanation": "`3 + 4` is a sum, so it prints `7`. `\"3 + 4\"` is text, so it prints exactly as written."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "There are 365 days in a year and 24 hours in a day. Print the number of hours in a year. Let Python do the multiplying — use `*`.",
+      "starterCode": "# Print 365 times 24\n",
+      "solution": "print(365 * 24)",
+      "tests": [
+        {
+          "name": "hours",
+          "code": "assert __output__.strip() == '8760', 'Print 365 * 24 — the output should be 8760.'",
+          "message": "The output should be 8760."
+        }
+      ],
+      "hint": "`*` means multiply. Put the sum inside `print()` without quotes.",
+      "explanation": "Python works out `365 * 24` first, then prints the result."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which line prints the word `Python`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`print(Python)`"
+        },
+        {
+          "id": "b",
+          "text": "`print(\"Python\")`"
+        },
+        {
+          "id": "c",
+          "text": "`print \"Python\"`"
+        },
+        {
+          "id": "d",
+          "text": "`Print(\"Python\")`"
+        }
+      ],
+      "answer": "b",
+      "hint": "You need lowercase `print`, brackets, and quotes around text.",
+      "explanation": "Without quotes Python looks for something *named* Python. Brackets are required, and `Print` with a capital P doesn't exist."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should print `Good morning`, but it stops with an error. Fix it.",
+      "starterCode": "Print(\"Good morning\")\n",
+      "solution": "print(\"Good morning\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Good morning', 'The output should be: Good morning'",
+          "message": "The output should be: Good morning"
+        }
+      ],
+      "hint": "Python is **case-sensitive**: `Print` and `print` are different names.",
+      "explanation": "Python only knows `print` in lowercase. Capital letters make it a different, unknown name."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "Each line should print one word, but Python complains about an *unexpected indent*. Fix it.",
+      "starterCode": "print(\"Ready\")\n    print(\"Steady\")\nprint(\"Go\")\n",
+      "solution": "print(\"Ready\")\nprint(\"Steady\")\nprint(\"Go\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split() == ['Ready', 'Steady', 'Go'], 'Print Ready, Steady and Go on three lines.'",
+          "message": "Print Ready, Steady and Go on three lines."
+        }
+      ],
+      "hint": "Spaces at the start of a line (**indentation**) mean something in Python. Plain statements start at the left edge.",
+      "explanation": "Indentation marks a block of code inside something else. You'll use it later with `if` and loops. For now, every line starts at the edge."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the operator so the code prints the number of minutes in 3 hours.",
+      "template": "print(3 ___ 60)",
+      "blanks": [
+        "*"
+      ],
+      "tests": [
+        {
+          "name": "minutes",
+          "code": "assert __output__.strip() == '180', 'The output should be 180.'",
+          "message": "The output should be 180."
+        }
+      ],
+      "hint": "There are 60 minutes in each hour. Which symbol multiplies?",
+      "explanation": "`3 * 60` is `180` minutes."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "A café's order screen needs three lines. Print them in this order:\n\n```\nOrder received\n2 x flat white\nReady in 5 minutes\n```",
+      "starterCode": "# Three print() calls, one per line\n",
+      "solution": "print(\"Order received\")\nprint(\"2 x flat white\")\nprint(\"Ready in 5 minutes\")",
+      "tests": [
+        {
+          "name": "lines",
+          "code": "assert __output__.strip().splitlines() == ['Order received', '2 x flat white', 'Ready in 5 minutes'], 'Expected three lines: Order received / 2 x flat white / Ready in 5 minutes'",
+          "message": "Check the three lines and their order."
+        }
+      ],
+      "hint": "Each `print()` starts a new line. Use one `print()` per line.",
+      "explanation": "Programs run top to bottom, so the order of your `print()` lines is the order on screen."
+    }
+  ]
+}

@@ -43,7 +43,7 @@ Base the bug on a real beginner mistake: `print` instead of `return`, off-by-one
 ## Before committing
 
 ```bash
-python content/tools/validate.py <lessonId>
+npm run validate:content -- <lessonId>
 ```
 
 Then set the lesson's `status` to `"written"` in `curriculum.json`.

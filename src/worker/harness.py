@@ -3,13 +3,15 @@
 Ported from content/tools/harness.py with the same grading behaviour, plus:
 - stdout and stderr are captured separately, each capped at 1 MB;
 - `run_public()` returns a JSON-safe dict (no namespace) for the worker;
-- output printed while tests run is discarded instead of leaking to the console.
+- output printed while tests run is discarded instead of leaking to the console;
+- input() reads from given text (or the setup's `__input__`) and echoes each line.
 
 content/tools/validate.py imports this file, so lesson validation exercises the
 exact code learners are graded by.
 """
 import contextlib
 import io
+import sys
 import traceback
 
 OUTPUT_LIMIT = 1_000_000  # characters, per stream
@@ -28,6 +30,17 @@ class _CappedIO(io.StringIO):
         return super().write(s)
 
 
+class _Stdin(io.StringIO):
+    """Feeds input() from text, echoing each line the way a terminal shows typing."""
+
+    def readline(self, size=-1):
+        line = super().readline(size)
+        if not line:
+            raise EOFError("input() has no more lines to read — add one line to the Input box for each input() call.")
+        sys.stdout.write(line if line.endswith("\n") else line + "\n")
+        return line
+
+
 def _last_error(exc: BaseException, filename: str) -> dict:
     line = None
     for frame in traceback.extract_tb(exc.__traceback__):
@@ -38,25 +51,33 @@ def _last_error(exc: BaseException, filename: str) -> dict:
     return {"type": type(exc).__name__, "message": str(exc), "line": line}
 
 
-def run(code: str, setup_code: str = "") -> dict:
-    """Run code (no grading). Returns stdout, stderr, any error and the namespace."""
+def run(code: str, setup_code: str = "", stdin: str | None = None) -> dict:
+    """Run code (no grading). Returns stdout, stderr, any error and the namespace.
+
+    input() reads lines from `stdin`; when that is None, from the `__input__`
+    string a question's setup code may define (how tests feed answers).
+    """
     ns: dict = {"__name__": "__main__"}
     out = _CappedIO()
     err = _CappedIO()
     error = None
+    real_stdin = sys.stdin
     try:
         if setup_code:
             exec(compile(setup_code, "<setup>", "exec"), ns)
+        sys.stdin = _Stdin(stdin if stdin is not None else str(ns.get("__input__", "")))
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
             exec(compile(code, "<learner>", "exec"), ns)
     except BaseException as exc:  # noqa: BLE001 — report everything to the learner
         error = _last_error(exc, "<learner>")
+    finally:
+        sys.stdin = real_stdin
     return {"stdout": out.getvalue(), "stderr": err.getvalue(), "error": error, "namespace": ns}
 
 
-def run_public(code: str, setup_code: str = "") -> dict:
+def run_public(code: str, setup_code: str = "", stdin: str | None = None) -> dict:
     """`run()` without the namespace, safe to send back to the main thread."""
-    result = run(code, setup_code)
+    result = run(code, setup_code, stdin)
     result.pop("namespace")
     return result
 

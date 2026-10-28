@@ -1,0 +1,179 @@
+{
+  "id": "py-input-output",
+  "moduleId": "variables-types",
+  "title": "Input and Output",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "`input()` pauses the program, shows a question and waits for the user to type a line. It always gives back **text**. Convert it with `int()` or `float()` before doing maths. When you press **Run**, type answers in the **Input** box below the editor, one line per `input()`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Because `input()` returns text, `\"21\" + \"1\"` would join, not add. Here a variable stands in for what the user typed, so you can see the difference.",
+      "exampleCode": "answer = \"21\"  # imagine input(\"Age? \") returned this\nprint(answer + \"1\")\nprint(int(answer) + 1)",
+      "explanation": "Always convert input before arithmetic: `age = int(input(\"Age? \"))`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Ask the user `What's your name? ` and store the answer in `name`. Then print `Hello, ` followed by the name and `!` — for example `Hello, Sam!`.",
+      "starterCode": "# ask for the name\n",
+      "solution": "name = input(\"What's your name? \")\nprint(\"Hello, \" + name + \"!\")",
+      "setupCode": "__input__ = \"Priya\\n\"",
+      "tests": [
+        {
+          "name": "name",
+          "code": "assert name == 'Priya', 'name should hold exactly what the user typed.'",
+          "message": "name should hold what the user typed."
+        },
+        {
+          "name": "greeting",
+          "code": "assert __output__.strip().endswith('Hello, Priya!'), 'Print Hello, then the name, then !'",
+          "message": "Print Hello, <name>!"
+        }
+      ],
+      "hint": "`input()` takes the question as its argument and returns the answer.",
+      "explanation": "The question text inside `input()` is shown to the user before they type."
+    },
+    {
+      "id": "q03",
+      "type": "multiple_choice",
+      "prompt": "The user types `42` when asked `age = input(\"Age? \")`. What type is `age`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`int`"
+        },
+        {
+          "id": "b",
+          "text": "`str`"
+        },
+        {
+          "id": "c",
+          "text": "`float`"
+        },
+        {
+          "id": "d",
+          "text": "It depends on what they type"
+        }
+      ],
+      "answer": "b",
+      "hint": "`input()` doesn't guess what the text means.",
+      "explanation": "`input()` always returns text, even when the user types digits."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This should show the user's age next year, but crashes with a *TypeError*. Fix it.",
+      "starterCode": "age = input(\"Age? \")\nprint(age + 1)\n",
+      "solution": "age = int(input(\"Age? \"))\nprint(age + 1)\n",
+      "setupCode": "__input__ = \"34\\n\"",
+      "tests": [
+        {
+          "name": "age",
+          "code": "assert age == 34, 'age should be a number — convert the input with int().'",
+          "message": "age should be a number."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip().endswith('35'), 'The program should print the age plus one.'",
+          "message": "Print the age plus one."
+        }
+      ],
+      "hint": "Wrap the `input()` call in `int()`.",
+      "explanation": "Converting straight away means every later line works with a number."
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "cups = \"3\"\nprint(\"Cups:\", int(cups) * 2)",
+      "expectedOutput": "Cups: 6",
+      "hint": "The text is converted before the multiplication.",
+      "explanation": "`int(\"3\") * 2` is 6. Without `int()`, `\"3\" * 2` would repeat the text to give `33`."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Ask `How many tickets? ` and store the answer as a whole number in `tickets`. Each ticket costs 12. Store the price in `cost` and print it like `Cost: 36`.",
+      "starterCode": "# your code\n",
+      "solution": "tickets = int(input(\"How many tickets? \"))\ncost = tickets * 12\nprint(\"Cost:\", cost)",
+      "setupCode": "__input__ = \"4\\n\"",
+      "tests": [
+        {
+          "name": "tickets",
+          "code": "assert tickets == 4, 'tickets should be the number the user typed, as an int.'",
+          "message": "tickets should be the user's number."
+        },
+        {
+          "name": "cost",
+          "code": "assert cost == 48, 'cost should be tickets * 12.'",
+          "message": "cost should be tickets × 12."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip().endswith('Cost: 48'), 'Print Cost: followed by the cost.'",
+          "message": "Print Cost: followed by the cost."
+        }
+      ],
+      "hint": "`int(input(\"How many tickets? \"))`, then multiply.",
+      "explanation": "Read, convert, calculate, print — the shape of most small programs."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Prices can have decimals. Fill in the conversion so `price` is a number.",
+      "template": "price = ___(input(\"Price? \"))",
+      "blanks": [
+        "float"
+      ],
+      "matchMode": "exact",
+      "hint": "Which conversion keeps the decimal part?",
+      "explanation": "`float()` accepts text like `\"4.99\"`; `int()` would fail on it."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Ask `Width? ` and then `Height? ` (both whole numbers). Print the area like `Area: 35`.",
+      "starterCode": "# your code\n",
+      "solution": "width = int(input(\"Width? \"))\nheight = int(input(\"Height? \"))\nprint(\"Area:\", width * height)",
+      "setupCode": "__input__ = \"7\\n5\\n\"",
+      "tests": [
+        {
+          "name": "asks",
+          "code": "assert 'Width? ' in __output__ and 'Height? ' in __output__, 'Ask Width? first, then Height?'",
+          "message": "Ask for the width, then the height."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip().endswith('Area: 35'), 'Print Area: followed by width times height.'",
+          "message": "Print the area."
+        }
+      ],
+      "hint": "Call `input()` twice — each call reads the next line the user types.",
+      "explanation": "Each `input()` waits for its own answer, in order."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Build a tip calculator. Ask `Bill? ` (a decimal) and `Tip percent? ` (a whole number). Work out the tip and the total, each rounded to 2 decimal places, and print two lines like:\n\n```\nTip: 7.5\nTotal: 57.5\n```",
+      "starterCode": "# your code\n",
+      "solution": "bill = float(input(\"Bill? \"))\npercent = int(input(\"Tip percent? \"))\ntip = round(bill * percent / 100, 2)\ntotal = round(bill + tip, 2)\nprint(\"Tip:\", tip)\nprint(\"Total:\", total)",
+      "setupCode": "__input__ = \"48.20\\n15\\n\"",
+      "tests": [
+        {
+          "name": "tip",
+          "code": "assert 'Tip: 7.23' in __output__, 'The tip should be bill × percent ÷ 100, rounded to 2 places.'",
+          "message": "Check the tip calculation."
+        },
+        {
+          "name": "total",
+          "code": "assert __output__.strip().splitlines()[-1] == 'Total: 55.43', 'The last line should be Total: followed by bill + tip, rounded to 2 places.'",
+          "message": "Check the total line."
+        }
+      ],
+      "hint": "Percent means ÷ 100. Round with `round(x, 2)`.",
+      "explanation": "Rounding money to 2 places keeps the output readable."
+    }
+  ]
+}

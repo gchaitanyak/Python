@@ -1,4 +1,5 @@
 import { escapeHtml } from '../components/html';
+import { lessonUrl, moduleUrl } from '../lib/curriculum';
 import type { RunResult } from '../worker/protocol';
 import { createEditor, type CodeEditor } from './editor';
 import { blankCount, fillTemplate, gradeAnswer, type Answer } from './grading';
@@ -24,6 +25,8 @@ interface Work {
   text?: string;
   choice?: string | null;
   blanks?: string[];
+  /** Lines typed into the Input box, fed to input() on Run. */
+  stdin?: string;
   hintShown?: boolean;
   feedback?: { kind: 'pass' | 'fail' | 'info'; html: string };
 }
@@ -97,8 +100,13 @@ export class Player {
     this.index = 0;
     document.title = `${this.lesson.title} — Python Exercises`;
     this.el.title.textContent = this.lesson.title;
-    this.el.crumb.textContent = result.module.title;
-    this.el.intro.innerHTML = renderMarkdown(this.lesson.intro);
+    this.el.crumb.textContent = result.placed.module.title;
+    this.el.crumb.setAttribute('href', moduleUrl(result.placed.module.id));
+    const earlier = result.recommendFirst;
+    const note = earlier
+      ? `<p class="note">Recommended: finish <a href="${moduleUrl(earlier.id)}">${escapeHtml(earlier.title)}</a> first. You can still start here.</p>`
+      : '';
+    this.el.intro.innerHTML = note + renderMarkdown(this.lesson.intro);
     this.el.intro.hidden = false;
     this.el.head.hidden = false;
     this.el.form.hidden = false;
@@ -155,6 +163,14 @@ export class Player {
       if (e.key !== 'Enter' || e.defaultPrevented || e.isComposing) return;
       const target = e.target as HTMLElement;
       if (target.closest('.cm-editor') || target.closest('button, a, summary')) return;
+      // Input box: Enter adds a line (programs may read several), Shift+Enter runs.
+      if (target.matches('[data-stdin]')) {
+        if (e.shiftKey) {
+          e.preventDefault();
+          void this.run();
+        }
+        return;
+      }
       const isTextarea = target instanceof HTMLTextAreaElement;
       if (e.shiftKey) {
         if (isTextarea) return; // newline in a multi-line answer
@@ -194,13 +210,17 @@ export class Player {
 
     switch (q.type) {
       case 'explain':
-        if (q.exampleCode) this.mountEditor(this.current.code ?? q.exampleCode, 'Example code — edit and run it');
+        if (q.exampleCode) {
+          this.mountEditor(this.current.code ?? q.exampleCode, 'Example code — edit and run it');
+          if (q.exampleCode.includes('input(')) this.mountStdin(false);
+        }
         this.el.work.hidden = !q.exampleCode;
         break;
       case 'write_code':
       case 'fix_code': {
         const draft = this.current.code ?? loadDraft(this.lesson.id, q.id) ?? q.starterCode;
         this.mountEditor(draft, q.type === 'fix_code' ? 'Code to fix' : 'Your code', true);
+        if ([q.starterCode, q.solution].some((c) => c.includes('input('))) this.mountStdin(!!q.setupCode?.includes('__input__'));
         this.el.work.hidden = false;
         break;
       }
@@ -278,6 +298,22 @@ export class Player {
         if (saveDrafts) saveDraft(lessonId, qid, code);
       },
     });
+  }
+
+  /** Box for the lines input() reads when the learner presses Run. */
+  private mountStdin(hasSample: boolean): void {
+    const help = hasSample
+      ? 'One line per <code>input()</code> call. Leave it empty to use the sample answers.'
+      : 'One line per <code>input()</code> call.';
+    this.el.workArea.insertAdjacentHTML(
+      'beforeend',
+      `<div class="stdin"><label class="work__label" for="stdin-input">Input</label>
+        <textarea id="stdin-input" class="text-input text-input--mono" rows="2" spellcheck="false" autocomplete="off" data-stdin aria-describedby="stdin-help"></textarea>
+        <p id="stdin-help" class="help-text">${help} Shift+Enter runs.</p></div>`,
+    );
+    const box = $<HTMLTextAreaElement>(this.el.workArea, '[data-stdin]');
+    box.value = this.current.stdin ?? '';
+    box.addEventListener('input', () => (this.current.stdin = box.value));
   }
 
   private focusQuestion(): void {
@@ -379,7 +415,8 @@ export class Player {
       this.el.consoleWrap.hidden = false;
       if (this.pythonStatus === 'loading') this.el.console.textContent = 'Loading Python…';
       const setup = q.type === 'write_code' || q.type === 'fix_code' ? q.setupCode : undefined;
-      this.showConsole(await this.python.run(code, setup));
+      const stdin = this.current.stdin?.trim() ? this.current.stdin : undefined;
+      this.showConsole(await this.python.run(code, setup, stdin));
     });
   }
 
@@ -546,7 +583,7 @@ export class Player {
         isNewBest ? 'New best score for this lesson.' : ''
       } Total points on this device: ${localPoints(progress)}. Sign-up (coming soon) will save your progress to your account.</p>
       <div class="summary__actions">
-        ${next ? `<a class="btn btn--primary" href="/practice/?lesson=${encodeURIComponent(next.id)}">Next: ${escapeHtml(next.title)} →</a>` : ''}
+        ${next ? `<a class="btn btn--primary" href="${lessonUrl(next.id)}">Next: ${escapeHtml(next.title)} →</a>` : ''}
         <button type="button" class="btn btn--ghost" data-summary-action="again">Practise again</button>
         <button type="button" class="btn btn--ghost" data-summary-action="share">Share</button>
         <a class="btn btn--ghost" href="/learn/">Back to Learn</a>
@@ -565,14 +602,26 @@ export class Player {
     this.el.summary.hidden = true;
     this.el.message.hidden = false;
     const back = '<a class="btn btn--primary" href="/learn/">Back to Learn</a>';
-    const title = 'entry' in result ? escapeHtml(result.entry.title) : '';
-    const content = {
-      'not-found': `<h1>Lesson not found</h1><p>We couldn’t find that lesson. Pick one from the Learn page.</p>${back}`,
-      locked: `<h1>${title}</h1><div class="lock"><h2>Sign in required</h2><p>This lesson is part of the full course. Accounts and subscriptions are coming soon — the free lessons are open to everyone now.</p>${back}</div>`,
-      unavailable: `<h1>${title}</h1><p>This lesson is being written and isn’t ready yet. Try another free lesson in the meantime.</p>${back}`,
-    }[result.status];
-    this.el.message.innerHTML = content;
-    document.title = `${'entry' in result ? result.entry.title : 'Lesson not found'} — Python Exercises`;
+    if (result.status === 'not-found') {
+      this.el.message.innerHTML = `<h1>Lesson not found</h1><p>We couldn’t find that lesson. Pick one from the Learn page.</p>${back}`;
+      document.title = 'Lesson not found — Python Exercises';
+      return;
+    }
+    const { lesson, module } = result.placed;
+    const head = `<p class="crumbs"><a href="/learn/">Learn</a> <span aria-hidden="true">›</span> <a href="${moduleUrl(module.id)}">${escapeHtml(module.title)}</a></p><h1>${escapeHtml(lesson.title)}</h1>`;
+    let body: string;
+    if (result.status === 'unavailable') {
+      body = `<p>This lesson is being written and isn’t ready yet. Try another lesson in the meantime.</p>${back}`;
+    } else if (result.access.kind === 'finish-previous') {
+      const prev = result.access.previous;
+      body = `<div class="lock"><h2>Finish “${escapeHtml(prev.title)}” first</h2><p>Lessons in a module open one after another. Complete the previous lesson to unlock this one.</p><a class="btn btn--primary" href="${lessonUrl(prev.id)}">Go to ${escapeHtml(prev.title)}</a></div>`;
+    } else if (result.access.kind === 'upgrade') {
+      body = `<div class="lock"><h2>Upgrade to continue</h2><p>This lesson is part of the full course. Premium plans are coming soon.</p>${back}</div>`;
+    } else {
+      body = `<div class="lock"><h2>Sign in required</h2><p>This lesson is part of the full course. Accounts and subscriptions are coming soon — the free lessons are open to everyone now.</p>${back}</div>`;
+    }
+    this.el.message.innerHTML = head + body;
+    document.title = `${lesson.title} — Python Exercises`;
   }
 }
 

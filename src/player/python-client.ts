@@ -81,8 +81,8 @@ export class PythonClient {
     return job;
   }
 
-  async run(code: string, setupCode?: string): Promise<RunResult> {
-    const msg = await this.request((id) => ({ type: 'run', id, code, setupCode }));
+  async run(code: string, setupCode?: string, stdin?: string): Promise<RunResult> {
+    const msg = await this.request((id) => ({ type: 'run', id, code, setupCode, stdin }));
     if (msg === 'timeout') return timeoutResult();
     return { stdout: (msg as RunResult).stdout, stderr: (msg as RunResult).stderr, error: (msg as RunResult).error };
   }

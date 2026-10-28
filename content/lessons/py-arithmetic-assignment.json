@@ -1,0 +1,176 @@
+{
+  "id": "py-arithmetic-assignment",
+  "moduleId": "operators",
+  "title": "Arithmetic and Assignment Operators",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "You already know `+ - * / // % **`. Programs often update a variable using its own value: `score = score + 5`. Python has a shortcut for that, called an **augmented assignment**: `score += 5`. Every arithmetic operator has one: `-=`, `*=`, `/=`, `//=`, `%=` and `**=`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`x += 3` means *take x, add 3, store the result back in x*. The variable must already exist.",
+      "exampleCode": "steps = 1000\nsteps += 250\nprint(steps)\nsteps *= 2\nprint(steps)\nsteps //= 3\nprint(steps)",
+      "explanation": "Each line reads the current value, applies the operator and stores the result."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`coins` starts at 40. Add 15 to it using `+=`.",
+      "starterCode": "coins = 40\n",
+      "solution": "coins = 40\ncoins += 15\n",
+      "tests": [
+        {
+          "name": "coins",
+          "code": "assert coins == 55, 'coins should be 55 after adding 15.'",
+          "message": "coins should be 55."
+        }
+      ],
+      "hint": "`coins += 15` is short for `coins = coins + 15`.",
+      "explanation": "Augmented assignment saves typing the variable name twice."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 10\nx -= 3\nx *= 2\nprint(x)",
+      "expectedOutput": "14",
+      "hint": "Work one line at a time: 10, then 7, then…",
+      "explanation": "10 − 3 = 7, then 7 × 2 = 14."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`battery` holds the current charge (a whole number). It drops by 12 each hour. Update `battery` for **3** hours of use with one augmented assignment.",
+      "starterCode": "# update battery\n",
+      "solution": "battery -= 12 * 3",
+      "setupCode": "battery = 83",
+      "tests": [
+        {
+          "name": "battery",
+          "code": "assert battery == 83 - 36, 'battery should go down by 12 for each of the 3 hours.'",
+          "message": "battery should drop by 36 in total."
+        }
+      ],
+      "hint": "Subtract 12 three times — or subtract `12 * 3` once with `-=`.",
+      "explanation": "The right-hand side is worked out first, then subtracted."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "After `n = 7` and then `n //= 2`, what is `n`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`3.5`"
+        },
+        {
+          "id": "b",
+          "text": "`3`"
+        },
+        {
+          "id": "c",
+          "text": "`4`"
+        },
+        {
+          "id": "d",
+          "text": "`1`"
+        }
+      ],
+      "answer": "b",
+      "hint": "`//` is whole-number division.",
+      "explanation": "7 // 2 is 3, and `//=` stores that back in `n`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`total` should go up by 5, from 20 to 25. It ends up as 5 instead. Fix it.",
+      "starterCode": "total = 20\ntotal =+ 5\n",
+      "solution": "total = 20\ntotal += 5\n",
+      "tests": [
+        {
+          "name": "total",
+          "code": "assert total == 25, 'total should be 25.'",
+          "message": "total should be 25."
+        }
+      ],
+      "hint": "Look closely at the order of `=` and `+`.",
+      "explanation": "`=+ 5` means *assign plus five*, i.e. 5. The operator goes before the `=`: `+=`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "`balance` grows by 5%. Fill in the operator so it's multiplied by 1.05 in place.",
+      "template": "balance = 100\nbalance ___ 1.05",
+      "blanks": [
+        "*="
+      ],
+      "tests": [
+        {
+          "name": "balance",
+          "code": "assert abs(balance - 105) < 1e-9, 'balance should be 105.'",
+          "message": "balance should be 105."
+        }
+      ],
+      "hint": "Multiply and store back in one operator.",
+      "explanation": "`balance *= 1.05` is `balance = balance * 1.05`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`seconds` holds a duration. Split it into `hours`, `minutes` and `secs`. For example, 3725 seconds is 1 hour, 2 minutes and 5 seconds.",
+      "starterCode": "hours = \nminutes = \nsecs = \n",
+      "solution": "hours = seconds // 3600\nminutes = seconds % 3600 // 60\nsecs = seconds % 60",
+      "setupCode": "seconds = 7384",
+      "tests": [
+        {
+          "name": "hours",
+          "code": "assert hours == 2, 'hours should be the number of whole hours (3600 seconds each).'",
+          "message": "Check hours."
+        },
+        {
+          "name": "minutes",
+          "code": "assert minutes == 3, 'minutes should be the whole minutes left after taking out the hours.'",
+          "message": "Check minutes."
+        },
+        {
+          "name": "secs",
+          "code": "assert secs == 4, 'secs should be the seconds left after whole minutes.'",
+          "message": "Check secs."
+        }
+      ],
+      "hint": "An hour has 3600 seconds. `% 3600` gives what's left after the hours; `// 60` turns that into minutes.",
+      "explanation": "Chaining `%` and `//` peels off one unit at a time."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "A car has `45.0` litres of fuel. It uses 6.5 litres per 100 km. Using augmented assignments, update `fuel` for a 250 km drive, then add 20 litres at a petrol station. Print it like `Fuel left: 40.0`.",
+      "starterCode": "fuel = 45.0\n",
+      "solution": "fuel = 45.0\nfuel -= 250 / 100 * 6.5\nfuel += 20\nprint(\"Fuel left:\", fuel)",
+      "tests": [
+        {
+          "name": "fuel",
+          "code": "assert abs(fuel - 48.75) < 1e-9, 'fuel should be 45 − (250 ÷ 100 × 6.5) + 20.'",
+          "message": "Check the fuel calculation."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Fuel left: 48.75', 'Print Fuel left: followed by fuel.'",
+          "message": "Print Fuel left: followed by fuel."
+        }
+      ],
+      "hint": "The drive uses `250 / 100 * 6.5` litres.",
+      "explanation": "Each augmented assignment updates the same variable, step by step."
+    },
+    {
+      "id": "q10",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 2\nx **= 3\nx %= 5\nprint(x)",
+      "expectedOutput": "3",
+      "hint": "2 to the power 3 first, then the remainder after dividing by 5.",
+      "explanation": "2³ = 8, and 8 % 5 = 3."
+    }
+  ]
+}

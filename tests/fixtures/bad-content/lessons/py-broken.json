@@ -1,0 +1,73 @@
+{
+  "id": "py-broken",
+  "moduleId": "fixture",
+  "title": "Broken",
+  "estimatedMinutes": 5,
+  "basePoints": 10,
+  "intro": "x",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Set x to 2.",
+      "starterCode": "x = 2\n",
+      "solution": "x = 3\n",
+      "tests": [
+        {
+          "name": "x",
+          "code": "assert x == 2",
+          "message": "x should be 2."
+        }
+      ],
+      "hint": "h"
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "?",
+      "code": "print(1)",
+      "expectedOutput": "2",
+      "hint": "h"
+    },
+    {
+      "id": "q03",
+      "type": "multiple_choice",
+      "prompt": "?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A"
+        },
+        {
+          "id": "b",
+          "text": "B"
+        }
+      ],
+      "answer": "c",
+      "hint": "h"
+    },
+    {
+      "id": "q04",
+      "type": "explain",
+      "prompt": "x",
+      "exampleCode": "1/0"
+    },
+    {
+      "id": "q05",
+      "type": "fill_blank",
+      "prompt": "?",
+      "template": "x = ___",
+      "blanks": [
+        "1",
+        "2"
+      ],
+      "tests": [],
+      "hint": "h"
+    },
+    {
+      "id": "q06",
+      "type": "explain",
+      "prompt": "x"
+    }
+  ]
+}

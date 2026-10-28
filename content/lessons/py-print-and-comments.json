@@ -1,0 +1,164 @@
+{
+  "id": "py-print-and-comments",
+  "moduleId": "getting-started",
+  "title": "Printing and Comments",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "`print()` can show several values at once and lets you choose what goes between them and at the end. **Comments** are notes for humans: Python skips them completely.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Separate values with commas and `print()` puts a space between them. Add `sep=` to choose a different separator. Add `end=` to change what goes at the end of the line — normally a new line.",
+      "exampleCode": "print(\"Total:\", 12)\nprint(2026, 10, 28, sep=\"-\")\nprint(\"Loading\", end=\"...\")\nprint(\"done\")",
+      "explanation": "`sep` goes *between* values; `end` goes *after* the last one."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Print `Score: 42` by giving `print()` two values: the text `\"Score:\"` and the number `42`.",
+      "starterCode": "# print two values\n",
+      "solution": "print(\"Score:\", 42)",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Score: 42', 'The output should be exactly: Score: 42'",
+          "message": "The output should be: Score: 42"
+        }
+      ],
+      "hint": "Put a comma between the two values. `print()` adds the space for you.",
+      "explanation": "Commas let you mix text and numbers in one `print()`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"red\", \"amber\", \"green\", sep=\" > \")",
+      "expectedOutput": "red > amber > green",
+      "hint": "`sep` is placed between each pair of values.",
+      "explanation": "The separator ` > ` replaces the usual single space."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Print the date `28/10/2026` from the three numbers `28`, `10` and `2026`, using `sep`.",
+      "starterCode": "print(28, 10, 2026)\n",
+      "solution": "print(28, 10, 2026, sep=\"/\")",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == '28/10/2026', 'The output should be exactly 28/10/2026 — no spaces.'",
+          "message": "The output should be 28/10/2026."
+        }
+      ],
+      "hint": "Add `sep=\"/\"` after the last value.",
+      "explanation": "Changing `sep` swaps every space between values for a slash."
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "What does this print? (It's one line.)",
+      "code": "print(\"Saving\", end=\"\")\nprint(\"...\", end=\"\")\nprint(\"saved!\")",
+      "expectedOutput": "Saving...saved!",
+      "hint": "`end=\"\"` means nothing is added at the end, so the next `print()` continues on the same line.",
+      "explanation": "The first two calls end with nothing instead of a new line, so all three pieces join up."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "The first line is a note for humans, but Python tries to run it and fails. Turn it into a comment.",
+      "starterCode": "Packing list for the weekend\nprint(\"passport\")\nprint(\"charger\")\n",
+      "solution": "# Packing list for the weekend\nprint(\"passport\")\nprint(\"charger\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split() == ['passport', 'charger'], 'The program should print passport and charger.'",
+          "message": "The program should print passport and charger."
+        }
+      ],
+      "hint": "A comment starts with `#`. Python ignores everything after it on that line.",
+      "explanation": "`#` turns the line into a note, so Python no longer tries to understand it."
+    },
+    {
+      "id": "q07",
+      "type": "multiple_choice",
+      "prompt": "What does Python do with this line?\n\n```\n# print(\"Hello\")\n```",
+      "options": [
+        {
+          "id": "a",
+          "text": "Prints Hello"
+        },
+        {
+          "id": "b",
+          "text": "Prints # print(\"Hello\")"
+        },
+        {
+          "id": "c",
+          "text": "Nothing — it's a comment"
+        },
+        {
+          "id": "d",
+          "text": "Stops with an error"
+        }
+      ],
+      "answer": "c",
+      "hint": "Look at the very first character.",
+      "explanation": "Everything after `#` is a comment, even code. Commenting out a line is a handy way to switch it off."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "A **docstring** is a text in triple quotes on the very first line. It describes what the program does. Start the program with the docstring `\"\"\"Prints a weekly plan.\"\"\"`, then print `Mon: swim`.",
+      "starterCode": "print(\"Mon: swim\")\n",
+      "solution": "\"\"\"Prints a weekly plan.\"\"\"\nprint(\"Mon: swim\")\n",
+      "tests": [
+        {
+          "name": "docstring",
+          "code": "assert __doc__ is not None and __doc__.strip() == 'Prints a weekly plan.', 'The first line should be the docstring \"\"\"Prints a weekly plan.\"\"\"'",
+          "message": "Add the docstring as the very first line."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Mon: swim', 'The program should still print Mon: swim.'",
+          "message": "Print Mon: swim."
+        }
+      ],
+      "hint": "Triple quotes look like `\"\"\"text\"\"\"`. It must be the first statement in the program.",
+      "explanation": "Python stores a program's first string as its docstring. Tools and other programmers read it to see what the code is for."
+    },
+    {
+      "id": "q09",
+      "type": "fill_blank",
+      "prompt": "Fill in the separator so each meal is printed on its own line.",
+      "template": "print(\"Breakfast\", \"Lunch\", \"Dinner\", sep=___)",
+      "blanks": [
+        "\"\\n\""
+      ],
+      "tests": [
+        {
+          "name": "lines",
+          "code": "assert __output__.strip().splitlines() == ['Breakfast', 'Lunch', 'Dinner'], 'Each meal should be on its own line.'",
+          "message": "Each meal should be on its own line."
+        }
+      ],
+      "hint": "A new line is written `\"\\n\"` inside quotes.",
+      "explanation": "`\"\\n\"` is the new-line character, so each value starts a fresh line."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Print `Countdown: 3 2 1 Go!` using **one** `print()` with five values: `\"Countdown:\"`, `3`, `2`, `1` and `\"Go!\"`. Add a comment above it saying what it does.",
+      "starterCode": "# \n",
+      "solution": "# Show a countdown\nprint(\"Countdown:\", 3, 2, 1, \"Go!\")",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Countdown: 3 2 1 Go!', 'The output should be exactly: Countdown: 3 2 1 Go!'",
+          "message": "The output should be: Countdown: 3 2 1 Go!"
+        }
+      ],
+      "hint": "Separate all five values with commas. The default separator is a space.",
+      "explanation": "One `print()` with several values is tidier than joining them by hand."
+    }
+  ]
+}

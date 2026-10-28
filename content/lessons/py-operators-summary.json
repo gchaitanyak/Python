@@ -1,0 +1,181 @@
+{
+  "id": "py-operators-summary",
+  "moduleId": "operators",
+  "title": "Operators: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix every operator from this module: arithmetic and augmented assignment, comparisons, `and`/`or`/`not`, `in`, `is None`, precedence and conditional expressions.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "A player starts with `lives = 3`. They lose one life, then win two. Update `lives` with augmented assignments.",
+      "starterCode": "lives = 3\n",
+      "solution": "lives = 3\nlives -= 1\nlives += 2\n",
+      "tests": [
+        {
+          "name": "lives",
+          "code": "assert lives == 4, 'lives should be 3 − 1 + 2 = 4.'",
+          "message": "lives should be 4."
+        }
+      ],
+      "hint": "Use `-=` then `+=`.",
+      "explanation": "Each line updates the same variable in place."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(7 + 3 * 2 ** 2)",
+      "expectedOutput": "19",
+      "hint": "Power first, then multiply, then add.",
+      "explanation": "2² = 4, 3 × 4 = 12, 7 + 12 = 19."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "A resting heart rate between 60 and 100 (inclusive) is in the normal range. Using `bpm`, store the answer in `normal` with one chained comparison.",
+      "starterCode": "normal = \n",
+      "solution": "normal = 60 <= bpm <= 100",
+      "setupCode": "bpm = 72",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert normal == (60 <= bpm <= 100), 'normal should be True from 60 to 100, inclusive.'",
+          "message": "Check both limits, inclusive."
+        }
+      ],
+      "hint": "Inclusive means `<=` on both sides.",
+      "explanation": "A chained comparison checks a range in one go."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This should check that a rating is 4 stars or more, but it's a *SyntaxError*. Fix it.",
+      "starterCode": "stars = 4.5\nis_top = stars => 4\n",
+      "solution": "stars = 4.5\nis_top = stars >= 4\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert is_top is True, 'is_top should be True for 4.5 stars.'",
+          "message": "is_top should be True."
+        }
+      ],
+      "hint": "Read the operator out loud: *greater than or equal*.",
+      "explanation": "The `=` always comes second: `>=`, `<=`, `!=`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is `\"py\" in \"happy\"`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`True`"
+        },
+        {
+          "id": "b",
+          "text": "`False`"
+        },
+        {
+          "id": "c",
+          "text": "An error"
+        },
+        {
+          "id": "d",
+          "text": "`\"py\"`"
+        }
+      ],
+      "answer": "a",
+      "hint": "Look for the letters p-y next to each other.",
+      "explanation": "`happy` ends in `py`, so `in` finds it."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Films longer than 90 minutes count as `\"long\"`, others as `\"short\"`. Using `minutes`, store the label in `label` with a conditional expression.",
+      "starterCode": "label = \n",
+      "solution": "label = \"long\" if minutes > 90 else \"short\"",
+      "setupCode": "minutes = 95",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert label == ('long' if minutes > 90 else 'short'), 'label should be long above 90 minutes, otherwise short.'",
+          "message": "Check the label rule."
+        }
+      ],
+      "hint": "`A if condition else B`.",
+      "explanation": "Conditional expressions are ideal for picking between two labels."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the operator so `is_multiple` is `True` when 36 divides evenly by 9.",
+      "template": "is_multiple = 36 ___ 9 == 0",
+      "blanks": [
+        "%"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert is_multiple is True, 'is_multiple should be True.'",
+          "message": "is_multiple should be True."
+        }
+      ],
+      "hint": "A number divides evenly when the remainder is 0.",
+      "explanation": "`36 % 9` is 0, so the comparison is True. `%` runs before `==`."
+    },
+    {
+      "id": "q08",
+      "type": "fix_code",
+      "prompt": "Three friends split a bill of 30 for food and 12 for drinks. `per_person` should be 14, but it isn't. Fix it.",
+      "starterCode": "per_person = 30 + 12 / 3\n",
+      "solution": "per_person = (30 + 12) / 3\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert per_person == 14, 'per_person should be 14 — add the two amounts before dividing.'",
+          "message": "per_person should be 14."
+        }
+      ],
+      "hint": "Division happens before addition unless you add brackets.",
+      "explanation": "Brackets make the whole bill get divided."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "A shop gives 25% off when the promo code contains `25` **and** the `cart` total is at least 50; otherwise no discount. Store the discount rate (0.25 or 0) in `discount` with a conditional expression, then store the price to pay in `pay` and print it like `To pay: 80.0`.",
+      "starterCode": "discount = \npay = \n",
+      "solution": "discount = 0.25 if \"25\" in promo and cart >= 50 else 0\npay = cart * (1 - discount)\nprint(\"To pay:\", pay)",
+      "setupCode": "promo = \"SUMMER25\"\ncart = 80",
+      "tests": [
+        {
+          "name": "discount",
+          "code": "assert discount == (0.25 if '25' in promo and cart >= 50 else 0), 'discount should be 0.25 only when the promo contains 25 and cart is 50 or more.'",
+          "message": "Check the discount rule."
+        },
+        {
+          "name": "pay",
+          "code": "assert abs(pay - cart * (1 - discount)) < 1e-9, 'pay should be cart × (1 − discount).'",
+          "message": "Check the price to pay."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'To pay: ' + str(pay), 'Print To pay: followed by pay.'",
+          "message": "Print To pay: followed by pay."
+        }
+      ],
+      "hint": "Combine `in` and `>=` with `and` inside the condition.",
+      "explanation": "Operators from the whole module, working together in two lines."
+    },
+    {
+      "id": "q10",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "n = 10\nn //= 3\nn **= 2\nprint(n, n > 8 and n < 10)",
+      "expectedOutput": "9 True",
+      "hint": "10 // 3, then square it.",
+      "explanation": "10 // 3 = 3, 3² = 9, and 9 is between 8 and 10."
+    }
+  ]
+}
