@@ -1,5 +1,5 @@
 rules_version = '2';
-// Outline from docs/ARCHITECTURE.md §5.1. Phase 3 completes these with full tests.
+// Outline from docs/ARCHITECTURE.md §5.1. Phase 4 completes these with full tests.
 // Anything not matched below is denied.
 service cloud.firestore {
   match /databases/{db}/documents {

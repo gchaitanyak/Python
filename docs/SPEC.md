@@ -102,7 +102,7 @@ Within a module, lesson *n* unlocks when lesson *n−1* is completed. Module 1 l
 ### 5.7 Groups (teachers / teams)
 - A group has one or more admins and many members, joined by invite link with a code.
 - Admin portal: member list with lessons completed, average accuracy, last active, CSV export. Admin can remove members and regenerate the invite code.
-- Premium can be granted to all members of a group (seat count on the group; set manually by site owner in Phase 7, Stripe seats later).
+- Premium can be granted to all members of a group (seat count on the group; set manually by site owner in Phase 8, Stripe seats later).
 
 ### 5.8 Projects
 Guided multi-step projects with a downloadable dataset and in-browser checks per step. Initial set (all original):

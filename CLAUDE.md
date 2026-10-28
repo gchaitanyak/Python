@@ -42,7 +42,7 @@ Read these files before writing any code, in this order:
 | Analytics | Google Analytics 4 (consent-gated) |
 | Tests | Vitest (unit), Playwright (end-to-end), Firebase Emulator Suite (rules + functions) |
 
-## Commands (create these in phase 0)
+## Commands (create these in phase 1)
 
 ```bash
 npm install

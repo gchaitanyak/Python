@@ -14,7 +14,7 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } } },
   ],
-  // Phase 3+ adds the Firebase emulators here once pages talk to them.
+  // Phase 4+ adds the Firebase emulators here once pages talk to them.
   webServer: {
     command: 'npm run dev:web -- --host 127.0.0.1',
     url: 'http://127.0.0.1:5173',
