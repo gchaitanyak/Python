@@ -1,4 +1,4 @@
-import { copyFileSync, createReadStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, createReadStream, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
 import {
@@ -30,9 +30,11 @@ import {
 import { availableWheels } from './scripts/pyodide-packages';
 import { lessonUrl, lessonsInOrder } from './src/lib/curriculum';
 import { routes } from './src/lib/routes';
+import { addSeoTags, ogImageFor } from './src/lib/seo';
 import type { Curriculum, CurriculumModule } from './src/player/types';
 
 const pagesDir = resolve(__dirname, 'src/pages');
+const ogDir = resolve(__dirname, 'src/assets/og');
 const outDir = resolve(__dirname, 'dist');
 
 // Inline SVG icon (the logo mark) so no extra request or binary asset is needed.
@@ -54,6 +56,21 @@ const MODULE_TEMPLATE = resolve(pagesDir, 'module/index.html');
 const PROJECT_TEMPLATE = resolve(pagesDir, 'project/index.html');
 /** Template rendered once per guide at /guides/<slug>/. */
 const GUIDE_TEMPLATE = resolve(pagesDir, 'guide/index.html');
+
+/** Public site address for canonical and Open Graph URLs (SITE_URL in .env.local or the environment). */
+const siteUrl = (): string => loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, '').SITE_URL || 'https://example.com';
+
+function withSeo(html: string, path: string): string {
+  return addSeoTags(html, path, siteUrl(), ogImageFor(path, new Set(loadGuides().map((g) => g.slug))));
+}
+
+/** Every built page under dist/, with its public path. */
+function builtPages(dir = outDir, base = '/'): { file: string; path: string }[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    if (e.isDirectory()) return ['assets', 'data', 'pyodide', 'og'].includes(e.name) && base === '/' ? [] : builtPages(resolve(dir, e.name), `${base}${e.name}/`);
+    return e.name === 'index.html' ? [{ file: resolve(dir, e.name), path: base }] : [];
+  });
+}
 
 /** Page file relative to src/pages → public URL path, e.g. "home/index.html" → "/". */
 function routeForHtml(relPath: string): string | undefined {
@@ -144,6 +161,11 @@ function pagesPlugin(): Plugin {
           res.statusCode = 404;
           return res.end('Not found');
         }
+        const og = /^\/og\/([a-z0-9-]+\.png)$/.exec(pathname);
+        if (og?.[1] && existsSync(resolve(ogDir, og[1]))) {
+          res.setHeader('Content-Type', 'image/png');
+          return void createReadStream(resolve(ogDir, og[1])).pipe(res);
+        }
         const py = /^\/pyodide\/([\w.-]+)$/.exec(pathname);
         // Core files, plus any package wheels fetched with `npm run fetch:pyodide`.
         if (py?.[1] && (PYODIDE_FILES.includes(py[1]) || availableWheels().includes(py[1]))) {
@@ -211,7 +233,10 @@ function pagesPlugin(): Plugin {
       handler(html, ctx) {
         const rel = ctx.filename.slice(pagesDir.length + 1).replaceAll('\\', '/');
         const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : rel.startsWith('project/') ? '/projects/' : rel.startsWith('guide/') ? '/guides/' : `/${rel.replace(/index\.html$/, '')}`);
-        return fillPlayerShell(fillCurriculum(html, loadCurriculumFile()))
+        // Dev: the request's own path. Build: tags are added per page in closeBundle, once paths are final.
+        const devPath = ctx.server ? (ctx.originalUrl ?? ctx.path).split('?')[0] : undefined;
+        const filled = fillPlayerShell(fillCurriculum(html, loadCurriculumFile()));
+        return (devPath ? (h: string) => withSeo(h, devPath) : (h: string) => h)(filled)
           .replace('</head>', `${FAVICON}\n  </head>`)
           .replace('<!-- @header -->', renderHeader(path))
 
@@ -253,6 +278,8 @@ function pagesPlugin(): Plugin {
         }
         rmSync(resolve(outDir, 'project'), { recursive: true, force: true });
       }
+      mkdirSync(resolve(outDir, 'og'), { recursive: true });
+      for (const f of readdirSync(ogDir)) copyFileSync(resolve(ogDir, f), resolve(outDir, 'og', f));
       // Move each page to its public path: dist/home/index.html → dist/index.html.
       for (const r of routes) {
         if (r.path === `/${r.dir}/`) continue;
@@ -262,6 +289,8 @@ function pagesPlugin(): Plugin {
         renameSync(from, resolve(outDir, `.${r.path}`, 'index.html'));
         rmSync(resolve(outDir, r.dir), { recursive: true, force: true });
       }
+      // Canonical and Open Graph tags, now that every page is at its public path.
+      for (const page of builtPages()) writeFileSync(page.file, withSeo(readFileSync(page.file, 'utf8'), page.path));
     },
   };
 }
