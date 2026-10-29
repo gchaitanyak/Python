@@ -89,7 +89,10 @@ export function renderModulePage(m: CurriculumModule, c: Curriculum): { head: st
   <p class="lead">${escapeHtml(m.summary ?? '')}</p>
   <p class="note" data-module-note hidden></p>
   <p class="module-progress" data-module-progress>${lessons.length} lessons</p>
-  ${first ? `<a class="btn btn--primary" data-module-start href="${lessonUrl(first.id)}">Start module</a>` : '<p>Lessons for this module are being written.</p>'}
+  <div class="module-actions">
+    ${first ? `<a class="btn btn--primary" data-module-start href="${lessonUrl(first.id)}">Start module</a>` : '<p>Lessons for this module are being written.</p>'}
+    <a class="btn btn--ghost" data-flashcards href="/practice/?mode=flashcards&amp;module=${m.id}" hidden>Flashcards</a>
+  </div>
 </section>
 <section class="container" aria-labelledby="lessons-title">
   <h2 id="lessons-title">Lessons</h2>

@@ -206,5 +206,8 @@ describe('everything else', () => {
     await assertFails(getDoc(doc(db('alice'), 'rateLimits/alice_submitAnswer')));
     await assertFails(setDoc(doc(db('alice'), 'rateLimits/alice_submitAnswer'), { count: 0 }));
     await assertFails(setDoc(doc(db('alice'), 'anything/else'), { a: 1 }));
+    // The emulator-only test clock must never be client-writable (it would move the server's "today").
+    await assertFails(setDoc(doc(db('alice'), '_test/clock'), { nowMs: 0 }));
+    await assertFails(getDoc(doc(db(), '_test/clock')));
   });
 });

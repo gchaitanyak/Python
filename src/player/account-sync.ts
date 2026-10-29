@@ -24,4 +24,6 @@ export interface CompleteResult {
 export interface AccountSync {
   submitAnswer(payload: SubmitPayload): Promise<SubmitResult>;
   completeLesson(lessonId: string, accuracy: number): Promise<CompleteResult>;
+  /** +100 once per user for sharing a finished lesson (SPEC §5.2). */
+  claimShareBonus(): Promise<{ awarded: number; totalPoints: number }>;
 }

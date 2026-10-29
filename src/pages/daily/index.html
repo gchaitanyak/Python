@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Python challenge — Python Exercises</title>
+    <meta name="description" content="Five Python questions, the same for everyone each day. Take one scored attempt, see your rank on the worldwide leaderboard, then practise as much as you like." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <!-- @player-open -->
+      <section class="container daily-intro" data-daily-intro aria-labelledby="daily-title">
+        <nav aria-label="Breadcrumb" class="crumbs"><a href="/learn/">Learn</a> <span aria-hidden="true">›</span> Daily challenge</nav>
+        <h1 id="daily-title">Daily challenge</h1>
+        <p class="lead">Five questions from across the course — the same set for everyone today. Your first attempt is scored and ranked; after that, practise as often as you like.</p>
+        <p class="help-text" data-daily-date>Loading today’s questions…</p>
+        <div class="alert" data-daily-status role="status" aria-live="polite" hidden></div>
+        <button class="btn btn--primary btn--lg" type="button" data-daily-start disabled>Start challenge</button>
+      </section>
+    <!-- @player-body -->
+      <section class="container daily-boards" aria-label="Leaderboard">
+        <!-- @board:challenge -->
+      </section>
+    <!-- @player-close -->
+    <!-- @footer -->
+  </body>
+</html>

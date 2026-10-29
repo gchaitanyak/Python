@@ -1,76 +1,8 @@
-import { initializeTestEnvironment, type RulesTestEnvironment } from '@firebase/rules-unit-testing';
-import { deleteApp, initializeApp, type FirebaseApp } from 'firebase/app';
-import { connectAuthEmulator, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { collection, connectFirestoreEmulator, doc, getDoc, getDocs, getFirestore, serverTimestamp, setDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { connectFunctionsEmulator, getFunctions, httpsCallable } from 'firebase/functions';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-
-const projectId = 'demo-python-exercises';
-let env: RulesTestEnvironment;
-const apps: FirebaseApp[] = [];
-let n = 0;
-
-beforeAll(async () => {
-  env = await initializeTestEnvironment({ projectId, firestore: { host: '127.0.0.1', port: 8080 } });
-  await env.clearFirestore();
-});
-
-afterAll(async () => {
-  await Promise.all(apps.map((a) => deleteApp(a)));
-  await env.cleanup();
-});
-
-/** A fresh signed-in user with a profile doc, plus helpers to call functions as them. */
-async function newUser(tz = 'UTC') {
-  const app = initializeApp({ apiKey: 'demo-key', projectId }, `u${++n}-${Date.now()}`);
-  apps.push(app);
-  const auth = getAuth(app);
-  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-  const db = getFirestore(app);
-  connectFirestoreEmulator(db, '127.0.0.1', 8080);
-  const fns = getFunctions(app, 'us-central1');
-  connectFunctionsEmulator(fns, '127.0.0.1', 5001);
-  const email = `user${n}-${Date.now()}@example.com`;
-  const cred = await createUserWithEmailAndPassword(auth, email, 'correct-horse-battery');
-  const uid = cred.user.uid;
-  await setDoc(doc(db, 'users', uid), { firstName: `User ${n}`, tz, createdAt: serverTimestamp() });
-  const call = async <T = Record<string, unknown>>(name: string, data: unknown = {}) => (await httpsCallable(fns, name)(data)).data as T;
-  return { app, auth, db, uid, email, call };
-}
-
-/** Reads with rules disabled, to check what the functions stored. */
-async function read(path: string) {
-  let data: Record<string, unknown> | undefined;
-  await env.withSecurityRulesDisabled(async (ctx) => {
-    data = (await getDoc(doc(ctx.firestore(), path))).data();
-  });
-  return data;
-}
-
-async function count(path: string) {
-  let size = 0;
-  await env.withSecurityRulesDisabled(async (ctx) => {
-    size = (await getDocs(collection(ctx.firestore(), path))).size;
-  });
-  return size;
-}
-
-async function admin(path: string, data: Record<string, unknown>) {
-  await env.withSecurityRulesDisabled(async (ctx) => {
-    await setDoc(doc(ctx.firestore(), path), data, { merge: true });
-  });
-}
-
-const errorCode = async (p: Promise<unknown>) => {
-  try {
-    await p;
-    return 'none';
-  } catch (e) {
-    return (e as { code?: string }).code;
-  }
-};
-
-const today = () => new Date().toISOString().slice(0, 10);
+import { describe, expect, it } from 'vitest';
+import { admin, apps, count, errorCode, newUser, projectId, read, today } from './helpers';
 
 describe('claimUsername', () => {
   it('claims case-insensitively unique names and releases old ones', async () => {

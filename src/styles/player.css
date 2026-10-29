@@ -456,3 +456,43 @@
 .summary__actions--start {
   justify-content: flex-start;
 }
+
+.share {
+  max-width: 36rem;
+  margin: var(--space-6) auto 0;
+}
+
+.share__title {
+  font-size: var(--text-base);
+}
+
+.share__bonus {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: #fff3cd;
+  color: #6b4b00;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.share__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.daily-intro {
+  padding-block: var(--space-8) var(--space-4);
+}
+
+.daily-intro .alert {
+  margin-block: var(--space-4);
+}
+
+.daily-boards {
+  margin-top: var(--space-8);
+  max-width: 40rem;
+}

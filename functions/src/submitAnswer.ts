@@ -1,7 +1,9 @@
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
-import { db, displayName, FieldValue, progressRef, rateLimit, requireUid, userIsPremium, userRef } from './lib/admin';
+import { awardPoints } from './lib/activity';
+import { db, FieldValue, progressRef, rateLimit, requireUid, userIsPremium, userRef } from './lib/admin';
+import { now as clockNow } from './lib/clock';
 import { findPlaced, loadLesson } from './lib/content';
-import { checkAnswer, isGradable, lessonAccess, localDay, pointsFor, previousLessonId, serverCheckable, utcDay } from './lib/rules';
+import { checkAnswer, isGradable, lessonAccess, localDay, pointsFor, previousLessonId, serverCheckable } from './lib/rules';
 import type { SubmittedAnswer } from './lib/types';
 
 interface Input {
@@ -61,7 +63,7 @@ export const submitAnswer = onCall(async (request) => {
   const question = lesson?.questions.find((q) => q.id === input.questionId);
   if (!lesson || !placed || !question || !isGradable(question)) throw new HttpsError('not-found', 'Unknown lesson or question.');
 
-  const now = new Date();
+  const now = await clockNow();
   const prevId = previousLessonId(placed);
 
   return db.runTransaction(async (tx) => {
@@ -106,15 +108,7 @@ export const submitAnswer = onCall(async (request) => {
       at: FieldValue.serverTimestamp(),
     });
     const totalPoints = (user?.totalPoints ?? 0) + points;
-    if (points > 0) {
-      const day = utcDay(now);
-      tx.set(userRef(uid), { totalPoints: FieldValue.increment(points), scoreDays: FieldValue.arrayUnion(day) }, { merge: true });
-      tx.set(
-        db.doc(`dailyScores/${day}/users/${uid}`),
-        { username: displayName(uid, user), points: FieldValue.increment(points), updatedAt: FieldValue.serverTimestamp() },
-        { merge: true },
-      );
-    }
+    if (points > 0) awardPoints(tx, uid, user, now, points);
     return { correct, points, alreadyAwarded: false, tries: state.tries, totalPoints };
   });
 });

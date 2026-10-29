@@ -34,12 +34,19 @@
         </div>
       </section>
 
-      <section class="container leaderboard-section" aria-labelledby="board-title">
-        <div class="card leaderboard">
-          <h2 id="board-title" class="dash__label">Today’s top points</h2>
-          <ol class="leaderboard__list" data-leaderboard aria-live="polite"><li class="help-text">Loading…</li></ol>
-          <p class="help-text" data-leaderboard-me></p>
+      <section class="container dash-grid" aria-label="Today">
+        <div class="card daily-card" data-daily-card>
+          <h2 class="dash__label">Daily challenge</h2>
+          <p class="dash__lesson" data-daily-status>5 questions, new every day</p>
+          <p class="help-text" data-daily-detail>The same questions for everyone. One scored attempt.</p>
+          <a class="btn btn--primary" href="/daily/" data-daily-link>Take today’s challenge</a>
+          <div class="trend" data-trend hidden>
+            <h3 class="trend__title">Your last 7 days</h3>
+            <ol class="trend__bars" data-trend-bars></ol>
+          </div>
         </div>
+        <!-- @board:points -->
+        <!-- @board:streak -->
       </section>
 
       <section class="container" aria-labelledby="modules-title">

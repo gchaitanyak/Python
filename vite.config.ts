@@ -9,6 +9,8 @@ import {
 } from './src/components/curriculum-html';
 import { renderFooter } from './src/components/footer';
 import { renderHeader } from './src/components/header';
+import { boardCard } from './src/components/leaderboard-html';
+import { fillPlayerShell } from './src/components/player-shell';
 import {
   PYODIDE_FILES,
   freeLessonIds,
@@ -54,6 +56,9 @@ function fillCurriculum(html: string, c: Curriculum): string {
     .replace('<!-- @stat:lessons -->', String(stats.lessons))
     .replace('<!-- @stat:modules -->', String(stats.modules))
     .replace('<!-- @stat:free -->', String(stats.free))
+    .replace('<!-- @board:points -->', boardCard('points', 'Today’s top points'))
+    .replace('<!-- @board:streak -->', boardCard('streak', 'Today’s top streaks'))
+    .replace('<!-- @board:challenge -->', boardCard('challenge', 'Today’s challenge leaderboard'))
     .replace('<!-- @next-title -->', first?.title ?? '')
     .replace('<!-- @next-href -->', first ? lessonUrl(first.id) : '/learn/');
 }
@@ -132,9 +137,10 @@ function pagesPlugin(): Plugin {
       handler(html, ctx) {
         const rel = ctx.filename.slice(pagesDir.length + 1).replaceAll('\\', '/');
         const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : `/${rel.replace(/index\.html$/, '')}`);
-        return fillCurriculum(html, loadCurriculumFile())
+        return fillPlayerShell(fillCurriculum(html, loadCurriculumFile()))
           .replace('</head>', `${FAVICON}\n  </head>`)
           .replace('<!-- @header -->', renderHeader(path))
+
           .replace('<!-- @footer -->', renderFooter());
       },
     },

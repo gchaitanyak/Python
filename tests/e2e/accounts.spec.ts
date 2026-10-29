@@ -1,29 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
-import { feedback, goToQuestion, openLesson, playLesson, primary, readLesson } from './helpers';
+import { feedback, goToQuestion, newLearner, openLesson, playLesson, primary, readLesson, register, unique } from './helpers';
 
 const PROJECT = 'demo-python-exercises';
-const unique = () => `${Date.now().toString(36)}${Math.floor(Math.random() * 1e4)}`;
 
 test.describe.configure({ timeout: 180_000 });
 test.beforeEach(({}, info) => {
   test.skip(info.project.name !== 'desktop', 'account flows run once, on desktop');
 });
-
-function newLearner() {
-  const id = unique();
-  return { firstName: 'Robin', username: `robin_${id}`.slice(0, 20), email: `robin.${id}@example.com`, password: 'learning-python-42' };
-}
-
-async function register(page: Page, who: ReturnType<typeof newLearner>, next = '/learn/') {
-  await page.goto(`/register/?next=${encodeURIComponent(next)}`);
-  await page.getByLabel('First name').fill(who.firstName);
-  await page.getByLabel('Username').fill(who.username);
-  await page.getByLabel('Email', { exact: true }).fill(who.email);
-  await page.getByLabel('Password').fill(who.password);
-  await page.getByRole('button', { name: 'Create account' }).click();
-  await page.waitForURL((url) => url.pathname === new URL(next, 'http://x').pathname);
-  await expect(page.locator('[data-account-name]')).toHaveText(who.username);
-}
 
 async function logIn(page: Page, email: string, password: string, next = '/learn/') {
   await page.goto(`/login/?next=${encodeURIComponent(next)}`);
@@ -76,7 +59,7 @@ test('SPEC acceptance 2: register, see anonymous progress merged, then appear on
   // Merged: lesson 1 is done on the account, so lesson 2 is next and unlocked.
   await expect(page.locator('[data-lesson-id="py-intro-first-program"]')).toHaveAttribute('data-status', 'strong');
   await expect(page.locator('[data-next-title]')).toHaveText('Printing and Comments');
-  await expect(page.locator('[data-leaderboard-me]')).toHaveText('Earn points today to appear here.');
+  await expect(page.locator('[data-board="points"] [data-board-me]')).toHaveText('Finish a lesson today to appear here.');
 
   // Complete a lesson while signed in: points and streak come from the server.
   await openLesson(page, 'py-print-and-comments');
@@ -85,14 +68,15 @@ test('SPEC acceptance 2: register, see anonymous progress merged, then appear on
   await expect(page.locator('[data-summary-streak]')).toHaveText('1 day');
 
   await page.goto('/learn/');
-  const me = page.locator('.leaderboard__row--me');
+  const me = page.locator('[data-board="points"] .leaderboard__row--me');
   await expect(me).toContainText(`${who.username} (you)`);
   await expect(me).toContainText(`${points} pts`);
-  await expect(page.locator('[data-leaderboard-me]')).toContainText(`with ${points} pts today`);
+  await expect(page.locator('[data-board="points"] [data-board-me]')).toContainText(`with ${points} pts today`);
+  await expect(page.locator('[data-board="streak"] .leaderboard__row--me')).toContainText('1 day');
   await expect(page.locator('[data-points]')).toHaveText(String(points));
   await expect(page.locator('[data-streak]')).toHaveText('1 day');
   // Usernames only — never emails — on the public board.
-  await expect(page.locator('[data-leaderboard]')).not.toContainText('@');
+  await expect(page.locator('[data-board-list]').first()).not.toContainText('@');
 });
 
 test('log in with a password, see the account menu, log out and clear local caches', async ({ page }) => {

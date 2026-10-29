@@ -1,10 +1,9 @@
 import '../../lib/page';
 import '../../styles/curriculum.css';
-import { escapeHtml } from '../../components/html';
+import { mountBoard } from '../../components/leaderboard';
 import { findLesson, lessonUrl, nextRecommended } from '../../lib/curriculum';
 import { decorateLessons } from '../../lib/progress-view';
-import { firebaseConfigured } from '../../lib/firebase-config';
-import { leaderboard } from '../../lib/session';
+import { challengeHistory, utcDay, type Session } from '../../lib/session';
 import { resolveVisitor } from '../../lib/visitor';
 import { loadCurriculum } from '../../player/lesson-loader';
 import { currentStreak, loadProgress, localPoints } from '../../player/progress';
@@ -42,32 +41,28 @@ void (async () => {
     link.hidden = true;
   }
 
-  await showLeaderboard(session?.user.uid);
+  const uid = session?.user.uid;
+  mountBoard($('[data-board="points"]'), 'points', uid);
+  mountBoard($('[data-board="streak"]'), 'streak', uid);
+  if (session) await showDaily(session);
 })();
 
-async function showLeaderboard(uid: string | undefined): Promise<void> {
-  const list = $('[data-leaderboard]');
-  const me = $('[data-leaderboard-me]');
-  if (!firebaseConfigured()) {
-    list.innerHTML = '<li class="help-text">Leaderboards are not available here.</li>';
-    return;
+/** Daily challenge card: today's result and a 7-day accuracy trend (SPEC §5.4). */
+async function showDaily(session: Session): Promise<void> {
+  const history = await challengeHistory(session.user.uid).catch(() => []);
+  const today = history.find((h) => h.date === utcDay());
+  if (today?.accuracy != null) {
+    $('[data-daily-status]').textContent = `Done today: ${today.accuracy}%`;
+    $('[data-daily-detail]').textContent = 'Come back tomorrow for a new set. You can still practise today’s.';
+    $('[data-daily-link]').textContent = 'See results';
   }
-  try {
-    const board = await leaderboard(uid);
-    list.innerHTML = board.top.length
-      ? board.top
-          .map(
-            (r, i) =>
-              `<li class="leaderboard__row${r.uid === uid ? ' leaderboard__row--me' : ''}"><span class="leaderboard__rank">${i + 1}</span><span class="leaderboard__name">${escapeHtml(r.username)}${r.uid === uid ? ' (you)' : ''}</span><span class="leaderboard__points">${r.points} pts</span></li>`,
-          )
-          .join('')
-      : '<li class="help-text">No points yet today — be the first.</li>';
-    me.innerHTML = board.me
-      ? `You: #${board.me.rank} with ${board.me.points} pts today.`
-      : uid
-        ? 'Earn points today to appear here.'
-        : '<a href="/login/?next=/learn/">Log in</a> to appear on the leaderboard.';
-  } catch {
-    list.innerHTML = '<li class="help-text">The leaderboard couldn’t be loaded.</li>';
-  }
+  if (history.length === 0) return;
+  $('[data-trend-bars]').innerHTML = history
+    .map((h) => {
+      const label = new Date(`${h.date}T00:00:00Z`).toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
+      const value = h.accuracy == null ? 'not taken' : `${h.accuracy}%`;
+      return `<li class="trend__day" data-date="${h.date}"><span class="trend__bar" style="--v:${h.accuracy ?? 0}" aria-hidden="true"></span><span class="trend__label">${label}</span><span class="visually-hidden">${h.date}: ${value}</span></li>`;
+    })
+    .join('');
+  $('[data-trend]').hidden = false;
 }

@@ -260,27 +260,116 @@ export function errorMessage(err: unknown): string {
   return 'Something went wrong. Try again.';
 }
 
-/* ---------- leaderboard (top 10 + own rank; fuller boards come with gamification) ---------- */
-
-export interface LeaderRow {
-  uid: string;
-  username: string;
-  points: number;
-}
+/* ---------- leaderboards (SPEC §5.2, §5.4) ---------- */
 
 export const utcDay = (now = new Date()): string => now.toISOString().slice(0, 10);
 
-/** Today's top points (UTC day, shared by everyone), plus the viewer's own row and rank when signed in. */
-export async function leaderboard(uid?: string): Promise<{ top: LeaderRow[]; me?: LeaderRow & { rank: number } }> {
+export type BoardKind = 'points' | 'streak' | 'challenge';
+
+export interface BoardRow {
+  uid: string;
+  username: string;
+  /** Points, streak days, or challenge accuracy %. */
+  value: number;
+  /** Challenge only: seconds taken. */
+  seconds?: number;
+}
+
+export interface Board {
+  top: BoardRow[];
+  me?: BoardRow & { rank: number };
+}
+
+/**
+ * Live top-10 board for today plus the viewer's own row and rank. Calls `cb` on
+ * every change (Firestore listeners), so a finished lesson shows up within seconds.
+ * Returns an unsubscribe function.
+ */
+export async function watchBoard(kind: BoardKind, uid: string | undefined, cb: (board: Board) => void, date = utcDay()): Promise<() => void> {
   const { firebase } = await sdk();
-  const { collection, doc, getCountFromServer, getDoc, getDocs, limit, orderBy, query, where } = await import('firebase/firestore');
-  const col = collection(firebase().db, 'dailyScores', utcDay(), 'users');
-  const snap = await getDocs(query(col, orderBy('points', 'desc'), limit(10)));
-  const top = snap.docs.map((d) => ({ uid: d.id, username: String(d.data().username ?? 'learner'), points: Number(d.data().points ?? 0) }));
-  if (!uid) return { top };
-  const mine = (await getDoc(doc(col, uid))).data();
-  if (!mine) return { top };
-  const points = Number(mine.points ?? 0);
-  const ahead = (await getCountFromServer(query(col, where('points', '>', points)))).data().count;
-  return { top, me: { uid, username: String(mine.username ?? ''), points, rank: ahead + 1 } };
+  const { and, collection, doc, getCountFromServer, limit, onSnapshot, orderBy, query, where } = await import('firebase/firestore');
+  const db = firebase().db;
+  const col = kind === 'challenge' ? collection(db, 'dailyChallenges', date, 'results') : collection(db, 'dailyScores', date, 'users');
+  const field = kind === 'challenge' ? 'accuracy' : kind;
+  const order = kind === 'challenge' ? [orderBy('accuracy', 'desc'), orderBy('seconds', 'asc')] : [orderBy(field, 'desc')];
+  const toRow = (id: string, d: Record<string, unknown>): BoardRow => ({
+    uid: id,
+    username: String(d.username ?? 'learner'),
+    value: Number(d[field] ?? 0),
+    seconds: kind === 'challenge' ? Number(d.seconds ?? 0) : undefined,
+  });
+
+  let top: BoardRow[] = [];
+  let me: Board['me'];
+  const emit = () => cb({ top, me });
+
+  async function rankOf(row: BoardRow): Promise<number> {
+    const ahead = await getCountFromServer(query(col, where(field, '>', row.value)));
+    let tied = 0;
+    if (kind === 'challenge') {
+      tied = (await getCountFromServer(query(col, and(where('accuracy', '==', row.value), where('seconds', '<', row.seconds ?? 0))))).data().count;
+    }
+    return ahead.data().count + tied + 1;
+  }
+
+  const unsubs = [
+    onSnapshot(query(col, ...order, limit(10)), (snap) => {
+      top = snap.docs.map((d) => toRow(d.id, d.data()));
+      emit();
+    }),
+  ];
+  if (uid) {
+    unsubs.push(
+      onSnapshot(doc(col, uid), (snap) => {
+        const data = snap.data();
+        if (!data || (kind === 'streak' && !data.streak)) {
+          me = undefined;
+          return emit();
+        }
+        const row = toRow(uid, data);
+        void rankOf(row).then((rank) => {
+          me = { ...row, rank };
+          emit();
+        });
+      }),
+    );
+  }
+  return () => unsubs.forEach((u) => u());
+}
+
+/* ---------- daily challenge ---------- */
+
+export interface ChallengeQuestion {
+  id: string;
+  source: { lessonId: string; questionId: string };
+  [key: string]: unknown;
+}
+
+export interface DailyChallenge {
+  date: string;
+  questions: ChallengeQuestion[];
+}
+
+export interface ChallengeResult {
+  accuracy: number;
+  seconds: number;
+  correct?: number;
+  rank?: number;
+}
+
+export const getDailyChallenge = (): Promise<DailyChallenge> => call<DailyChallenge>('getDailyChallenge');
+
+/** The signed-in user's scored result for a date, if any. */
+export async function challengeResult(uid: string, date = utcDay()): Promise<ChallengeResult | undefined> {
+  const { firebase } = await sdk();
+  const { doc, getDoc } = await import('firebase/firestore');
+  const data = (await getDoc(doc(firebase().db, 'dailyChallenges', date, 'results', uid))).data();
+  return data ? { accuracy: Number(data.accuracy), seconds: Number(data.seconds), correct: Number(data.correct) } : undefined;
+}
+
+/** Accuracy for each of the last `days` UTC days, oldest first (null = not taken). */
+export async function challengeHistory(uid: string, days = 7, now = new Date()): Promise<{ date: string; accuracy: number | null }[]> {
+  const dates = Array.from({ length: days }, (_, i) => utcDay(new Date(now.getTime() - (days - 1 - i) * 86_400_000)));
+  const results = await Promise.all(dates.map((d) => challengeResult(uid, d).catch(() => undefined)));
+  return dates.map((date, i) => ({ date, accuracy: results[i]?.accuracy ?? null }));
 }

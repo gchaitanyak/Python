@@ -1,4 +1,21 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "results",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "accuracy", "order": "DESCENDING" },
+        { "fieldPath": "seconds", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "results",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "accuracy", "order": "ASCENDING" },
+        { "fieldPath": "seconds", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
