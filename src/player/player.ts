@@ -825,7 +825,25 @@ export class Player {
         </div>
         <p class="help-text" data-share-status role="status"></p>
       </div>
+      ${
+        this.account
+          ? `<form class="lesson-feedback" data-feedback-form aria-labelledby="feedback-title">
+        <h3 id="feedback-title" class="share__title">Was this lesson clear?</h3>
+        <div class="lesson-feedback__rate" role="group" aria-label="Rate this lesson">
+          <button type="button" class="btn btn--ghost" data-rate="up" aria-pressed="false">👍 Yes</button>
+          <button type="button" class="btn btn--ghost" data-rate="down" aria-pressed="false">👎 Not really</button>
+        </div>
+        <div class="field" data-feedback-more hidden>
+          <label for="feedback-text">Anything to tell us? (optional)</label>
+          <textarea id="feedback-text" maxlength="2000" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn--secondary" data-feedback-send hidden>Send feedback</button>
+        <p class="help-text" data-feedback-status role="status"></p>
+      </form>`
+          : ''
+      }
       ${signUp}`;
+    if (this.account) this.bindFeedback(this.account);
     $(this.el.summary, '[data-summary-action="again"]').addEventListener('click', () => this.show(this.result));
     const status = $(this.el.summary, '[data-share-status]');
     $(this.el.summary, '[data-summary-action="share"]').addEventListener('click', () => {
@@ -835,6 +853,37 @@ export class Player {
     this.el.announce.textContent = `Lesson complete. Accuracy ${acc} percent, ${points} points.`;
     $(this.el.summary, '.summary__title').focus();
     if (this.account) void this.finishOnServer(this.account, acc, note);
+  }
+
+  /** The "Was this lesson clear?" form: pick 👍/👎, optionally add a comment, send once. */
+  private bindFeedback(account: AccountSync): void {
+    const form = $<HTMLFormElement>(this.el.summary, '[data-feedback-form]');
+    const status = $(form, '[data-feedback-status]');
+    let rating: 'up' | 'down' | undefined;
+    for (const b of form.querySelectorAll<HTMLButtonElement>('[data-rate]')) {
+      b.addEventListener('click', () => {
+        rating = b.dataset.rate as 'up' | 'down';
+        for (const other of form.querySelectorAll('[data-rate]')) other.setAttribute('aria-pressed', String(other === b));
+        $(form, '[data-feedback-more]').hidden = false;
+        $(form, '[data-feedback-send]').hidden = false;
+      });
+    }
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!rating) return;
+      const send = $<HTMLButtonElement>(form, '[data-feedback-send]');
+      send.disabled = true;
+      account.sendFeedback(this.lesson.id, rating, $<HTMLTextAreaElement>(form, 'textarea').value.trim()).then(
+        () => {
+          for (const el of form.querySelectorAll<HTMLElement>('.lesson-feedback__rate, [data-feedback-more], [data-feedback-send]')) el.hidden = true;
+          status.textContent = 'Thanks — your feedback helps us improve the lessons.';
+        },
+        () => {
+          send.disabled = false;
+          status.textContent = 'That didn’t send. Try again in a moment.';
+        },
+      );
+    });
   }
 
   /** Share intent opened: claim the one-time bonus (honour system, checked server-side once per user). */

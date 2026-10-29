@@ -150,6 +150,16 @@ export async function rateHint(hintId: string, helpful: boolean): Promise<void> 
   await updateDoc(doc(firebase().db, 'hintLogs', hintId), { helpful });
 }
 
+/** "Was this lesson clear?" — create-only, readable by nobody but the site owner (rules). */
+export async function sendFeedback(lessonId: string, rating: 'up' | 'down', text: string): Promise<void> {
+  const { firebase } = await sdk();
+  const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
+  const { auth, db } = firebase();
+  const uid = auth.currentUser?.uid;
+  if (!uid) throw new Error('Sign in to send feedback.');
+  await addDoc(collection(db, 'feedback'), { uid, lessonId, rating, ...(text ? { text: text.slice(0, 2000) } : {}), createdAt: serverTimestamp() });
+}
+
 /** Typed callable wrapper. */
 export async function call<T>(name: string, data: unknown = {}): Promise<T> {
   const { firebase } = await sdk();

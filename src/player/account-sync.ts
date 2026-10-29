@@ -35,4 +35,6 @@ export interface AccountSync {
   /** AI tutor hint (SPEC §5.6) and its 👍/👎. */
   getHint(payload: { lessonId: string; questionId: string; code: string; failMessage: string }): Promise<HintResult>;
   rateHint(hintId: string, helpful: boolean): Promise<void>;
+  /** "Was this lesson clear?" (SPEC §5.10). */
+  sendFeedback(lessonId: string, rating: 'up' | 'down', text: string): Promise<void>;
 }
