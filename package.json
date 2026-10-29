@@ -19,7 +19,8 @@
     "test:rules": "firebase emulators:exec --only firestore --project demo-python-exercises \"vitest run --config vitest.rules.config.ts\"",
     "validate:content": "tsx scripts/validate-content.ts",
     "deploy": "npm run build && firebase deploy --only hosting,functions,firestore:rules,firestore:indexes && tsx scripts/build-content.ts --upload-premium",
-    "test:functions": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises \"vitest run --config vitest.functions.config.ts\""
+    "test:functions": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises \"vitest run --config vitest.functions.config.ts\"",
+    "fetch:pyodide": "tsx scripts/pyodide-packages.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

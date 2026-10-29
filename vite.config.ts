@@ -25,6 +25,7 @@ import {
   pyodideDir,
   writtenProjects,
 } from './scripts/content-data';
+import { availableWheels } from './scripts/pyodide-packages';
 import { lessonUrl, lessonsInOrder } from './src/lib/curriculum';
 import { routes } from './src/lib/routes';
 import type { Curriculum, CurriculumModule } from './src/player/types';
@@ -42,6 +43,7 @@ const MIME: Record<string, string> = {
   '.wasm': 'application/wasm',
   '.zip': 'application/zip',
   '.json': 'application/json',
+  '.whl': 'application/zip',
 };
 
 /** Template rendered once per module at /learn/<moduleId>/. */
@@ -131,7 +133,8 @@ function pagesPlugin(): Plugin {
           return res.end('Not found');
         }
         const py = /^\/pyodide\/([\w.-]+)$/.exec(pathname);
-        if (py?.[1] && PYODIDE_FILES.includes(py[1])) {
+        // Core files, plus any package wheels fetched with `npm run fetch:pyodide`.
+        if (py?.[1] && (PYODIDE_FILES.includes(py[1]) || availableWheels().includes(py[1]))) {
           res.setHeader('Content-Type', MIME[py[1].slice(py[1].lastIndexOf('.'))] ?? 'application/octet-stream');
           return void createReadStream(resolve(pyodideDir, py[1])).pipe(res);
         }
@@ -193,7 +196,7 @@ function pagesPlugin(): Plugin {
     },
     closeBundle() {
       mkdirSync(resolve(outDir, 'pyodide'), { recursive: true });
-      for (const f of PYODIDE_FILES) copyFileSync(resolve(pyodideDir, f), resolve(outDir, 'pyodide', f));
+      for (const f of [...PYODIDE_FILES, ...availableWheels()]) copyFileSync(resolve(pyodideDir, f), resolve(outDir, 'pyodide', f));
       // One static page per module from the built template.
       const template = resolve(outDir, 'module/index.html');
       if (existsSync(template)) {

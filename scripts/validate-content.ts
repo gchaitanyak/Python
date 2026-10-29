@@ -125,6 +125,22 @@ function styleWarnings(lesson: Lesson, type: string): string[] {
   return warns;
 }
 
+/** Loads the packages (e.g. numpy) the questions import, as the browser does before running them. */
+async function preload(questions: Question[]): Promise<string | null> {
+  const source = questions
+    .map((q) => {
+      const f = q as Partial<Record<'setupCode' | 'exampleCode' | 'code' | 'starterCode' | 'solution' | 'template', string>> & { tests?: { code: string }[] };
+      return [f.setupCode, f.exampleCode, f.code, f.starterCode, f.solution, f.template, ...(f.tests ?? []).map((t) => t.code)].filter(Boolean).join('\n');
+    })
+    .join('\n');
+  try {
+    await py.loadPackagesFromImports(source);
+    return null;
+  } catch (e) {
+    return `can't load the packages it imports (${(e as Error).message.split('\n')[0]}). Run npm run fetch:pyodide first.`;
+  }
+}
+
 function checkLesson(path: string): { errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   let lesson: Lesson;
@@ -160,7 +176,8 @@ const projectIds = new Set(projectCatalogue().map((p) => p.id));
 let failed = 0;
 let missing = 0;
 for (const file of files) {
-  const { errors, warnings } = checkLesson(resolve(lessonsDir, file));
+  const problem = await preload((JSON.parse(readFileSync(resolve(lessonsDir, file), 'utf8')) as Lesson).questions ?? []).catch(() => null);
+  const { errors, warnings } = problem ? { errors: [problem], warnings: [] } : checkLesson(resolve(lessonsDir, file));
   console.log(`${errors.length ? 'FAIL' : 'ok  '} ${basename(file, '.json')}`);
   for (const e of errors) console.log(`     - ${e}`);
   for (const w of warnings) console.log(`     ~ warning: ${w}`);
@@ -192,6 +209,8 @@ for (const info of projects) {
     if (!(project.estimatedMinutes >= 10 && project.estimatedMinutes <= 120)) errors.push('estimatedMinutes should be 10–120');
     if (project.datasets.length === 0) errors.push('a project needs at least one dataset file');
     const lesson = projectToLesson(project);
+    const problem = await preload(lesson.questions);
+    if (problem) throw new Error(problem);
     // Steps use the lesson question format; the id pattern and length limit are lesson-only.
     if (!validateSchema({ ...lesson, id: `py-${lesson.id}`, estimatedMinutes: 30 })) for (const e of validateSchema.errors ?? []) errors.push(`schema: ${e.instancePath || '/'} ${e.message}`);
     else lesson.questions.forEach((q, i) => errors.push(...checkQuestion(q, i)));

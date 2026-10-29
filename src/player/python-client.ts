@@ -2,16 +2,19 @@ import type { FromWorker, GradeResult, RunResult, ToWorker } from '../worker/pro
 import type { Test } from './types';
 
 export const TIMEOUT_MS = 5000;
+/** Time allowed to download and load the packages an exercise imports (e.g. pandas), before its code starts. */
+export const PACKAGE_TIMEOUT_MS = 120_000;
 export const TIMEOUT_MESSAGE = 'Your code took too long — check for an infinite loop.';
 
 export type PythonStatus = 'loading' | 'ready' | 'busy' | 'error';
 
-type Pending = { resolve: (msg: FromWorker) => void; timer: ReturnType<typeof setTimeout> };
+type Pending = { resolve: (msg: FromWorker) => void; timer: ReturnType<typeof setTimeout>; onTimeout: () => void };
 
 /**
- * Owns the Python worker. One request at a time; each gets TIMEOUT_MS after it
- * is sent. On timeout the worker is terminated and a fresh one is started, so
- * the next request works.
+ * Owns the Python worker. One request at a time; each gets TIMEOUT_MS once its
+ * code starts running (any packages it imports load first, with a longer limit).
+ * On timeout the worker is terminated and a fresh one is started, so the next
+ * request works.
  */
 export class PythonClient {
   private worker!: Worker;
@@ -39,6 +42,11 @@ export class PythonClient {
         } else if (msg.type === 'init-error') {
           this.onStatus('error', msg.message);
           reject(new Error(msg.message));
+        } else if (msg.type === 'started') {
+          const p = this.pending.get(msg.id);
+          if (!p) return;
+          clearTimeout(p.timer);
+          p.timer = setTimeout(p.onTimeout, TIMEOUT_MS);
         } else {
           const p = this.pending.get(msg.id);
           if (!p) return;
@@ -66,12 +74,12 @@ export class PythonClient {
       this.onStatus('busy');
       const id = this.nextId++;
       const result = await new Promise<FromWorker | 'timeout'>((resolve) => {
-        const timer = setTimeout(() => {
+        const onTimeout = () => {
           this.pending.delete(id);
           this.restart();
           resolve('timeout');
-        }, TIMEOUT_MS);
-        this.pending.set(id, { resolve, timer });
+        };
+        this.pending.set(id, { resolve, timer: setTimeout(onTimeout, PACKAGE_TIMEOUT_MS), onTimeout });
         this.worker.postMessage(make(id));
       });
       if (result !== 'timeout') this.onStatus('ready');

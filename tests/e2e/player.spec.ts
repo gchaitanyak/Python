@@ -136,3 +136,23 @@ test('player has no serious accessibility violations', async ({ page }) => {
   const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
   expect(serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(', ')}`)).toEqual([]);
 });
+
+test('learner code cannot reach the network, not even this site’s own Python files', async ({ page }) => {
+  const lesson = readLesson('py-variables');
+  await open(page, lesson.id);
+  await goToQuestion(page, lesson, 'q02');
+  await setCode(
+    page,
+    [
+      'from js import fetch, XMLHttpRequest',
+      'for name, call in [("fetch", lambda: fetch("/pyodide/pyodide-lock.json")), ("xhr", lambda: XMLHttpRequest.new())]:',
+      '    try:',
+      '        call()',
+      '        print(name, "reached")',
+      '    except Exception as e:',
+      '        print(name, "blocked")',
+    ].join('\n'),
+  );
+  await page.getByRole('button', { name: 'Run' }).click();
+  await expect(page.locator('[data-console]')).toHaveText('fetch blocked\nxhr blocked');
+});

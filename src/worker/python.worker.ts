@@ -29,13 +29,47 @@ function post(message: FromWorker): void {
   self.postMessage(message);
 }
 
-/** User code must not reach the network: remove the worker's network APIs once Pyodide is loaded. */
+/** True only while the worker itself loads packages (never while user code runs). */
+let loadingPackages = false;
+
+/**
+ * User code must not reach the network: remove the worker's network APIs once
+ * Pyodide is loaded. The one exception is `fetch` of this site's own /pyodide/
+ * files while the worker is loading a package an exercise imports.
+ */
 function blockNetwork(): void {
+  const realFetch = self.fetch.bind(self);
+  const packageBase = new URL(PYODIDE_URL, self.location.origin).href;
   const blocked = () => {
     throw new Error('Network access is disabled in exercises.');
   };
-  for (const name of ['fetch', 'XMLHttpRequest', 'WebSocket', 'EventSource', 'importScripts'] as const) {
+  const guardedFetch = (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = new URL(input instanceof Request ? input.url : String(input), self.location.href).href;
+    if (loadingPackages && url.startsWith(packageBase)) return realFetch(input, init);
+    return blocked();
+  };
+  for (const name of ['XMLHttpRequest', 'WebSocket', 'EventSource', 'importScripts'] as const) {
     Object.defineProperty(self, name, { value: blocked, configurable: false, writable: false });
+  }
+  Object.defineProperty(self, 'fetch', { value: guardedFetch, configurable: false, writable: false });
+}
+
+const loaded = new Set<string>();
+
+/** Loads packages (e.g. numpy) the code imports, from this site's /pyodide/ folder. Returns an error message, or null. */
+async function loadImports(source: string): Promise<string | null> {
+  if (!pyodide || !/^\s*(import|from)\s/m.test(source)) return null;
+  const key = source.match(/^\s*(?:import|from)\s+[\w.]+/gm)?.join('|') ?? '';
+  if (loaded.has(key)) return null;
+  loadingPackages = true;
+  try {
+    await pyodide.loadPackagesFromImports(source);
+    loaded.add(key);
+    return null;
+  } catch (err) {
+    return `A library this exercise needs couldn't be loaded (${err instanceof Error ? err.message.split('\n')[0] : String(err)}). Reload the page to try again.`;
+  } finally {
+    loadingPackages = false;
   }
 }
 
@@ -53,15 +87,30 @@ async function init(): Promise<void> {
   }
 }
 
+// Messages are handled one at a time, in order, so package loading never overlaps user code.
+let queue: Promise<void> = Promise.resolve();
+
 self.onmessage = (event: MessageEvent<ToWorker>) => {
   const msg = event.data;
   if (msg.type === 'init') {
     void init();
     return;
   }
+  queue = queue.then(() => handle(msg));
+};
+
+async function handle(msg: Exclude<ToWorker, { type: 'init' }>): Promise<void> {
   if (!pyodide) return;
   const { type, id, ...payload } = msg;
+  const tests = type === 'grade' ? msg.tests.map((t) => t.code).join('\n') : '';
+  const problem = await loadImports(`${payload.setupCode ?? ''}\n${payload.code}\n${tests}`);
+  if (problem) {
+    const error = { type: 'ImportError', message: problem, line: null };
+    post(type === 'run' ? { type: 'result', id, stdout: '', stderr: '', error } : { type: 'graded', id, passed: false, results: [{ name: 'runs without errors', passed: false, message: problem }], stdout: '', stderr: '', error });
+    return;
+  }
+  post({ type: 'started', id });
   const fn = pyodide.globals.get(type === 'run' ? '_api_run' : '_api_grade') as (p: string) => string;
   const result = JSON.parse(fn(JSON.stringify(payload)));
   post(type === 'run' ? { type: 'result', id, ...result } : { type: 'graded', id, ...result });
-};
+}

@@ -31,5 +31,7 @@ export interface GradeResult extends RunResult {
 export type FromWorker =
   | { type: 'ready' }
   | { type: 'init-error'; message: string }
+  /** Packages are loaded and user code is about to run: the time limit starts now. */
+  | { type: 'started'; id: number }
   | ({ type: 'result'; id: number } & RunResult)
   | ({ type: 'graded'; id: number } & GradeResult);
