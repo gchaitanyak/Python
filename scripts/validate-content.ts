@@ -10,7 +10,8 @@
  * Style rules from docs/CONTENT_GUIDE.md are reported as warnings.
  *
  * Written projects (content/projects/) get the same checks, with their dataset
- * files in place, as the browser runs them.
+ * files in place, as the browser runs them. Guides (content/guides/) must be
+ * 600–1,200 words, link to a written lesson, and every Python example must run.
  *
  * Usage: tsx scripts/validate-content.ts [lessonId | projectId ...]
  */
@@ -19,8 +20,9 @@ import { basename, resolve } from 'node:path';
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { loadPyodide } from 'pyodide';
 import type { Lesson, Question } from '../src/player/types';
+import { guideExamples, guideWords } from '../src/lib/guides';
 import { projectToLesson } from '../src/lib/projects';
-import { bundleProject, contentDir, projectCatalogue } from './content-data';
+import { bundleProject, contentDir, loadGuides, projectCatalogue } from './content-data';
 
 interface CurriculumFile {
   modules: { id: string; lessons: { id: string; type: string; status: string }[] }[];
@@ -222,4 +224,30 @@ for (const info of projects) {
   if (errors.length) projectsFailed++;
 }
 if (projects.length) console.log(`${projects.length - projectsFailed}/${projects.length} projects valid`);
-process.exit(failed || missing || projectsFailed ? 1 : 0);
+
+// Guides (SPEC §5.9).
+let guidesFailed = 0;
+let guides: ReturnType<typeof loadGuides> = [];
+try {
+  guides = loadGuides().filter((g) => only.length === 0 || only.includes(g.slug));
+} catch (e) {
+  console.log(`FAIL guides\n     - ${(e as Error).message}`);
+  guidesFailed++;
+}
+for (const g of guides) {
+  const errors: string[] = [];
+  const words = guideWords(g);
+  if (words < 600 || words > 1200) errors.push(`should be 600–1,200 words (has ${words})`);
+  if (entries.get(g.lesson)?.status !== 'written') errors.push(`lesson ${g.lesson} is not a written lesson`);
+  const examples = guideExamples(g);
+  if (examples.length === 0) errors.push('needs at least one runnable ```python example');
+  examples.forEach((code, i) => {
+    const r = call<{ error: Graded['error'] }>('run', { code });
+    if (r.error) errors.push(`example ${i + 1} raises ${r.error.type}: ${r.error.message}`);
+  });
+  console.log(`${errors.length ? 'FAIL' : 'ok  '} guide ${g.slug} (${words} words, ${examples.length} examples)`);
+  for (const e of errors) console.log(`     - ${e}`);
+  if (errors.length) guidesFailed++;
+}
+if (guides.length) console.log(`${guides.length - guidesFailed}/${guides.length} guides valid`);
+process.exit(failed || missing || projectsFailed || guidesFailed ? 1 : 0);

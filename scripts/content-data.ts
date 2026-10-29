@@ -1,6 +1,7 @@
 /** Shared by the Vite dev server and scripts/build-content.ts: what content is public. */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { parseGuide } from '../src/lib/guides';
 
 /** content/ by default; CONTENT_DIR points the validator at another tree (used by its own tests). */
 export const contentDir = process.env.CONTENT_DIR ? resolve(process.env.CONTENT_DIR) : resolve(import.meta.dirname, '../content');
@@ -68,3 +69,16 @@ export function bundleProject(id: string): import('../src/lib/projects').Project
 }
 
 export const datasetPath = (id: string, file: string): string => resolve(projectsDir, id, file);
+
+/* ---------- guides (SPEC §5.9) ---------- */
+
+export const guidesDir = resolve(contentDir, 'guides');
+
+/** Every guide in content/guides/, sorted by title. */
+export function loadGuides(): import('../src/lib/guides').Guide[] {
+  if (!existsSync(guidesDir)) return [];
+  return readdirSync(guidesDir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => parseGuide(f.slice(0, -3), readFileSync(resolve(guidesDir, f), 'utf8')))
+    .sort((a, b) => a.title.localeCompare(b.title));
+}

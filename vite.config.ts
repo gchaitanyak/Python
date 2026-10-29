@@ -11,6 +11,7 @@ import { renderFooter } from './src/components/footer';
 import { renderHeader, SITE_NAME } from './src/components/header';
 import { boardCard } from './src/components/leaderboard-html';
 import { renderPlans, renderPremiumFeatures } from './src/components/pricing-html';
+import { renderGuideCards, renderGuidePage } from './src/components/guides-html';
 import { renderProjectCards, renderProjectPage } from './src/components/projects-html';
 import { fillPlayerShell } from './src/components/player-shell';
 import {
@@ -18,6 +19,7 @@ import {
   bundleProject,
   datasetPath,
   freeLessonIds,
+  loadGuides,
   lessonPath,
   loadCurriculumFile,
   publicCurriculum,
@@ -50,6 +52,8 @@ const MIME: Record<string, string> = {
 const MODULE_TEMPLATE = resolve(pagesDir, 'module/index.html');
 /** Template rendered once per written project at /projects/<projectId>/. */
 const PROJECT_TEMPLATE = resolve(pagesDir, 'project/index.html');
+/** Template rendered once per guide at /guides/<slug>/. */
+const GUIDE_TEMPLATE = resolve(pagesDir, 'guide/index.html');
 
 /** Page file relative to src/pages → public URL path, e.g. "home/index.html" → "/". */
 function routeForHtml(relPath: string): string | undefined {
@@ -72,6 +76,7 @@ function fillCurriculum(html: string, c: Curriculum): string {
     .replace('<!-- @plans -->', renderPlans(loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, 'VITE_PRICE_')))
     .replace('<!-- @premium-features -->', renderPremiumFeatures())
     .replace('<!-- @projects -->', renderProjectCards(projectCatalogue()))
+    .replace('<!-- @guides -->', renderGuideCards(loadGuides()))
     .replace('<!-- @next-title -->', first?.title ?? '')
     .replace('<!-- @next-href -->', first ? lessonUrl(first.id) : '/learn/');
 }
@@ -79,6 +84,13 @@ function fillCurriculum(html: string, c: Curriculum): string {
 function fillModule(html: string, m: CurriculumModule, c: Curriculum): string {
   const page = renderModulePage(m, c);
   return html.replace('<!-- @module-head -->', page.head).replace('<!-- @module-id -->', m.id).replace('<!-- @module -->', page.body);
+}
+
+function fillGuide(html: string, slug: string): string {
+  const guide = loadGuides().find((g) => g.slug === slug)!;
+  const lesson = lessonsInOrder(loadCurriculumFile()).find((p) => p.lesson.id === guide.lesson)?.lesson;
+  const page = renderGuidePage(guide, lesson?.title ?? guide.title);
+  return html.replace('<!-- @guide-head -->', page.head).replace('<!-- @guide -->', page.body);
 }
 
 function fillProject(html: string, id: string): string {
@@ -160,6 +172,19 @@ function pagesPlugin(): Plugin {
           })
           .catch(next);
       });
+      // Guide pages: /guides/<slug>/ rendered from the guide template.
+      server.middlewares.use((req, res, next) => {
+        const pathname = (req.url ?? '/').split('?')[0] ?? '/';
+        const match = /^\/guides\/([a-z0-9-]+)\/$/.exec(pathname);
+        if (!match || !loadGuides().some((g) => g.slug === match[1])) return next();
+        server
+          .transformIndexHtml(pathname, fillGuide(readFileSync(GUIDE_TEMPLATE, 'utf8'), match[1]!))
+          .then((html) => {
+            res.setHeader('Content-Type', 'text/html');
+            res.end(html);
+          })
+          .catch(next);
+      });
       // Project pages: /projects/<id>/ rendered from the project template.
       server.middlewares.use((req, res, next) => {
         const pathname = (req.url ?? '/').split('?')[0] ?? '/';
@@ -185,7 +210,7 @@ function pagesPlugin(): Plugin {
       order: 'pre',
       handler(html, ctx) {
         const rel = ctx.filename.slice(pagesDir.length + 1).replaceAll('\\', '/');
-        const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : rel.startsWith('project/') ? '/projects/' : `/${rel.replace(/index\.html$/, '')}`);
+        const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : rel.startsWith('project/') ? '/projects/' : rel.startsWith('guide/') ? '/guides/' : `/${rel.replace(/index\.html$/, '')}`);
         return fillPlayerShell(fillCurriculum(html, loadCurriculumFile()))
           .replace('</head>', `${FAVICON}\n  </head>`)
           .replace('<!-- @header -->', renderHeader(path))
@@ -207,6 +232,16 @@ function pagesPlugin(): Plugin {
           writeFileSync(resolve(outDir, 'learn', m.id, 'index.html'), fillModule(html, m, c));
         }
         rmSync(resolve(outDir, 'module'), { recursive: true, force: true });
+      }
+      // One static page per guide from the built template.
+      const guideTemplate = resolve(outDir, 'guide/index.html');
+      if (existsSync(guideTemplate)) {
+        const html = readFileSync(guideTemplate, 'utf8');
+        for (const g of loadGuides()) {
+          mkdirSync(resolve(outDir, 'guides', g.slug), { recursive: true });
+          writeFileSync(resolve(outDir, 'guides', g.slug, 'index.html'), fillGuide(html, g.slug));
+        }
+        rmSync(resolve(outDir, 'guide'), { recursive: true, force: true });
       }
       // One static page per written project from the built template.
       const projectTemplate = resolve(outDir, 'project/index.html');
@@ -247,6 +282,7 @@ export default defineConfig({
         ...Object.fromEntries(routes.map((r) => [r.dir, resolve(pagesDir, r.dir, 'index.html')])),
         module: MODULE_TEMPLATE,
         project: PROJECT_TEMPLATE,
+        guide: GUIDE_TEMPLATE,
       },
     },
   },

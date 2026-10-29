@@ -20,6 +20,7 @@ export const routes: Route[] = [
   { path: '/register/', dir: 'register', title: 'Create account' },
   { path: '/account/', dir: 'account', title: 'Account', sitemap: false },
   { path: '/projects/', dir: 'projects', title: 'Projects' },
+  { path: '/guides/', dir: 'guides', title: 'Guides' },
   { path: '/admin/', dir: 'admin', title: 'Group admin', sitemap: false },
   { path: '/join/', dir: 'join', title: 'Join a group', sitemap: false },
   { path: '/certificate/', dir: 'certificate', title: 'Certificate' },
