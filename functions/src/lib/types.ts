@@ -29,6 +29,7 @@ export interface CurriculumModule {
   id: string;
   order: number;
   title: string;
+  requiredForCertificate?: boolean;
   lessons: CurriculumLesson[];
 }
 

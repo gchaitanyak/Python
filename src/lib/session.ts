@@ -22,6 +22,7 @@ export interface Profile {
   subscriptionStatus?: string;
   cancelAtPeriodEnd?: boolean;
   paymentIssue?: boolean;
+  certificateId?: string;
 }
 
 export interface Session {
@@ -75,6 +76,7 @@ export async function loadProfile(uid: string): Promise<Profile | undefined> {
     subscriptionStatus: data.subscriptionStatus,
     cancelAtPeriodEnd: !!data.cancelAtPeriodEnd,
     paymentIssue: !!data.paymentIssue,
+    certificateId: typeof data.certificateId === 'string' ? data.certificateId : undefined,
   };
 }
 
@@ -111,6 +113,31 @@ export async function watchProfile(uid: string, cb: (profile: Profile | undefine
   return onSnapshot(doc(firebase().db, 'users', uid), () => {
     void loadProfile(uid).then(cb);
   });
+}
+
+export interface Certificate {
+  id: string;
+  name: string;
+  issuedAt: Date;
+  modules: { id: string; title: string }[];
+}
+
+/** A public certificate by credential id, or undefined if there's none (or it isn't public). */
+export async function loadCertificate(id: string): Promise<Certificate | undefined> {
+  const { firebase } = await sdk();
+  const { doc, getDoc, Timestamp } = await import('firebase/firestore');
+  try {
+    const data = (await getDoc(doc(firebase().db, 'certificates', id))).data();
+    if (!data) return undefined;
+    return {
+      id,
+      name: String(data.name),
+      issuedAt: data.issuedAt instanceof Timestamp ? data.issuedAt.toDate() : new Date(0),
+      modules: Array.isArray(data.modules) ? data.modules : [],
+    };
+  } catch {
+    return undefined; // permission-denied: not public
+  }
 }
 
 /** Typed callable wrapper. */
@@ -235,8 +262,8 @@ export async function signOut(): Promise<void> {
   clearLocalCaches();
 }
 
-export async function deleteAccount(): Promise<void> {
-  await call('deleteAccount');
+export async function deleteAccount(keepCertificate = false): Promise<void> {
+  await call('deleteAccount', { keepCertificate });
   await signOut();
 }
 

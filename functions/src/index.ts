@@ -1,6 +1,7 @@
 import { onRequest } from 'firebase-functions/v2/https';
 import './lib/admin';
 
+export { generateCertificate } from './certificate';
 export { claimShareBonus } from './claimShareBonus';
 export { claimUsername } from './claimUsername';
 export { buildDailyChallenge, getDailyChallenge, submitChallenge } from './dailyChallenge';

@@ -81,6 +81,7 @@ describe('users/{uid}', () => {
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { username: 'admin' }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { entitlementSource: 'lifetime' }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { stripeCustomerId: 'cus_someone_else' }));
+    await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { certificateId: 'ABCDEFGHJK' }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { cancelAtPeriodEnd: false, subscriptionStatus: 'active' }));
     await assertFails(updateDoc(doc(db('pat'), 'users/alice'), { firstName: 'Hacked' }));
     await assertFails(deleteDoc(doc(db('alice'), 'users/alice')));

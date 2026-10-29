@@ -8,7 +8,7 @@ import {
   renderModulePage,
 } from './src/components/curriculum-html';
 import { renderFooter } from './src/components/footer';
-import { renderHeader } from './src/components/header';
+import { renderHeader, SITE_NAME } from './src/components/header';
 import { boardCard } from './src/components/leaderboard-html';
 import { renderPlans, renderPremiumFeatures } from './src/components/pricing-html';
 import { fillPlayerShell } from './src/components/player-shell';
@@ -130,6 +130,7 @@ function pagesPlugin(): Plugin {
       });
       server.middlewares.use((req, _res, next) => {
         const [pathname = '/', query] = (req.url ?? '/').split('?');
+        if (/^\/certificate\/[A-Za-z0-9]{10}\/$/.test(pathname)) req.url = `/credential/index.html${query ? `?${query}` : ''}`;
         const route = routes.find((r) => r.path === pathname);
         if (route) req.url = `/${route.dir}/index.html${query ? `?${query}` : ''}`;
         next();
@@ -144,7 +145,8 @@ function pagesPlugin(): Plugin {
           .replace('</head>', `${FAVICON}\n  </head>`)
           .replace('<!-- @header -->', renderHeader(path))
 
-          .replace('<!-- @footer -->', renderFooter());
+          .replace('<!-- @footer -->', renderFooter())
+          .replaceAll('<!-- @site-name -->', SITE_NAME);
       },
     },
     closeBundle() {

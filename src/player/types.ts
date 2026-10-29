@@ -81,6 +81,7 @@ export interface CurriculumModule {
   title: string;
   summary?: string;
   optional?: boolean;
+  requiredForCertificate?: boolean;
   lessons: CurriculumLesson[];
 }
 

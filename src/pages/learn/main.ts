@@ -1,5 +1,6 @@
 import '../../lib/page';
 import '../../styles/curriculum.css';
+import { certificateProgress } from '../../../functions/src/lib/certificate';
 import { mountBoard } from '../../components/leaderboard';
 import { findLesson, lessonUrl, nextRecommended } from '../../lib/curriculum';
 import { decorateLessons } from '../../lib/progress-view';
@@ -39,6 +40,19 @@ void (async () => {
     $('[data-next-title]').textContent = 'You’ve finished every lesson available to you.';
     $('[data-next-module]').textContent = 'More lessons arrive with premium.';
     link.hidden = true;
+  }
+
+  const cert = certificateProgress(curriculum, new Set(Object.keys(visitor.progress).filter((id) => visitor.progress[id]?.completed)));
+  if (session?.profile?.certificateId) {
+    $('[data-cert-status]').textContent = 'You’ve earned your certificate';
+    $('[data-cert-detail]').textContent = `Credential ID ${session.profile.certificateId}`;
+    $<HTMLAnchorElement>('[data-cert-link]').href = `/certificate/${session.profile.certificateId}/`;
+    $('[data-cert-link]').textContent = 'View certificate';
+  } else if (cert.eligible && session) {
+    $('[data-cert-status]').textContent = 'Your certificate is ready';
+    $('[data-cert-link]').textContent = 'Generate it';
+  } else {
+    $('[data-cert-status]').textContent = `${cert.done} of ${cert.required} lessons done`;
   }
 
   const uid = session?.user.uid;

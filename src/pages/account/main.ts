@@ -56,6 +56,7 @@ function fill(session: Session): void {
   const p = session.profile;
   $('[data-email]').textContent = session.user.email ?? '';
   fillPlan(p);
+  $('[data-keep-cert]').hidden = !p?.certificateId;
   $('[data-points]').textContent = String(p?.totalPoints ?? 0);
   $('[data-verify]').hidden = session.user.emailVerified;
   $<HTMLInputElement>('#acc-first').value = p?.firstName ?? '';
@@ -132,7 +133,7 @@ void (async () => {
     e.preventDefault();
     if ($<HTMLInputElement>('#acc-delete').value.trim() !== 'DELETE') return show('error', 'Type DELETE (in capitals) to confirm.');
     void run(deleteForm, async () => {
-      await deleteAccount();
+      await deleteAccount($<HTMLInputElement>('#acc-keep-cert').checked);
       location.assign('/?deleted=1');
     });
   });
