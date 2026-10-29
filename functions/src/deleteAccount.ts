@@ -2,7 +2,7 @@ import { logger } from 'firebase-functions/v2';
 import { onCall } from 'firebase-functions/v2/https';
 import { FieldPath } from 'firebase-admin/firestore';
 import { removeUserFromGroups } from './groups';
-import { auth, db, requireUid, userRef } from './lib/admin';
+import { auth, callOptions, db, requireUid, userRef } from './lib/admin';
 import { stripe, STRIPE_SECRET_KEY } from './lib/stripe';
 
 /**
@@ -14,7 +14,7 @@ import { stripe, STRIPE_SECRET_KEY } from './lib/stripe';
  * it is then detached from the account, otherwise it is deleted.
  * A callable rather than an auth trigger so the client can wait for it.
  */
-export const deleteAccount = onCall({ secrets: [STRIPE_SECRET_KEY] }, async (request) => {
+export const deleteAccount = onCall({ ...callOptions, secrets: [STRIPE_SECRET_KEY] }, async (request) => {
   const uid = requireUid(request);
   const keepCertificate = (request.data as { keepCertificate?: unknown } | null)?.keepCertificate === true;
   const user = (await userRef(uid).get()).data();

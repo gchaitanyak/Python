@@ -1,6 +1,6 @@
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { awardPoints } from './lib/activity';
-import { db, FieldValue, progressRef, rateLimit, requireUid, userIsPremium, userRef } from './lib/admin';
+import { callOptions, db, FieldValue, progressRef, rateLimit, requireUid, userIsPremium, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 import { findPlaced, loadLesson } from './lib/content';
 import { checkAnswer, isGradable, lessonAccess, localDay, pointsFor, previousLessonId, serverCheckable } from './lib/rules';
@@ -53,7 +53,7 @@ export function parseInput(data: unknown): Input {
  * tries itself, re-checks non-code answers, and awards each question at most
  * once per day. Writes the attempt, the user's total and today's leaderboard row.
  */
-export const submitAnswer = onCall(async (request) => {
+export const submitAnswer = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   const input = parseInput(request.data);
   await rateLimit(uid, 'submitAnswer', 60);

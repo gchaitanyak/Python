@@ -1,6 +1,6 @@
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { recordActivity } from './lib/activity';
-import { db, progressRef, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
+import { callOptions, db, progressRef, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 import { findPlaced, nextLessonId } from './lib/content';
 import { currentStreak, lessonAccess, previousLessonId } from './lib/rules';
@@ -9,7 +9,7 @@ import { currentStreak, lessonAccess, previousLessonId } from './lib/rules';
  * Marks a lesson complete: keeps the best accuracy, updates last-practised,
  * and extends the streak (consecutive local days with a completed lesson or challenge).
  */
-export const completeLesson = onCall(async (request) => {
+export const completeLesson = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   const d = (request.data ?? {}) as Record<string, unknown>;
   if (typeof d.lessonId !== 'string' || typeof d.accuracy !== 'number' || !Number.isFinite(d.accuracy)) {

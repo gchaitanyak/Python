@@ -1,9 +1,9 @@
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
-import { db, requireUid, userRef } from './lib/admin';
+import { callOptions, db, requireUid, userRef } from './lib/admin';
 import { normaliseUsername } from './lib/rules';
 
 /** Claims a unique, case-insensitive username; releases the caller's previous one. */
-export const claimUsername = onCall(async (request) => {
+export const claimUsername = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   const parsed = normaliseUsername((request.data as { username?: unknown } | null)?.username);
   if (!parsed.ok) throw new HttpsError('invalid-argument', parsed.error);

@@ -11,8 +11,10 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } } },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'] }, testIgnore: /production\.spec\.ts/ },
+    { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } }, testIgnore: /production\.spec\.ts/ },
+    // The production build under Firebase Hosting's headers (CSP), served by `vite preview`.
+    { name: 'production', use: { ...devices['Desktop Chrome'], baseURL: 'http://127.0.0.1:4173' }, testMatch: /production\.spec\.ts/ },
   ],
   // Firebase emulators (Auth, Firestore, Functions) with premium content and the fake Stripe, + the Vite dev server.
   webServer: [
@@ -30,6 +32,14 @@ export default defineConfig({
       command: 'npm run dev:web -- --host 127.0.0.1',
       url: 'http://127.0.0.1:5173',
       reuseExistingServer: !process.env.CI,
+    },
+    {
+      // A test GA id so the consent banner and the analytics loader are exercised under the CSP.
+      command: 'npx vite build && npx tsx scripts/build-content.ts --emit-free && npx vite preview --host 127.0.0.1',
+      env: { VITE_GA_MEASUREMENT_ID: 'G-TEST000000', BUILD_OUT_DIR: 'dist-e2e' },
+      url: 'http://127.0.0.1:4173',
+      reuseExistingServer: !process.env.CI,
+      timeout: 240_000,
     },
   ],
 });

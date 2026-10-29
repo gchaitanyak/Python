@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
-import { db, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
+import { callOptions, db, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
 import { certificateName, certificateProgress, credentialIdFrom } from './lib/certificate';
 import { now as clockNow } from './lib/clock';
 import { curriculum } from './lib/content';
@@ -18,7 +18,7 @@ function newCredentialId(): string {
  * (SPEC §5.5). The name is fixed at first issue; calling again returns the same
  * credential and only adds optional modules finished since.
  */
-export const generateCertificate = onCall(async (request) => {
+export const generateCertificate = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   const d = (request.data ?? {}) as Record<string, unknown>;
   await rateLimit(uid, 'generateCertificate', 5);

@@ -78,8 +78,10 @@ async function showDaily(session: Session): Promise<void> {
     .map((h) => {
       const label = new Date(`${h.date}T00:00:00Z`).toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' });
       const value = h.accuracy == null ? 'not taken' : `${h.accuracy}%`;
-      return `<li class="trend__day" data-date="${h.date}"><span class="trend__bar" style="--v:${h.accuracy ?? 0}" aria-hidden="true"></span><span class="trend__label">${label}</span><span class="visually-hidden">${h.date}: ${value}</span></li>`;
+      return `<li class="trend__day" data-date="${h.date}"><span class="trend__bar" data-v="${h.accuracy ?? 0}" aria-hidden="true"></span><span class="trend__label">${label}</span><span class="visually-hidden">${h.date}: ${value}</span></li>`;
     })
     .join('');
+  // Set through the DOM, not a style="" attribute, which the Content-Security-Policy blocks.
+  for (const bar of document.querySelectorAll<HTMLElement>('.trend__bar')) bar.style.setProperty('--v', bar.dataset.v ?? '0');
   $('[data-trend]').hidden = false;
 }

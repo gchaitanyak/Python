@@ -1,5 +1,5 @@
 import { onCall } from 'firebase-functions/v2/https';
-import { db, FieldValue, progressRef, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
+import { callOptions, db, FieldValue, progressRef, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
 import { curriculum } from './lib/content';
 import { sanitiseMerge } from './lib/rules';
 
@@ -8,7 +8,7 @@ import { sanitiseMerge } from './lib/rules';
  * account. Only free lessons; points aren't transferred because they were
  * never checked by the server.
  */
-export const mergeAnonymousProgress = onCall(async (request) => {
+export const mergeAnonymousProgress = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'mergeAnonymousProgress', 5);
   const entries = sanitiseMerge((request.data as { progress?: unknown } | null)?.progress, curriculum, Date.now());

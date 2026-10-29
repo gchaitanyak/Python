@@ -27,7 +27,7 @@ export function renderFooter(year = new Date().getFullYear()): string {
   <div class="container site-footer__inner">
     <nav aria-label="Footer"><ul class="site-footer__links">${links}</ul></nav>
     <ul class="site-footer__social" aria-label="Social">${social}</ul>
-    <p class="site-footer__meta">© ${year} ${SITE_NAME} · <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></p>
+    <p class="site-footer__meta">© ${year} ${SITE_NAME} · <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> <button type="button" class="link-button" data-cookie-settings hidden>Cookie settings</button></p>
   </div>
 </footer>`;
 }

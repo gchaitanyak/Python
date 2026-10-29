@@ -1,7 +1,7 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { recordActivity } from './lib/activity';
-import { db, displayName, FieldValue, rateLimit, requireUid, userRef } from './lib/admin';
+import { callOptions, db, displayName, FieldValue, rateLimit, requireUid, userRef } from './lib/admin';
 import { challengeAccuracy, challengeLessonIds, challengeQuestions, pickChallenge, type ChallengeRef } from './lib/challenge';
 import { now as clockNow } from './lib/clock';
 import { curriculum, loadLesson } from './lib/content';
@@ -39,7 +39,7 @@ export const buildDailyChallenge = onSchedule({ schedule: '0 0 * * *', timeZone:
 });
 
 /** Today's challenge for the /daily/ page. Public: anyone may view and practise it. */
-export const getDailyChallenge = onCall(async () => {
+export const getDailyChallenge = onCall(callOptions, async () => {
   const date = utcDay(await clockNow());
   const { questionRefs: _refs, ...challenge } = await ensureChallenge(date);
   return challenge;
@@ -59,7 +59,7 @@ async function rankOf(date: string, accuracy: number, seconds: number): Promise<
  * are practice and return the scored result. Non-code answers are re-checked.
  * A scored attempt counts towards the streak.
  */
-export const submitChallenge = onCall(async (request) => {
+export const submitChallenge = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   const d = (request.data ?? {}) as { date?: unknown; answers?: unknown; seconds?: unknown };
   if (typeof d.date !== 'string' || !Array.isArray(d.answers)) throw new HttpsError('invalid-argument', 'date and answers are required.');

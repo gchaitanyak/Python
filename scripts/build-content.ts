@@ -11,7 +11,7 @@ import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { bundleProject, datasetPath, freeLessonIds, lessonPath, premiumLessonIds, publicCurriculum, writtenProjects } from './content-data';
 
-const dist = resolve(import.meta.dirname, '../dist');
+const dist = resolve(import.meta.dirname, '..', process.env.BUILD_OUT_DIR || 'dist');
 
 export async function uploadPremium(projectId: string): Promise<number> {
   const { initializeApp, getApps } = await import('firebase-admin/app');

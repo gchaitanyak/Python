@@ -2,7 +2,7 @@ import type { DocumentData } from 'firebase-admin/firestore';
 import { HttpsError, onCall, onRequest } from 'firebase-functions/v2/https';
 import { logger } from 'firebase-functions/v2';
 import type Stripe from 'stripe';
-import { db, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
+import { callOptions, db, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 import { entitlementFromSubscription, isPlan, keepsLifetime, safeOrigin, subscriptionState } from './lib/entitlement';
 import { appOrigins, priceFor, stripe, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET } from './lib/stripe';
@@ -21,7 +21,7 @@ async function ensureCustomer(uid: string, email: string | undefined, user: Docu
  * Starts Stripe Checkout for a plan (SPEC §7). Monthly and annual are
  * subscriptions; lifetime is a one-off payment. Promotion codes are enabled.
  */
-export const createCheckoutSession = onCall({ secrets }, async (request) => {
+export const createCheckoutSession = onCall({ ...callOptions, secrets }, async (request) => {
   const uid = requireUid(request);
   const plan = (request.data as { plan?: unknown } | null)?.plan;
   if (!isPlan(plan)) throw new HttpsError('invalid-argument', 'Choose monthly, annual or lifetime.');
@@ -51,7 +51,7 @@ export const createCheckoutSession = onCall({ secrets }, async (request) => {
 });
 
 /** Opens the Stripe Customer Portal: cancel, cancel at period end, update card, invoices. */
-export const createPortalSession = onCall({ secrets }, async (request) => {
+export const createPortalSession = onCall({ ...callOptions, secrets }, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'createPortalSession', 10);
   const customer = (await userRef(uid).get()).data()?.stripeCustomerId;

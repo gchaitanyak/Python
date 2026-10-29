@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { logger } from 'firebase-functions/v2';
 import { defineSecret, defineString } from 'firebase-functions/params';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
-import { db, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
+import { callOptions, db, rateLimit, requireUid, Timestamp, userIsPremium, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 import { findPlaced, loadLesson } from './lib/content';
 import { buildPrompt, guardHint, HINTS_PER_DAY, MAX_CODE_CHARS, MAX_FAIL_CHARS, referenceAnswer, SYSTEM_PROMPT } from './lib/hint';
@@ -48,7 +48,7 @@ async function askModel(prompt: string): Promise<string | undefined> {
  * here from the lesson data, and the reply is checked so it never hands over
  * the reference solution.
  */
-export const getHint = onCall({ secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 60 }, async (request) => {
+export const getHint = onCall({ ...callOptions, secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 60 }, async (request) => {
   if (!request.auth) throw new HttpsError('unauthenticated', 'Sign in to ask the AI tutor.');
   const uid = requireUid(request);
   const d = (request.data ?? {}) as Record<string, unknown>;

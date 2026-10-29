@@ -13,6 +13,13 @@ export const db = getFirestore();
 export const auth = getAuth();
 export { FieldValue, Timestamp };
 
+/**
+ * Options for every callable. App Check (ARCHITECTURE §5.2) is enforced when the
+ * project's functions/.env.<project> sets ENFORCE_APP_CHECK=true; the emulator and
+ * tests leave it off. Read at load time because enforceAppCheck takes a plain boolean.
+ */
+export const callOptions = { enforceAppCheck: process.env.ENFORCE_APP_CHECK === 'true' } as const;
+
 /** The caller's uid, or an `unauthenticated` error. */
 export function requireUid(request: CallableRequest<unknown>): string {
   const uid = request.auth?.uid;

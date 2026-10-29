@@ -1,4 +1,5 @@
 import { initializeApp, type FirebaseApp } from 'firebase/app';
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
 import { browserLocalPersistence, connectAuthEmulator, initializeAuth, indexedDBLocalPersistence, type Auth } from 'firebase/auth';
 import { connectFirestoreEmulator, getFirestore, type Firestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions, type Functions } from 'firebase/functions';
@@ -31,6 +32,11 @@ export function firebase(): FirebaseServices {
     messagingSenderId: env.VITE_FIREBASE_MESSAGING_SENDER_ID,
     appId: env.VITE_FIREBASE_APP_ID,
   });
+  // App Check (ARCHITECTURE §5.2): callable functions reject requests without a valid token in production.
+  if (env.VITE_RECAPTCHA_ENTERPRISE_KEY) {
+    if (env.DEV && env.VITE_APPCHECK_DEBUG_TOKEN) (self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN: string }).FIREBASE_APPCHECK_DEBUG_TOKEN = env.VITE_APPCHECK_DEBUG_TOKEN;
+    initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(env.VITE_RECAPTCHA_ENTERPRISE_KEY), isTokenAutoRefreshEnabled: true });
+  }
   const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
   const db = getFirestore(app);
   const functions = getFunctions(app, env.VITE_FIREBASE_FUNCTIONS_REGION || 'us-central1');

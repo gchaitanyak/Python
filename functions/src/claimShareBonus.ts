@@ -1,12 +1,12 @@
 import { onCall } from 'firebase-functions/v2/https';
 import { awardPoints } from './lib/activity';
-import { db, rateLimit, requireUid, userRef } from './lib/admin';
+import { callOptions, db, rateLimit, requireUid, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 
 export const SHARE_BONUS = 100;
 
 /** +100 points once per user for sharing a completed lesson (SPEC §5.2, honour system). */
-export const claimShareBonus = onCall(async (request) => {
+export const claimShareBonus = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'claimShareBonus', 5);
   const now = await clockNow();

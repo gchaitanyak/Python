@@ -35,7 +35,8 @@ import type { Curriculum, CurriculumModule } from './src/player/types';
 
 const pagesDir = resolve(__dirname, 'src/pages');
 const ogDir = resolve(__dirname, 'src/assets/og');
-const outDir = resolve(__dirname, 'dist');
+/** dist/ normally; BUILD_OUT_DIR builds elsewhere (the production e2e build uses dist-e2e/). */
+const outDir = resolve(__dirname, process.env.BUILD_OUT_DIR || 'dist');
 
 // Inline SVG icon (the logo mark) so no extra request or binary asset is needed.
 const FAVICON = `<link rel="icon" href="data:image/svg+xml,${encodeURIComponent(
@@ -70,6 +71,12 @@ function builtPages(dir = outDir, base = '/'): { file: string; path: string }[] 
     if (e.isDirectory()) return ['assets', 'data', 'pyodide', 'og'].includes(e.name) && base === '/' ? [] : builtPages(resolve(dir, e.name), `${base}${e.name}/`);
     return e.name === 'index.html' ? [{ file: resolve(dir, e.name), path: base }] : [];
   });
+}
+
+/** The security headers Firebase Hosting sends for every file (firebase.json), so `vite preview` behaves the same. */
+function hostingHeaders(): Record<string, string> {
+  const hosting = JSON.parse(readFileSync(resolve(__dirname, 'firebase.json'), 'utf8')).hosting as { headers: { source: string; headers: { key: string; value: string }[] }[] };
+  return Object.fromEntries(hosting.headers.filter((h) => h.source === '**').flatMap((h) => h.headers.map((x) => [x.key, x.value])));
 }
 
 /** Page file relative to src/pages → public URL path, e.g. "home/index.html" → "/". */
@@ -302,7 +309,7 @@ export default defineConfig({
   plugins: [pagesPlugin()],
   worker: { format: 'es' },
   server: { port: 5173, strictPort: true },
-  preview: { port: 4173, strictPort: true },
+  preview: { port: 4173, strictPort: true, headers: hostingHeaders() },
   build: {
     outDir,
     emptyOutDir: true,

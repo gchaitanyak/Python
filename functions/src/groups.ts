@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { HttpsError, onCall, type CallableRequest } from 'firebase-functions/v2/https';
-import { db, displayName, FieldValue, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
+import { callOptions, db, displayName, FieldValue, rateLimit, requireUid, Timestamp, userRef } from './lib/admin';
 import { now as clockNow } from './lib/clock';
 import { setSeat, syncSeats } from './lib/group-seats';
 import { groupName, inviteCodeFrom, MAX_GROUPS_PER_OWNER, MAX_MEMBERS, memberStats, membersCsv, normaliseInviteCode, type MemberRow } from './lib/groups';
@@ -32,7 +32,7 @@ async function asAdmin(request: CallableRequest<unknown>, limit = 30) {
 }
 
 /** Creates a group with the caller as its admin (SPEC §5.7). Premium seats start at 0; the site owner sets them. */
-export const createGroup = onCall(async (request) => {
+export const createGroup = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'createGroup', 5);
   const named = groupName((request.data as { name?: unknown } | null)?.name);
@@ -52,7 +52,7 @@ export const createGroup = onCall(async (request) => {
 });
 
 /** Name and size of the group behind an invite code, for the join page. */
-export const groupForInvite = onCall(async (request) => {
+export const groupForInvite = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'groupForInvite', 20);
   const code = normaliseInviteCode((request.data as { code?: unknown } | null)?.code);
@@ -63,7 +63,7 @@ export const groupForInvite = onCall(async (request) => {
   return { groupId: gid, name: group.name as string, memberCount: group.memberCount as number, member };
 });
 
-export const joinGroup = onCall(async (request) => {
+export const joinGroup = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'joinGroup', 10);
   const code = normaliseInviteCode((request.data as { code?: unknown } | null)?.code);
@@ -104,20 +104,20 @@ async function removeFromGroup(gid: string, uid: string, nowMs: number): Promise
   await syncSeats(db, gid, nowMs); // the freed seat moves to the next member
 }
 
-export const leaveGroup = onCall(async (request) => {
+export const leaveGroup = onCall(callOptions, async (request) => {
   const uid = requireUid(request);
   await rateLimit(uid, 'leaveGroup', 10);
   await removeFromGroup(str(request.data, 'groupId'), uid, (await clockNow()).getTime());
   return { left: true };
 });
 
-export const removeMember = onCall(async (request) => {
+export const removeMember = onCall(callOptions, async (request) => {
   const { gid } = await asAdmin(request);
   await removeFromGroup(gid, str(request.data, 'uid'), (await clockNow()).getTime());
   return { removed: true };
 });
 
-export const regenerateInvite = onCall(async (request) => {
+export const regenerateInvite = onCall(callOptions, async (request) => {
   const { gid, group } = await asAdmin(request, 10);
   return db.runTransaction(async (tx) => {
     let code = newInviteCode();
@@ -130,7 +130,7 @@ export const regenerateInvite = onCall(async (request) => {
 });
 
 /** Makes a member an admin too (groups can have several). */
-export const addGroupAdmin = onCall(async (request) => {
+export const addGroupAdmin = onCall(callOptions, async (request) => {
   const { gid, group } = await asAdmin(request, 10);
   const member = str(request.data, 'uid');
   if (!(await memberRef(gid, member).get()).exists) throw new HttpsError('not-found', 'Only members can become admins.');
@@ -157,7 +157,7 @@ async function report(gid: string): Promise<MemberRow[]> {
 }
 
 /** Admin portal data: the group and each member's progress (SPEC §5.7). */
-export const groupReport = onCall(async (request) => {
+export const groupReport = onCall(callOptions, async (request) => {
   const { gid, group } = await asAdmin(request);
   return {
     group: { id: gid, name: group.name, inviteCode: group.inviteCode, premiumSeats: group.premiumSeats ?? 0, memberCount: group.memberCount ?? 0 },
@@ -165,7 +165,7 @@ export const groupReport = onCall(async (request) => {
   };
 });
 
-export const exportGroupCsv = onCall(async (request) => {
+export const exportGroupCsv = onCall(callOptions, async (request) => {
   const { gid, group } = await asAdmin(request, 10);
   const slug = String(group.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'group';
   return { filename: `${slug}-progress.csv`, csv: membersCsv(await report(gid)) };
