@@ -53,6 +53,7 @@ npm run test:e2e       # Playwright against emulators
 npm run test:rules     # Firestore security rules tests
 npm run test:functions # Cloud Functions integration tests (Auth + Firestore + Functions emulators)
 npm run validate:content   # validate content/**/*.json against lesson.schema.json and run every lesson's reference solutions through its tests
+npm run fetch:pyodide  # download the NumPy/pandas/Matplotlib/scikit-learn wheels into node_modules/pyodide (needs cdn.jsdelivr.net)
 npm run deploy         # firebase deploy (hosting, functions, rules)
 ```
 

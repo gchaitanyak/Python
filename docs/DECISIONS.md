@@ -108,3 +108,40 @@ Choices made where the spec was open. Newest last.
     - Logging questions check log records with a temporary handler.
     - Unit-test questions run the learner's `TestCase` against the correct function and against broken versions, so tests that would pass anything don't count.
     - `tests/e2e/content.spec.ts` now plays every lesson in modules 4–12.
+
+## Phase 7 — Certificate, AI tutor, projects
+
+1. **Certificate eligibility is completion only.** Every lesson in the modules marked `requiredForCertificate` (1–12) must be complete. There's no separate premium check: those modules include premium lessons, and a certificate already earned shouldn't vanish when a subscription ends. Optional modules 13–14 are listed once all their lessons are written and complete; calling `generateCertificate` again adds them but never changes the name.
+2. **Credential IDs** are 10 characters from `ABCDEFGHJKMNPQRSTUVWXYZ23456789` (no 0/O, 1/I/L), drawn with rejection sampling. Search accepts any case, spaces and dashes.
+3. **`/certificate/<id>/` is one client-rendered page.** Hosting rewrites `/certificate/*/` to `/certificate/view/` (the dev server does the same), and the page reads `certificates/{id}`. The page is `noindex`, so learners' names aren't pushed into search engines.
+4. **The PDF is built in the browser with no library.** The certificate is drawn on a canvas, so names in any script use the system's fonts, then saved as a JPEG inside a hand-written one-page A4 PDF (unit-tested). "Add to LinkedIn" uses LinkedIn's add-certification URL.
+5. **Account deletion and certificates (SPEC §8):** the account page shows a "Keep my certificate verifiable" box. If ticked, the certificate stays public with `uid: null`; otherwise it is deleted. AI hint logs and quota counters are deleted too. (This also fixes the rate-limit cleanup query, which matched nothing.)
+6. **AI tutor (`getHint`):**
+   - Calls the Claude API through `@anthropic-ai/sdk`. The key is in the `ANTHROPIC_API_KEY` secret; the model is the `HINT_MODEL` param (default `claude-opus-5-5`, effort `low`, server-side refusal fallback on). One short hint per request, with a 30 s timeout.
+   - The prompt is built on the server from the lesson's data. It includes the reference solution so the hint is well aimed, and wraps learner text as data, not instructions.
+   - Limits: anonymous 0, free 5 a day, premium 30 a day (UTC), stored in `hintQuota/{uid}_{day}`, plus 6 a minute. A failed model call gives the hint back.
+   - Premium lessons need premium, as everywhere else.
+7. **The leak guard** (`functions/src/lib/hint.ts`) replaces a reply when any of these hold:
+   - it contains a multi-line code block;
+   - its character-bigram similarity to the reference solution is ≥ 0.6;
+   - it contains half or more of the solution's substantial lines (14+ characters), or any single solution line of 30+ characters.
+
+   The replacement is the authored hint, or a generic nudge if the authored hint itself spells out the answer (some do: `py-for-range` q02). A unit test runs five kinds of leaking reply against all 364 code questions and checks the shown hint stays below 0.6 similarity. `hintLogs` store ids and whether the reply was replaced, never the learner's code. Learners can rate a hint 👍/👎 (rules allow only `helpful`).
+8. **The AI tutor button** appears in the lesson player after 2 failed checks on a question, once per visit to that question. Anonymous learners get a sign-in prompt instead. It isn't offered in the daily challenge, flashcards or projects.
+9. **A local fake Claude API** (`scripts/fake-llm.ts`, port 12112) serves the emulator and the tests, because this environment can't reach the API and tests shouldn't spend money. `functions/.env.local` points `LLM_API_BASE` at it. To use the real API locally, remove that line and put a real key in `functions/.secret.local`; in production set the secret with `firebase functions:secrets:set ANTHROPIC_API_KEY`. `scripts/emulator-env.mjs` now adds missing keys to existing env files instead of only creating them.
+10. **Projects reuse the lesson format and player.**
+    - Each project is `content/projects/<id>/project.json` (brief, dataset list, steps as lesson questions) plus its dataset files. `projects.json` lists all five, in order, with their status.
+    - Before each step, `setupCode` rewrites the dataset files, so steps can be retried in any order. Each step is self-contained: its starter code includes the earlier pieces it needs.
+    - The player has a `project` mode: steps, no points, no AI tutor, drafts kept.
+    - Free projects are emitted as static JSON plus raw dataset files. Premium ones are uploaded to `projectContent/{id}` (same paywall rule as `lessonContent`), and their downloads are built from that copy.
+    - The "starter notebook" in SPEC §2 is a `.py` starter file: every code step's task as comments, with the first step's starter code.
+11. **Finished projects award no points**, so the learner's own client records them: on the device, and in `users/{uid}/projects/{id}` for signed-in learners. Rules allow only `{completed: true, completedAt: request.time}`.
+12. **Only 2 of the 5 projects are written: Expense Tracker (free) and Text Adventure (premium).** Weather Data Report, Movie Ratings Analysis and Spam Classifier need pandas, Matplotlib and scikit-learn, and so does module 13. Those packages aren't in the pyodide npm package. This environment can't reach the Pyodide CDN (`cdn.jsdelivr.net`), so lessons using them can't be validated here. Following CLAUDE.md (validate before commit), module 13 and those three projects stay "to-write"/"coming soon".
+
+    The plumbing for them is built and tested:
+    - `npm run fetch:pyodide` downloads the wheels and checks their checksums;
+    - the dev server serves them and the build self-hosts them under `/pyodide/`;
+    - the worker and the validator load whatever an exercise imports.
+13. **The worker's network block now has one narrow exception.** It allows `fetch` of the site's own `/pyodide/` files, only while the worker itself is loading packages, and messages are handled one at a time, so learner code never runs during that window. A browser test checks that learner code still can't fetch even `/pyodide/` files. Package downloads get their own 2-minute limit; the 5 s limit starts when the learner's code does.
+14. **Flask isn't in Pyodide either**, so `py-flask-api` uses a practice `flask` module installed by `setupCode`, like `requests` in module 12. It supports `Flask`, `route` (with `<int:…>` converters and methods), `jsonify`, `request` (`args`, `get_json`, `method`), `abort` and the test client — the same API learners would use with real Flask. `sqlite3` is in Pyodide's standard library and works directly.
+15. **Content:** module 14 adds 4 lessons (73 written in total). Checks that need to see a learner's code (e.g. "don't call `sorted`") read the function's code object (`__code__.co_names`), because `inspect.getsource` can't see code run with `exec`.
