@@ -802,7 +802,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use append, extend, insert, pop",
             "Copy lists safely"
@@ -829,7 +829,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Sort with sort() and sorted()",
             "Sort by a key",
@@ -853,7 +853,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create and unpack tuples",
             "Know when to choose a tuple"
@@ -888,7 +888,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Remove duplicates",
             "Use union, intersection, difference"
@@ -923,7 +923,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Store key-value pairs",
             "Read safely with get",
@@ -971,7 +971,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write list comprehensions",
             "Filter inside comprehensions",
@@ -1007,7 +1007,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Count with Counter",
             "Use defaultdict and deque"
@@ -1038,7 +1038,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Pick the right structure for a task"
           ],

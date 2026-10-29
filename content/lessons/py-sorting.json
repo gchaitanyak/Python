@@ -1,0 +1,173 @@
+{
+  "id": "py-sorting",
+  "moduleId": "data-structures",
+  "title": "Sorting",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "`sorted(items)` returns a **new** sorted list and leaves the original alone. `items.sort()` sorts the list **in place** and returns `None`. Both accept `reverse=True`, and a `key` that decides what to sort by — like `len` or `str.lower`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Upper-case letters sort before lower-case ones, so use `key=str.lower` to ignore case.",
+      "exampleCode": "scores = [42, 7, 19]\nprint(sorted(scores))\nprint(scores)\nscores.sort(reverse=True)\nprint(scores)\nnames = [\"bea\", \"Al\", \"cy\"]\nprint(sorted(names))\nprint(sorted(names, key=str.lower))\nprint(sorted(names, key=len))",
+      "explanation": "`key` is given a function's name without brackets — Python calls it on each item."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Store `prices` sorted from cheapest to most expensive in `cheapest_first`, without changing `prices`.",
+      "starterCode": "cheapest_first = \n",
+      "solution": "cheapest_first = sorted(prices)",
+      "setupCode": "prices = [12.5, 3.99, 8.0, 21.0, 0.5]\n_original = list(prices)",
+      "tests": [
+        {
+          "name": "sorted",
+          "code": "assert cheapest_first == sorted(_original), 'cheapest_first should be the prices in ascending order.'",
+          "message": "Sort ascending."
+        },
+        {
+          "name": "unchanged",
+          "code": "assert prices == _original, 'Don’t change prices itself — use sorted().'",
+          "message": "Leave prices unchanged."
+        }
+      ],
+      "hint": "Which one returns a new list?",
+      "explanation": "`sorted()` keeps the original order available for later."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(sorted(\"banana\"))",
+      "expectedOutput": "['a', 'a', 'a', 'b', 'n', 'n']",
+      "hint": "`sorted` works on any sequence and always returns a list.",
+      "explanation": "A string is sorted character by character."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Sort `names` **in place** alphabetically, ignoring upper and lower case.",
+      "starterCode": "# sort names here\n",
+      "solution": "names.sort(key=str.lower)",
+      "setupCode": "names = [\"zoe\", \"Adam\", \"beth\", \"Carl\"]\n_original = list(names)",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert names == sorted(_original, key=str.lower), 'names should be in alphabetical order, ignoring case.'",
+          "message": "Sort ignoring case."
+        }
+      ],
+      "hint": "`sort` with `key=str.lower`.",
+      "explanation": "The key changes how items are compared, not the items themselves."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `x` hold after `x = [3, 1, 2].sort()`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`[1, 2, 3]`"
+        },
+        {
+          "id": "b",
+          "text": "`[3, 1, 2]`"
+        },
+        {
+          "id": "c",
+          "text": "`None`"
+        },
+        {
+          "id": "d",
+          "text": "An error"
+        }
+      ],
+      "answer": "c",
+      "hint": "`sort()` changes the list in place. What does it return?",
+      "explanation": "In-place methods return `None`. Use `sorted()` when you want the result."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`top` should hold the scores from highest to lowest, but it's `None`. Fix it.",
+      "starterCode": "scores = [70, 95, 82]\ntop = scores.sort(reverse=True)\n",
+      "solution": "scores = [70, 95, 82]\ntop = sorted(scores, reverse=True)\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert top == [95, 82, 70], 'top should be [95, 82, 70].'",
+          "message": "top should be [95, 82, 70]."
+        }
+      ],
+      "hint": "`sort()` returns `None`.",
+      "explanation": "Use `sorted()` to get a new list you can store."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the key so `by_length` sorts the words from shortest to longest.",
+      "template": "words = [\"banana\", \"fig\", \"apple\"]\nby_length = sorted(words, key=___)",
+      "blanks": [
+        "len"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert by_length == ['fig', 'apple', 'banana'], 'by_length should go from shortest to longest.'",
+          "message": "Sort by length."
+        }
+      ],
+      "hint": "Which built-in function measures length?",
+      "explanation": "`key=len` compares the lengths, not the words."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Store the three highest values in `temps` in `top_three`, highest first.",
+      "starterCode": "top_three = \n",
+      "solution": "top_three = sorted(temps, reverse=True)[:3]",
+      "setupCode": "temps = [18.5, 24.0, 21.3, 26.8, 19.9, 25.1]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert top_three == sorted(temps, reverse=True)[:3], 'top_three should be the 3 highest temperatures, highest first.'",
+          "message": "Take the 3 highest."
+        }
+      ],
+      "hint": "Sort descending, then slice the first three.",
+      "explanation": "Sorting and slicing together answer *top N* questions."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "Text is sorted character by character. What does this print?",
+      "code": "print(sorted([\"10\", \"9\", \"100\"]))",
+      "expectedOutput": "['10', '100', '9']",
+      "hint": "Compare the first characters: `1`, `9`, `1`.",
+      "explanation": "As text, `\"9\"` comes after `\"1…\"`. Convert to numbers to sort by value."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`scores` has an odd number of results. Store them highest first in `ranking`, and the **median** (the middle value when sorted) in `median`.",
+      "starterCode": "ranking = \nmedian = \n",
+      "solution": "ranking = sorted(scores, reverse=True)\nmedian = sorted(scores)[len(scores) // 2]",
+      "setupCode": "scores = [55, 92, 71, 92, 38, 64, 80]",
+      "tests": [
+        {
+          "name": "ranking",
+          "code": "assert ranking == sorted(scores, reverse=True), 'ranking should be highest first.'",
+          "message": "Check ranking."
+        },
+        {
+          "name": "median",
+          "code": "assert median == sorted(scores)[len(scores) // 2], 'median should be the middle value of the sorted scores.'",
+          "message": "Check the median."
+        }
+      ],
+      "hint": "With an odd count, the middle index is `len(scores) // 2`.",
+      "explanation": "The median is less affected by one extreme score than the average is."
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "id": "py-data-structures-summary",
+  "moduleId": "data-structures",
+  "title": "Data Structures: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: list methods, sorting, tuples, sets, dictionaries, comprehensions and `collections`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "`tags` has repeats. Store the different tags as a sorted list in `clean_tags`.",
+      "starterCode": "clean_tags = \n",
+      "solution": "clean_tags = sorted(set(tags))",
+      "setupCode": "tags = [\"web\", \"python\", \"data\", \"python\", \"web\", \"ai\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert clean_tags == sorted(set(tags)), 'clean_tags should be the distinct tags, sorted.'",
+          "message": "Distinct tags, sorted."
+        }
+      ],
+      "hint": "A set removes repeats; `sorted` gives a list back.",
+      "explanation": "Set then sort: the quickest way to tidy a list."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "d = {\"a\": [1, 2]}\nd[\"a\"].append(3)\nprint(len(d[\"a\"]))",
+      "expectedOutput": "3",
+      "hint": "The value stored under `\"a\"` is a list you can change.",
+      "explanation": "Dictionary values can be lists, and you can modify them in place."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "`names` and `scores` are lists in the same order. Build a dictionary `results` mapping each name to its score. (`zip(names, scores)` pairs them up.)",
+      "starterCode": "results = \n",
+      "solution": "results = dict(zip(names, scores))",
+      "setupCode": "names = [\"Ana\", \"Ben\", \"Cleo\"]\nscores = [88, 72, 95]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert results == {names[i]: scores[i] for i in range(len(names))}, 'results should map each name to the score at the same position.'",
+          "message": "Pair each name with its score."
+        }
+      ],
+      "hint": "`zip` makes `(name, score)` pairs; `dict()` turns pairs into a dictionary.",
+      "explanation": "`dict(zip(keys, values))` is a handy idiom."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This should remove the negative numbers, but one is left behind. Fix it.",
+      "starterCode": "nums = [3, -1, -2, 4]\nfor n in nums:\n    if n < 0:\n        nums.remove(n)\n",
+      "solution": "nums = [3, -1, -2, 4]\nnums = [n for n in nums if n >= 0]\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert nums == [3, 4], 'nums should be [3, 4].'",
+          "message": "nums should be [3, 4]."
+        }
+      ],
+      "hint": "Removing items while looping over the same list makes the loop skip the next item. Build a new list instead.",
+      "explanation": "A comprehension creates a fresh list, so nothing gets skipped."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "A sign-up form checks thousands of times whether a username is taken. Which structure is best for the taken names?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A list"
+        },
+        {
+          "id": "b",
+          "text": "A set"
+        },
+        {
+          "id": "c",
+          "text": "A tuple"
+        },
+        {
+          "id": "d",
+          "text": "A string"
+        }
+      ],
+      "answer": "b",
+      "hint": "Which one is fastest at *is this in here?*",
+      "explanation": "Membership tests on a set stay fast however big it gets."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "`people` is a list of `(name, age)` tuples. Store the names sorted from youngest to oldest in `youngest_first`. (Hint: tuples sort by their first item.)",
+      "starterCode": "youngest_first = \n",
+      "solution": "pairs = sorted((age, name) for name, age in people)\nyoungest_first = [name for age, name in pairs]",
+      "setupCode": "people = [(\"Dev\", 34), (\"Ana\", 22), (\"Ben\", 41), (\"Cleo\", 29)]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert youngest_first == [n for a, n in sorted((a, n) for n, a in people)], 'youngest_first should list names by increasing age.'",
+          "message": "Sort the names by age."
+        }
+      ],
+      "hint": "Flip each pair to `(age, name)`, sort, then take the names.",
+      "explanation": "Sorting tuples compares their first items first."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method so `top` is the single most common fruit and its count.",
+      "template": "from collections import Counter\nfruits = [\"fig\", \"kiwi\", \"fig\", \"lime\", \"fig\"]\ntop = Counter(fruits).___(1)",
+      "blanks": [
+        "most_common"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert top == [('fig', 3)], 'top should be [(\"fig\", 3)].'",
+          "message": "top should be [('fig', 3)]."
+        }
+      ],
+      "hint": "Counter has a method for the top items.",
+      "explanation": "`most_common(1)` returns `[('fig', 3)]`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`stock` maps items to quantities and `sold` lists the items sold today (one per sale). Take 1 off for each sale, and remove any item that reaches 0.",
+      "starterCode": "# update stock here\n",
+      "solution": "for item in sold:\n    stock[item] -= 1\n    if stock[item] == 0:\n        del stock[item]",
+      "setupCode": "stock = {\"hat\": 2, \"scarf\": 5, \"gloves\": 2}\nsold = [\"hat\", \"scarf\", \"hat\", \"gloves\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = {'scarf': 4, 'gloves': 1}\nassert stock == expected, 'Each sale takes 1 off; items at 0 are removed.'",
+          "message": "Check the updated stock."
+        }
+      ],
+      "hint": "`del stock[item]` removes a key.",
+      "explanation": "Changing values while looping over a *different* list is safe."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
+      "expectedOutput": "[1, 2, 3]",
+      "hint": "`b = a` doesn't copy the list.",
+      "explanation": "`a` and `b` are two names for the same list."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`grades` maps student names to letters. Build `by_grade`, a dictionary mapping each letter to a **sorted** list of the students with it.",
+      "starterCode": "by_grade = {}\n",
+      "solution": "by_grade = {}\nfor name, letter in grades.items():\n    by_grade.setdefault(letter, []).append(name)\nfor letter in by_grade:\n    by_grade[letter].sort()",
+      "setupCode": "grades = {\"Zoe\": \"A\", \"Ana\": \"B\", \"Max\": \"A\", \"Ben\": \"C\", \"Ivy\": \"B\"}",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = {}\nfor n, g in grades.items():\n    expected.setdefault(g, []).append(n)\nexpected = {g: sorted(ns) for g, ns in expected.items()}\nassert dict(by_grade) == expected, 'by_grade should map each letter to a sorted list of names.'",
+          "message": "Group the names by grade and sort them."
+        }
+      ],
+      "hint": "`setdefault(letter, [])` or a `defaultdict(list)` creates each list the first time.",
+      "explanation": "Inverting a dictionary — values become keys — is a common reporting task."
+    }
+  ]
+}

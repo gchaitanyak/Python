@@ -1,0 +1,173 @@
+{
+  "id": "py-sets",
+  "moduleId": "data-structures",
+  "title": "Sets",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **set** holds unique values in no particular order: `{\"red\", \"blue\"}`. Adding a duplicate does nothing. Sets are fast at answering *is this in here?* and at comparing groups: `|` union, `&` intersection, `-` difference.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`set(some_list)` removes duplicates. An empty set is `set()` — `{}` makes an empty dictionary.",
+      "exampleCode": "tags = {\"python\", \"code\", \"python\"}\nprint(len(tags))\nprint(\"code\" in tags)\na = {1, 2, 3}\nb = {3, 4}\nprint(a | b)\nprint(a & b)\nprint(a - b)",
+      "explanation": "Union is *in either*, intersection is *in both*, difference is *in the first but not the second*."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`visitors` lists every visit to a website, with repeats. Store the number of **different** visitors in `unique_count`.",
+      "starterCode": "unique_count = \n",
+      "solution": "unique_count = len(set(visitors))",
+      "setupCode": "visitors = [\"ana\", \"ben\", \"ana\", \"cleo\", \"ben\", \"ana\", \"dev\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert unique_count == len(set(visitors)), 'unique_count should count each visitor once.'",
+          "message": "Count each visitor once."
+        }
+      ],
+      "hint": "Turn the list into a set, then count.",
+      "explanation": "`set()` drops duplicates for you."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(len({1, 2, 2, 3, 3, 3}))",
+      "expectedOutput": "3",
+      "hint": "Duplicates don't count in a set.",
+      "explanation": "Only 1, 2 and 3 are stored."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`monday` and `tuesday` list who came to the gym. Store the people who came **both** days in `both_days`, and everyone who came on **either** day in `either_day` (both as sets).",
+      "starterCode": "both_days = \neither_day = \n",
+      "solution": "both_days = set(monday) & set(tuesday)\neither_day = set(monday) | set(tuesday)",
+      "setupCode": "monday = [\"ana\", \"ben\", \"cleo\"]\ntuesday = [\"ben\", \"dev\", \"cleo\", \"eli\"]",
+      "tests": [
+        {
+          "name": "both",
+          "code": "assert both_days == set(monday) & set(tuesday), 'both_days should be the people in both lists.'",
+          "message": "Check both_days."
+        },
+        {
+          "name": "either",
+          "code": "assert either_day == set(monday) | set(tuesday), 'either_day should be everyone in either list.'",
+          "message": "Check either_day."
+        }
+      ],
+      "hint": "`&` for both, `|` for either.",
+      "explanation": "Set operators answer *who was in both?* without writing loops."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which of these **can't** go in a set?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`42`"
+        },
+        {
+          "id": "b",
+          "text": "`\"hello\"`"
+        },
+        {
+          "id": "c",
+          "text": "`(1, 2)`"
+        },
+        {
+          "id": "d",
+          "text": "`[1, 2]`"
+        }
+      ],
+      "answer": "d",
+      "hint": "Set items must never change.",
+      "explanation": "Lists can change, so they can't be set items. Tuples can't change, so they can."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`seen` should be an empty set, but `add` fails with an *AttributeError*. Fix it.",
+      "starterCode": "seen = {}\nseen.add(\"x\")\n",
+      "solution": "seen = set()\nseen.add(\"x\")\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert seen == {'x'}, 'seen should be the set {\"x\"}.'",
+          "message": "seen should be a set containing x."
+        }
+      ],
+      "hint": "`{}` on its own is an empty dictionary.",
+      "explanation": "Use `set()` for an empty set."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the operator so `new_students` is the students this year who weren't here last year.",
+      "template": "this_year = {\"ana\", \"ben\", \"cleo\", \"dev\"}\nlast_year = {\"ben\", \"dev\", \"eli\"}\nnew_students = this_year ___ last_year",
+      "blanks": [
+        "-"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert new_students == {'ana', 'cleo'}, 'new_students should be {\"ana\", \"cleo\"}.'",
+          "message": "Check new_students."
+        }
+      ],
+      "hint": "*In the first but not the second*.",
+      "explanation": "`-` is set difference."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Store the different words in `text` as a **sorted list** in `unique_words` (lowercase, split on spaces).",
+      "starterCode": "unique_words = \n",
+      "solution": "unique_words = sorted(set(text.lower().split()))",
+      "setupCode": "text = \"The cat saw the dog and the dog saw The cat\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert unique_words == sorted(set(text.lower().split())), 'unique_words should be the distinct lowercase words, sorted.'",
+          "message": "Distinct lowercase words, sorted."
+        }
+      ],
+      "hint": "lowercase → split → set → sorted.",
+      "explanation": "Sets have no order, so sort them when you need a predictable list."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print({3, 1, 2} == {1, 2, 3})",
+      "expectedOutput": "True",
+      "hint": "Does order matter in a set?",
+      "explanation": "Sets are equal when they hold the same items, in any order."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A menu checker: `dish` and `allergies` are sets. Store in `safe` whether the dish contains **none** of the allergens, and in `problems` a sorted list of the allergens it does contain.",
+      "starterCode": "safe = \nproblems = \n",
+      "solution": "safe = dish.isdisjoint(allergies)\nproblems = sorted(dish & allergies)",
+      "setupCode": "dish = {\"wheat\", \"egg\", \"milk\", \"sugar\"}\nallergies = {\"peanut\", \"milk\", \"egg\"}",
+      "tests": [
+        {
+          "name": "safe",
+          "code": "assert safe == (not (dish & allergies)), 'safe should be True only if dish and allergies share nothing.'",
+          "message": "Check safe."
+        },
+        {
+          "name": "problems",
+          "code": "assert problems == sorted(dish & allergies), 'problems should be the shared items, sorted.'",
+          "message": "Check problems."
+        }
+      ],
+      "hint": "`isdisjoint` says whether two sets share nothing. `&` finds what they share.",
+      "explanation": "Sets make *does this contain any of those?* a one-liner."
+    }
+  ]
+}

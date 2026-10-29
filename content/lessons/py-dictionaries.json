@@ -1,0 +1,168 @@
+{
+  "id": "py-dictionaries",
+  "moduleId": "data-structures",
+  "title": "Dictionaries",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **dictionary** maps **keys** to **values**: `{\"Ana\": 31, \"Ben\": 25}`. Look a value up by its key with `d[key]`. Add or change one with `d[key] = value`. `d.get(key, default)` reads safely when the key might be missing.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Keys are unique. `items()` gives `(key, value)` pairs to loop over.",
+      "exampleCode": "ages = {\"Ana\": 31, \"Ben\": 25}\nprint(ages[\"Ana\"])\nages[\"Cleo\"] = 28\nprint(ages.get(\"Dev\", 0))\nfor name, age in ages.items():\n    print(name, age)",
+      "explanation": "`ages[\"Dev\"]` would crash with a *KeyError*; `get` returns the default instead."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create a dictionary `capitals` mapping `\"France\"` to `\"Paris\"` and `\"Kenya\"` to `\"Nairobi\"`. Then add `\"Peru\"` → `\"Lima\"`.",
+      "starterCode": "capitals = \n",
+      "solution": "capitals = {\"France\": \"Paris\", \"Kenya\": \"Nairobi\"}\ncapitals[\"Peru\"] = \"Lima\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert capitals == {'France': 'Paris', 'Kenya': 'Nairobi', 'Peru': 'Lima'}, 'capitals should have France, Kenya and Peru.'",
+          "message": "Check all three entries."
+        }
+      ],
+      "hint": "Curly brackets with `key: value` pairs; add with `capitals[\"Peru\"] = …`.",
+      "explanation": "Assigning to a new key adds it."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "d = {\"a\": 1}\nd[\"a\"] = 5\nprint(d)",
+      "expectedOutput": "{'a': 5}",
+      "hint": "Keys are unique — assigning to an existing key replaces its value.",
+      "explanation": "There's still only one `\"a\"`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`prices` maps items to prices. Store the price of `item` in `cost`, or `0` if the item isn't in the dictionary.",
+      "starterCode": "cost = \n",
+      "solution": "cost = prices.get(item, 0)",
+      "setupCode": "prices = {\"tea\": 2.5, \"cake\": 3.75}\nitem = \"soup\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert cost == prices.get(item, 0), 'cost should be the price, or 0 when the item is missing.'",
+          "message": "Use 0 for missing items."
+        }
+      ],
+      "hint": "`get` takes the key and a default.",
+      "explanation": "`get` avoids a *KeyError* when the key might be missing."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What happens with `d = {\"a\": 1}` and then `d[\"b\"]`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It returns `None`"
+        },
+        {
+          "id": "b",
+          "text": "It returns `0`"
+        },
+        {
+          "id": "c",
+          "text": "It raises a *KeyError*"
+        },
+        {
+          "id": "d",
+          "text": "It adds `\"b\"`"
+        }
+      ],
+      "answer": "c",
+      "hint": "Reading a missing key with square brackets fails.",
+      "explanation": "Use `d.get(\"b\")` to get `None` instead of an error."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should count each word, but crashes with a *KeyError*. Fix it.",
+      "starterCode": "counts = {}\nfor w in words:\n    counts[w] += 1\n",
+      "solution": "counts = {}\nfor w in words:\n    counts[w] = counts.get(w, 0) + 1\n",
+      "setupCode": "words = [\"red\", \"blue\", \"red\", \"green\", \"red\", \"blue\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = {}\nfor w in words:\n    expected[w] = expected.get(w, 0) + 1\nassert counts == expected, 'counts should map each word to how many times it appears.'",
+          "message": "Count every word."
+        }
+      ],
+      "hint": "The first time a word is seen, it isn't in `counts` yet. Start it from 0.",
+      "explanation": "`get(w, 0) + 1` handles new and existing words the same way."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method so the loop gets each name **and** score.",
+      "template": "results = {\"Ana\": 8, \"Ben\": 6, \"Cleo\": 9}\ntotal = 0\nfor name, score in results.___():\n    total += score",
+      "blanks": [
+        "items"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 23, 'total should be 23.'",
+          "message": "total should be 23."
+        }
+      ],
+      "hint": "Which method gives key-value pairs?",
+      "explanation": "`items()` yields `(key, value)` tuples, unpacked into `name, score`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`inventory` maps products to quantities. Store a **sorted** list of the products with fewer than 5 left in `low_stock`.",
+      "starterCode": "low_stock = []\n",
+      "solution": "low_stock = []\nfor product, qty in inventory.items():\n    if qty < 5:\n        low_stock.append(product)\nlow_stock.sort()",
+      "setupCode": "inventory = {\"pens\": 40, \"staples\": 3, \"tape\": 0, \"paper\": 12, \"clips\": 4}",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert low_stock == sorted(p for p, q in inventory.items() if q < 5), 'low_stock should list products with fewer than 5, sorted.'",
+          "message": "Check low_stock."
+        }
+      ],
+      "hint": "Loop over `items()`; collect the names where the quantity is below 5.",
+      "explanation": "Loop over items, filter, collect — the standard dictionary report."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "d = {\"x\": 1, \"y\": 2}\nprint(list(d.keys()), len(d))",
+      "expectedOutput": "['x', 'y'] 2",
+      "hint": "`keys()` gives the keys in the order they were added.",
+      "explanation": "`len` counts key-value pairs."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Count how often each word appears in `text` (lowercase, split on spaces) into a dictionary `counts`. Then store the most frequent word in `top_word`.",
+      "starterCode": "counts = {}\n",
+      "solution": "counts = {}\nfor w in text.lower().split():\n    counts[w] = counts.get(w, 0) + 1\ntop_word = \"\"\nfor w, c in counts.items():\n    if top_word == \"\" or c > counts[top_word]:\n        top_word = w",
+      "setupCode": "text = \"the sun and the moon and the stars\"",
+      "tests": [
+        {
+          "name": "counts",
+          "code": "expected = {}\nfor w in text.lower().split():\n    expected[w] = expected.get(w, 0) + 1\nassert counts == expected, 'counts should map each lowercase word to its count.'",
+          "message": "Check counts."
+        },
+        {
+          "name": "top",
+          "code": "assert counts.get(top_word) == max(counts.values()), 'top_word should be a word with the highest count.'",
+          "message": "Check top_word."
+        }
+      ],
+      "hint": "First count, then loop again keeping the word with the biggest count.",
+      "explanation": "Counting with a dictionary is one of the most useful patterns in Python."
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "id": "py-collections-module",
+  "moduleId": "data-structures",
+  "title": "The collections Module",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Python's standard library includes the `collections` module with extra data structures. Bring them in with `from collections import …`. **Counter** counts things, **defaultdict** creates missing keys for you, and **deque** adds and removes quickly at both ends.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`Counter(...).most_common(n)` lists the top items. `defaultdict(list)` starts every new key with an empty list.",
+      "exampleCode": "from collections import Counter, defaultdict, deque\ncounts = Counter(\"mississippi\")\nprint(counts.most_common(2))\ngroups = defaultdict(list)\ngroups[\"a\"].append(\"apple\")\nprint(dict(groups))\nq = deque([1, 2, 3])\nq.appendleft(0)\nq.pop()\nprint(list(q))",
+      "explanation": "Each of these replaces a few lines of hand-written dictionary or list code."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`votes` lists each vote cast. Count them with a `Counter` into `tally`, and store the winning option in `winner`.",
+      "starterCode": "from collections import Counter\n",
+      "solution": "from collections import Counter\ntally = Counter(votes)\nwinner = tally.most_common(1)[0][0]",
+      "setupCode": "votes = [\"pizza\", \"tacos\", \"pizza\", \"sushi\", \"tacos\", \"pizza\", \"curry\"]",
+      "tests": [
+        {
+          "name": "tally",
+          "code": "from collections import Counter as _C\nassert tally == _C(votes), 'tally should count every vote.'",
+          "message": "Count the votes."
+        },
+        {
+          "name": "winner",
+          "code": "assert winner == max(set(votes), key=votes.count), 'winner should be the option with the most votes.'",
+          "message": "Find the winner."
+        }
+      ],
+      "hint": "`most_common(1)` gives a list with one `(option, count)` pair.",
+      "explanation": "Counter does the counting loop for you."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from collections import Counter\nc = Counter(\"aab\")\nprint(c[\"a\"], c[\"z\"])",
+      "expectedOutput": "2 0",
+      "hint": "A Counter doesn't crash on missing keys.",
+      "explanation": "Missing items count as 0."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Group `words` by their first letter into a `defaultdict(list)` called `by_letter` — each letter maps to the words starting with it, in their original order.",
+      "starterCode": "from collections import defaultdict\n",
+      "solution": "from collections import defaultdict\nby_letter = defaultdict(list)\nfor w in words:\n    by_letter[w[0]].append(w)",
+      "setupCode": "words = [\"apple\", \"bread\", \"avocado\", \"cheese\", \"banana\", \"carrot\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = {}\nfor w in words:\n    expected.setdefault(w[0], []).append(w)\nassert dict(by_letter) == expected, 'by_letter should map each first letter to its words, in order.'",
+          "message": "Group the words by first letter."
+        }
+      ],
+      "hint": "No need to check if the key exists — `defaultdict(list)` creates it.",
+      "explanation": "`defaultdict` removes the *if key not in dict* boilerplate."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is a `deque` especially good at?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Sorting quickly"
+        },
+        {
+          "id": "b",
+          "text": "Adding and removing at both ends quickly"
+        },
+        {
+          "id": "c",
+          "text": "Storing unique items"
+        },
+        {
+          "id": "d",
+          "text": "Counting items"
+        }
+      ],
+      "answer": "b",
+      "hint": "Its name is short for *double-ended queue*.",
+      "explanation": "Removing from the front of a list is slow for big lists; a deque does it instantly."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This crashes with a *NameError*. Fix it so `counts` counts the letters.",
+      "starterCode": "counts = Counter(letters)\n",
+      "solution": "from collections import Counter\ncounts = Counter(letters)\n",
+      "setupCode": "letters = \"hello world\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from collections import Counter as _C\nassert counts == _C(letters), 'counts should be a Counter of letters.'",
+          "message": "counts should count the letters."
+        }
+      ],
+      "hint": "Python only knows `Counter` after you import it.",
+      "explanation": "Imports go at the top of the program."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the size so `recent` keeps only the last 3 pages visited.",
+      "template": "from collections import deque\nrecent = deque(maxlen=___)\nfor page in [\"home\", \"shop\", \"cart\", \"checkout\"]:\n    recent.append(page)",
+      "blanks": [
+        "3"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert list(recent) == ['shop', 'cart', 'checkout'], 'recent should keep the last 3 pages.'",
+          "message": "Keep the last 3 pages."
+        }
+      ],
+      "hint": "`maxlen` is how many items to keep.",
+      "explanation": "When full, a deque with `maxlen` drops items from the other end."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Store the 3 most common words in `text` (lowercase) in `top_three`, as a list of `(word, count)` pairs.",
+      "starterCode": "from collections import Counter\n",
+      "solution": "from collections import Counter\ntop_three = Counter(text.lower().split()).most_common(3)",
+      "setupCode": "text = \"red red blue green red blue yellow blue red green\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from collections import Counter as _C\nassert top_three == _C(text.lower().split()).most_common(3), 'top_three should be the 3 most common (word, count) pairs.'",
+          "message": "Check top_three."
+        }
+      ],
+      "hint": "Count the words, then `most_common(3)`.",
+      "explanation": "One line replaces a counting loop and a sort."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from collections import deque\nd = deque([1, 2, 3])\nd.rotate(1)\nprint(list(d))",
+      "expectedOutput": "[3, 1, 2]",
+      "hint": "Rotating by 1 moves the last item to the front.",
+      "explanation": "`rotate` shifts every item along, wrapping around."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A café queue: put `arrivals` into a `deque`. Serve the first `n` people with `popleft()`, collecting their names in `served`. Store who's still waiting as a list in `waiting`.",
+      "starterCode": "from collections import deque\n",
+      "solution": "from collections import deque\nqueue = deque(arrivals)\nserved = []\nfor _ in range(n):\n    served.append(queue.popleft())\nwaiting = list(queue)",
+      "setupCode": "arrivals = [\"Ana\", \"Ben\", \"Cleo\", \"Dev\", \"Eli\"]\nn = 2",
+      "tests": [
+        {
+          "name": "served",
+          "code": "assert served == arrivals[:n], 'served should be the first n arrivals, in order.'",
+          "message": "Serve the first n people."
+        },
+        {
+          "name": "waiting",
+          "code": "assert waiting == arrivals[n:], 'waiting should be everyone not yet served.'",
+          "message": "Check who is waiting."
+        }
+      ],
+      "hint": "`popleft()` takes from the front of the queue.",
+      "explanation": "A deque is the natural shape for first-come, first-served."
+    }
+  ]
+}
