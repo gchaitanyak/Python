@@ -1,0 +1,172 @@
+{
+  "id": "py-sqlite-databases",
+  "moduleId": "optional-tracks",
+  "title": "Databases with sqlite3",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "A **database** stores data in tables you can query with **SQL**. Python ships with `sqlite3`, a complete database in a single file — or in memory with `\":memory:\"`, which is what most exercises here use. You `connect`, run SQL with `execute`, read rows with `fetchall`, and `commit` to save changes.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Always pass values with `?` placeholders. Python fills them in safely — never build SQL with f-strings.",
+      "exampleCode": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE books (title TEXT, author TEXT, year INTEGER)\")\ndb.executemany(\"INSERT INTO books VALUES (?, ?, ?)\", [\n    (\"The Quiet Garden\", \"M. Okafor\", 2019),\n    (\"Ten Small Rivers\", \"L. Brandt\", 2021),\n    (\"Night Trains\", \"M. Okafor\", 2023),\n])\ndb.commit()\n\nfor title, year in db.execute(\"SELECT title, year FROM books WHERE author = ? ORDER BY year\", (\"M. Okafor\",)):\n    print(year, title)",
+      "explanation": "`execute` returns a cursor you can loop over; each row is a tuple."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `make_db()` that returns an in-memory connection with a table `pets` (columns `name TEXT`, `species TEXT`, `age INTEGER`) holding three rows: `Biscuit` dog 4, `Pebble` cat 2, `Comet` dog 9.",
+      "starterCode": "import sqlite3\n\ndef make_db():\n    pass\n",
+      "solution": "import sqlite3\n\ndef make_db():\n    db = sqlite3.connect(\":memory:\")\n    db.execute(\"CREATE TABLE pets (name TEXT, species TEXT, age INTEGER)\")\n    db.executemany(\"INSERT INTO pets VALUES (?, ?, ?)\", [(\"Biscuit\", \"dog\", 4), (\"Pebble\", \"cat\", 2), (\"Comet\", \"dog\", 9)])\n    db.commit()\n    return db",
+      "tests": [
+        {
+          "name": "rows",
+          "code": "db = make_db()\nassert sorted(db.execute('SELECT name, species, age FROM pets').fetchall()) == [('Biscuit', 'dog', 4), ('Comet', 'dog', 9), ('Pebble', 'cat', 2)], 'The pets table should hold the three pets.'",
+          "message": "Create and fill the table."
+        }
+      ],
+      "hint": "`CREATE TABLE`, then `executemany` with `?` placeholders, then `commit()`.",
+      "explanation": "In-memory databases vanish when the connection closes — handy for tests and exercises."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `dogs_by_age(db)` that returns the names of the dogs, oldest first, using one `SELECT` with `WHERE` and `ORDER BY`. (`make_db` is defined for you.)",
+      "starterCode": "import sqlite3\n\ndef make_db():\n    db = sqlite3.connect(\":memory:\")\n    db.execute(\"CREATE TABLE pets (name TEXT, species TEXT, age INTEGER)\")\n    db.executemany(\"INSERT INTO pets VALUES (?, ?, ?)\", [(\"Biscuit\", \"dog\", 4), (\"Pebble\", \"cat\", 2), (\"Comet\", \"dog\", 9), (\"Mochi\", \"dog\", 1)])\n    return db\n\n\ndef dogs_by_age(db):\n    pass\n",
+      "solution": "import sqlite3\n\ndef make_db():\n    db = sqlite3.connect(\":memory:\")\n    db.execute(\"CREATE TABLE pets (name TEXT, species TEXT, age INTEGER)\")\n    db.executemany(\"INSERT INTO pets VALUES (?, ?, ?)\", [(\"Biscuit\", \"dog\", 4), (\"Pebble\", \"cat\", 2), (\"Comet\", \"dog\", 9), (\"Mochi\", \"dog\", 1)])\n    return db\n\n\ndef dogs_by_age(db):\n    rows = db.execute(\"SELECT name FROM pets WHERE species = 'dog' ORDER BY age DESC\").fetchall()\n    return [name for (name,) in rows]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert dogs_by_age(make_db()) == ['Comet', 'Biscuit', 'Mochi'], 'Return dog names, oldest first.'",
+          "message": "Filter and sort in SQL."
+        }
+      ],
+      "hint": "`WHERE species = 'dog' ORDER BY age DESC`. Each row is a one-item tuple.",
+      "explanation": "Letting the database filter and sort is faster than fetching everything and doing it in Python."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This search builds SQL with an f-string. Typing `x' OR '1'='1` as the name returns **every** user — an SQL injection. Fix it with a `?` placeholder.",
+      "starterCode": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE users (name TEXT, email TEXT)\")\ndb.executemany(\"INSERT INTO users VALUES (?, ?)\", [(\"ana\", \"ana@example.com\"), (\"ben\", \"ben@example.com\")])\n\ndef find_user(name):\n    return db.execute(f\"SELECT email FROM users WHERE name = '{name}'\").fetchall()\n",
+      "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.execute(\"CREATE TABLE users (name TEXT, email TEXT)\")\ndb.executemany(\"INSERT INTO users VALUES (?, ?)\", [(\"ana\", \"ana@example.com\"), (\"ben\", \"ben@example.com\")])\n\ndef find_user(name):\n    return db.execute(\"SELECT email FROM users WHERE name = ?\", (name,)).fetchall()\n",
+      "tests": [
+        {
+          "name": "normal",
+          "code": "assert find_user('ana') == [('ana@example.com',)], 'A normal search should still work.'",
+          "message": "Keep normal searches working."
+        },
+        {
+          "name": "injection",
+          "code": "assert find_user(\"x' OR '1'='1\") == [], 'The trick input must not return every user.'",
+          "message": "Block the injection."
+        }
+      ],
+      "hint": "Put `?` in the SQL and pass the value in a tuple: `(name,)`.",
+      "explanation": "With placeholders, the database treats the input as a value, never as SQL. This is the single most important database habit."
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "SQL can aggregate. What does this print?",
+      "code": "import sqlite3\n\ndb = sqlite3.connect(':memory:')\ndb.execute('CREATE TABLE sales (item TEXT, qty INTEGER)')\ndb.executemany('INSERT INTO sales VALUES (?, ?)', [('tea', 3), ('cake', 1), ('tea', 2), ('cake', 4), ('jam', 1)])\nfor row in db.execute('SELECT item, SUM(qty) FROM sales GROUP BY item ORDER BY SUM(qty) DESC, item'):\n    print(row)",
+      "expectedOutput": "('cake', 5)\n('tea', 5)\n('jam', 1)",
+      "hint": "`GROUP BY item` makes one row per item.",
+      "explanation": "Both cake and tea total 5, so the second sort key (`item`) puts cake first."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `add_score(db, player, points)` and `leaderboard(db)` for a table `scores(player TEXT, points INTEGER)` (create it in `setup(db)`). `leaderboard` returns `(player, total)` tuples for each player, highest total first.",
+      "starterCode": "import sqlite3\n\ndef setup(db):\n    pass\n\n\ndef add_score(db, player, points):\n    pass\n\n\ndef leaderboard(db):\n    pass\n",
+      "solution": "import sqlite3\n\ndef setup(db):\n    db.execute(\"CREATE TABLE scores (player TEXT, points INTEGER)\")\n\n\ndef add_score(db, player, points):\n    db.execute(\"INSERT INTO scores VALUES (?, ?)\", (player, points))\n    db.commit()\n\n\ndef leaderboard(db):\n    return db.execute(\"SELECT player, SUM(points) AS total FROM scores GROUP BY player ORDER BY total DESC\").fetchall()",
+      "tests": [
+        {
+          "name": "board",
+          "code": "import sqlite3 as _s\ndb = _s.connect(':memory:')\nsetup(db)\nfor _p, _n in [('ana', 10), ('ben', 25), ('ana', 30), ('caro', 5)]:\n    add_score(db, _p, _n)\nassert leaderboard(db) == [('ana', 40), ('ben', 25), ('caro', 5)], 'Total each player, highest first.'",
+          "message": "Build the leaderboard."
+        }
+      ],
+      "hint": "`SUM(points)` with `GROUP BY player`, ordered by the total descending.",
+      "explanation": "This is the same idea as this site's leaderboards: store events, aggregate when you read."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the attribute that makes rows behave like dictionaries, so you can write `row[\"name\"]`.",
+      "template": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.___ = sqlite3.Row\ndb.execute(\"CREATE TABLE t (name TEXT, age INTEGER)\")\ndb.execute(\"INSERT INTO t VALUES ('Ana', 31)\")\nrow = db.execute(\"SELECT * FROM t\").fetchone()\nname = row[\"name\"]",
+      "blanks": [
+        "row_factory"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert name == 'Ana', 'name should be Ana.'",
+          "message": "Read the column by name."
+        }
+      ],
+      "hint": "It's the *factory* that makes each *row*.",
+      "explanation": "`sqlite3.Row` lets you read columns by name — clearer than remembering positions."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Two related tables: `authors(id, name)` and `books(title, author_id)` are created for you in `db`. Write `books_with_authors(db)` returning `(title, author_name)` tuples sorted by title, using a `JOIN`.",
+      "starterCode": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE books (title TEXT, author_id INTEGER REFERENCES authors(id));\nINSERT INTO authors VALUES (1, 'M. Okafor'), (2, 'L. Brandt');\nINSERT INTO books VALUES ('Night Trains', 1), ('Ten Small Rivers', 2), ('The Quiet Garden', 1);\n\"\"\")\n\ndef books_with_authors(db):\n    pass\n",
+      "solution": "import sqlite3\n\ndb = sqlite3.connect(\":memory:\")\ndb.executescript(\"\"\"\nCREATE TABLE authors (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE books (title TEXT, author_id INTEGER REFERENCES authors(id));\nINSERT INTO authors VALUES (1, 'M. Okafor'), (2, 'L. Brandt');\nINSERT INTO books VALUES ('Night Trains', 1), ('Ten Small Rivers', 2), ('The Quiet Garden', 1);\n\"\"\")\n\ndef books_with_authors(db):\n    return db.execute(\"SELECT books.title, authors.name FROM books JOIN authors ON authors.id = books.author_id ORDER BY books.title\").fetchall()",
+      "tests": [
+        {
+          "name": "join",
+          "code": "assert books_with_authors(db) == [('Night Trains', 'M. Okafor'), ('Ten Small Rivers', 'L. Brandt'), ('The Quiet Garden', 'M. Okafor')], 'Pair each book with its author name, by title.'",
+          "message": "Join the tables."
+        }
+      ],
+      "hint": "`JOIN authors ON authors.id = books.author_id`.",
+      "explanation": "Storing each author once and linking by id avoids repeating (and misspelling) names in every book row."
+    },
+    {
+      "id": "q09",
+      "type": "multiple_choice",
+      "prompt": "You inserted rows into a database **file** but they're gone after the program ends. What's missing?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`db.close()`"
+        },
+        {
+          "id": "b",
+          "text": "`db.commit()`"
+        },
+        {
+          "id": "c",
+          "text": "`db.save()`"
+        },
+        {
+          "id": "d",
+          "text": "A `PRIMARY KEY`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Changes happen inside a transaction.",
+      "explanation": "Until you `commit()`, changes aren't saved. (`with db:` commits automatically when the block succeeds.)"
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `save_notes(path, notes)` that stores a list of note strings in a database **file** (table `notes(text TEXT)`, created if it doesn't exist), and `load_notes(path)` that returns them in insertion order. Use `with` so changes are committed.",
+      "starterCode": "import sqlite3\n\ndef save_notes(path, notes):\n    db = sqlite3.connect(path)\n    db.execute(\"CREATE TABLE IF NOT EXISTS notes (text TEXT)\")\n    db.executemany(\"INSERT INTO notes VALUES (?)\", [(n,) for n in notes])\n    db.close()\n\n\ndef load_notes(path):\n    pass\n",
+      "solution": "import sqlite3\n\ndef save_notes(path, notes):\n    db = sqlite3.connect(path)\n    with db:\n        db.execute(\"CREATE TABLE IF NOT EXISTS notes (text TEXT)\")\n        db.executemany(\"INSERT INTO notes VALUES (?)\", [(n,) for n in notes])\n    db.close()\n\n\ndef load_notes(path):\n    db = sqlite3.connect(path)\n    rows = db.execute(\"SELECT text FROM notes ORDER BY rowid\").fetchall()\n    db.close()\n    return [text for (text,) in rows]",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['notes.db']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\n",
+      "tests": [
+        {
+          "name": "persist",
+          "code": "save_notes('notes.db', ['buy milk', 'call Ana'])\nsave_notes('notes.db', ['water plants'])\nassert load_notes('notes.db') == ['buy milk', 'call Ana', 'water plants'], 'Notes should survive closing and reopening the file.'",
+          "message": "Save and reload notes."
+        }
+      ],
+      "hint": "Wrap the inserts in `with db:` to commit. `ORDER BY rowid` keeps insertion order.",
+      "explanation": "A real file database keeps data between runs of your program — no server needed."
+    }
+  ]
+}

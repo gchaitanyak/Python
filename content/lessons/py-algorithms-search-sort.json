@@ -1,0 +1,224 @@
+{
+  "id": "py-algorithms-search-sort",
+  "moduleId": "optional-tracks",
+  "title": "Searching and Sorting Algorithms",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "An **algorithm** is a step-by-step recipe. Searching and sorting are the classics: they show how the same answer can take very different amounts of work. **Linear search** checks every item; **binary search** halves a *sorted* list each step, so a million items take about 20 checks. We describe growth with **Big-O**: O(n) grows with the list, O(log n) barely grows, O(n²) explodes.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Binary search keeps a window `lo..hi` and looks at the middle. Too small? Search the right half. Too big? The left half.",
+      "exampleCode": "def binary_search(items, target):\n    lo, hi = 0, len(items) - 1\n    steps = 0\n    while lo <= hi:\n        steps += 1\n        mid = (lo + hi) // 2\n        if items[mid] == target:\n            return mid, steps\n        if items[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1, steps\n\nnumbers = list(range(0, 2_000_000, 2))   # a million sorted even numbers\nprint(binary_search(numbers, 1_337_000))",
+      "explanation": "Twenty-ish steps for a million items — that's O(log n)."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `linear_search(items, target)` that returns the index of the first `target` in `items`, or `-1` if it isn't there. Use a loop, not `.index()`.",
+      "starterCode": "def linear_search(items, target):\n    pass\n",
+      "solution": "def linear_search(items, target):\n    for i, item in enumerate(items):\n        if item == target:\n            return i\n    return -1",
+      "tests": [
+        {
+          "name": "found",
+          "code": "assert linear_search([4, 8, 15, 16, 23, 42], 16) == 3 and linear_search(['a', 'b', 'a'], 'a') == 0, 'Return the index of the first match.'",
+          "message": "Find the first match."
+        },
+        {
+          "name": "missing",
+          "code": "assert linear_search([1, 2, 3], 9) == -1 and linear_search([], 1) == -1, 'Return -1 when the target is missing.'",
+          "message": "Return -1 when missing."
+        },
+        {
+          "name": "no index()",
+          "code": "assert 'index' not in linear_search.__code__.co_names, 'Write the loop yourself instead of calling .index().'",
+          "message": "Use a loop."
+        }
+      ],
+      "hint": "`enumerate` gives each index with its item.",
+      "explanation": "Linear search works on any list, sorted or not, but checks up to n items: O(n)."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `binary_search(items, target)` for a **sorted** list. Return the index of `target`, or `-1`. Don't use `.index()` or `in`.",
+      "starterCode": "def binary_search(items, target):\n    pass\n",
+      "solution": "def binary_search(items, target):\n    lo, hi = 0, len(items) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if items[mid] == target:\n            return mid\n        if items[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1",
+      "tests": [
+        {
+          "name": "found",
+          "code": "data = list(range(3, 300, 3))\nassert all(binary_search(data, x) == i for i, x in enumerate(data)), 'Every item should be found at its index.'",
+          "message": "Find every item."
+        },
+        {
+          "name": "missing",
+          "code": "assert binary_search([1, 3, 5, 7], 4) == -1 and binary_search([], 1) == -1 and binary_search([2], 1) == -1, 'Missing targets return -1.'",
+          "message": "Return -1 when missing."
+        },
+        {
+          "name": "fast",
+          "code": "class _Count(list):\n    reads = 0\n    def __getitem__(self, i):\n        _Count.reads += 1\n        return list.__getitem__(self, i)\n_big = _Count(range(1_000_000))\nassert binary_search(_big, 765_432) == 765_432 and _Count.reads <= 60, f'Binary search should take about 20 steps (a few reads each), not {_Count.reads} reads.'",
+          "message": "Halve the search each step."
+        }
+      ],
+      "hint": "Keep `lo` and `hi`; look at `mid = (lo + hi) // 2`; move one end past `mid`.",
+      "explanation": "The `lo <= hi` condition and `mid ± 1` updates are where off-by-one bugs hide. Test with 0, 1 and 2 items."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "Binary search needs the list to be…",
+      "options": [
+        {
+          "id": "a",
+          "text": "Short"
+        },
+        {
+          "id": "b",
+          "text": "Sorted"
+        },
+        {
+          "id": "c",
+          "text": "Made of numbers"
+        },
+        {
+          "id": "d",
+          "text": "Without duplicates"
+        }
+      ],
+      "answer": "b",
+      "hint": "How does it decide which half to keep?",
+      "explanation": "It compares with the middle item to throw away half — that only works if the order is known."
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "The standard library has binary search in `bisect`. What does this print?",
+      "code": "import bisect\n\nscores = [10, 20, 30, 40]\nprint(bisect.bisect_left(scores, 25), bisect.bisect_left(scores, 30))\nbisect.insort(scores, 25)\nprint(scores)",
+      "expectedOutput": "2 2\n[10, 20, 25, 30, 40]",
+      "hint": "`bisect_left` gives the position where the value would go.",
+      "explanation": "25 would go at index 2; 30 is already at index 2. `insort` inserts while keeping the list sorted."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `bubble_sort(items)` that returns a **new** sorted list using bubble sort: repeatedly swap neighbours that are in the wrong order. Stop early when a pass makes no swaps. Don't call `sorted` or `.sort()`.",
+      "starterCode": "def bubble_sort(items):\n    pass\n",
+      "solution": "def bubble_sort(items):\n    result = list(items)\n    for end in range(len(result) - 1, 0, -1):\n        swapped = False\n        for i in range(end):\n            if result[i] > result[i + 1]:\n                result[i], result[i + 1] = result[i + 1], result[i]\n                swapped = True\n        if not swapped:\n            break\n    return result",
+      "tests": [
+        {
+          "name": "sorts",
+          "code": "import random as _r\n_data = [_r.Random(7).randint(0, 99) for _ in range(40)]\nassert bubble_sort(_data) == sorted(_data) and bubble_sort([]) == [] and bubble_sort([3, 1, 2, 1]) == [1, 1, 2, 3], 'The result should be sorted.'",
+          "message": "Sort correctly."
+        },
+        {
+          "name": "new list",
+          "code": "_x = [3, 1, 2]\nbubble_sort(_x)\nassert _x == [3, 1, 2], 'Do not change the original list.'",
+          "message": "Return a new list."
+        },
+        {
+          "name": "own code",
+          "code": "assert not {'sorted', 'sort'} & set(bubble_sort.__code__.co_names), 'Write the sorting loops yourself.'",
+          "message": "No built-in sorting."
+        }
+      ],
+      "hint": "Copy with `list(items)`. An outer loop for passes, an inner loop comparing `result[i]` and `result[i + 1]`.",
+      "explanation": "Bubble sort is O(n²): fine for 20 items, hopeless for a million. Its early stop makes it fast on lists that are already sorted."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Write `merge_sorted(a, b)` that merges two **sorted** lists into one sorted list in a single pass (no `sorted`). This is the heart of merge sort.",
+      "starterCode": "def merge_sorted(a, b):\n    pass\n",
+      "solution": "def merge_sorted(a, b):\n    out = []\n    i = j = 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            out.append(a[i])\n            i += 1\n        else:\n            out.append(b[j])\n            j += 1\n    out.extend(a[i:])\n    out.extend(b[j:])\n    return out",
+      "tests": [
+        {
+          "name": "merge",
+          "code": "assert merge_sorted([1, 4, 9], [2, 3, 10, 11]) == [1, 2, 3, 4, 9, 10, 11], 'Merge both lists in order.'",
+          "message": "Merge in order."
+        },
+        {
+          "name": "edges",
+          "code": "assert merge_sorted([], [1, 2]) == [1, 2] and merge_sorted([5], []) == [5] and merge_sorted([1, 1], [1]) == [1, 1, 1], 'Handle empty lists and duplicates.'",
+          "message": "Handle empty lists."
+        },
+        {
+          "name": "no sorted",
+          "code": "assert not {'sorted', 'sort'} & set(merge_sorted.__code__.co_names), 'Merge with two positions instead of sorting.'",
+          "message": "One pass, no sorting."
+        }
+      ],
+      "hint": "Keep a position in each list; append the smaller front item; add whatever is left at the end.",
+      "explanation": "Each item is looked at once, so merging is O(n)."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Now write `merge_sort(items)`: split the list in half, sort each half with `merge_sort`, then combine them with `merge_sorted` (already defined for you).",
+      "starterCode": "def merge_sorted(a, b):\n    out = []\n    i = j = 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            out.append(a[i])\n            i += 1\n        else:\n            out.append(b[j])\n            j += 1\n    return out + a[i:] + b[j:]\n\n\ndef merge_sort(items):\n    pass\n",
+      "solution": "def merge_sorted(a, b):\n    out = []\n    i = j = 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            out.append(a[i])\n            i += 1\n        else:\n            out.append(b[j])\n            j += 1\n    return out + a[i:] + b[j:]\n\n\ndef merge_sort(items):\n    if len(items) <= 1:\n        return list(items)\n    mid = len(items) // 2\n    return merge_sorted(merge_sort(items[:mid]), merge_sort(items[mid:]))",
+      "tests": [
+        {
+          "name": "sorts",
+          "code": "import random as _r\n_g = _r.Random(3)\nfor _n in (0, 1, 2, 7, 64):\n    _data = [_g.randint(-50, 50) for _ in range(_n)]\n    assert merge_sort(_data) == sorted(_data), f'merge_sort should sort a list of {_n} items.'",
+          "message": "Sort lists of any length."
+        },
+        {
+          "name": "recursive",
+          "code": "assert 'merge_sort' in merge_sort.__code__.co_names and not {'sorted', 'sort'} & set(merge_sort.__code__.co_names), 'merge_sort should call itself on each half, without sorted().'",
+          "message": "Recurse on each half."
+        }
+      ],
+      "hint": "Base case: 0 or 1 items are already sorted. Otherwise split at `len(items) // 2`.",
+      "explanation": "Splitting gives log n levels, and each level merges n items: O(n log n) — the same growth as Python's own `sorted`."
+    },
+    {
+      "id": "q09",
+      "type": "multiple_choice",
+      "prompt": "Sorting 1,000,000 numbers: which is fastest in practice?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Bubble sort"
+        },
+        {
+          "id": "b",
+          "text": "Your merge sort"
+        },
+        {
+          "id": "c",
+          "text": "Python's built-in `sorted()`"
+        },
+        {
+          "id": "d",
+          "text": "They're all about the same"
+        }
+      ],
+      "answer": "c",
+      "hint": "Bubble sort is O(n²).",
+      "explanation": "`sorted` (Timsort) is O(n log n) like merge sort but written in C and tuned for real data. Write your own to learn; use `sorted` in real code."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Use the right tool: given a list of `(name, score)` pairs, write `top_three(results)` returning the three names with the highest scores, highest first. Ties keep alphabetical order.",
+      "starterCode": "def top_three(results):\n    pass\n",
+      "solution": "def top_three(results):\n    ranked = sorted(results, key=lambda r: (-r[1], r[0]))\n    return [name for name, _ in ranked[:3]]",
+      "tests": [
+        {
+          "name": "top",
+          "code": "assert top_three([('Ana', 71), ('Ben', 93), ('Caro', 88), ('Dev', 93), ('Eli', 40)]) == ['Ben', 'Dev', 'Caro'], 'Highest scores first; ties alphabetical.'",
+          "message": "Rank by score, then name."
+        },
+        {
+          "name": "short",
+          "code": "assert top_three([('Solo', 5)]) == ['Solo'], 'Fewer than three results is fine.'",
+          "message": "Handle short lists."
+        }
+      ],
+      "hint": "Sort with a key of `(-score, name)` and slice the first three.",
+      "explanation": "A negative score sorts high scores first while names still sort A–Z within a tie."
+    }
+  ]
+}

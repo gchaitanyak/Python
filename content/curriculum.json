@@ -2268,7 +2268,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement binary search",
             "Compare sorting algorithms"
@@ -2295,7 +2295,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement a stack and a queue",
             "Walk a binary tree"
@@ -2322,7 +2322,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create tables and insert rows",
             "Query with parameters"
@@ -2345,7 +2345,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Define routes",
             "Return JSON"
