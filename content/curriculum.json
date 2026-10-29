@@ -1097,7 +1097,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use positional and keyword arguments",
             "Set default values safely"
@@ -1124,7 +1124,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Accept any number of arguments",
             "Unpack arguments into calls"
@@ -1155,7 +1155,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Tell local from global",
             "Use global and nonlocal sparingly"
@@ -1186,7 +1186,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write lambdas",
             "Transform with map",
@@ -1222,7 +1222,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write a base case and a recursive case",
             "Trace a recursive call"
@@ -1249,7 +1249,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Return functions from functions",
             "Write a simple decorator"
@@ -1288,7 +1288,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use iter and next",
             "Write generators with yield"
@@ -1327,7 +1327,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Design small functions that work together"
           ],

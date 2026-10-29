@@ -1,0 +1,179 @@
+{
+  "id": "py-iterators-generators",
+  "moduleId": "functions",
+  "title": "Iterators and Generators",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "An **iterator** hands out values one at a time: `next(it)` gets the next one, and it raises *StopIteration* when there are none left. `for` loops use iterators behind the scenes. A **generator** function uses `yield` instead of `return` to produce values lazily, one per request.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "A generator pauses at each `yield` and carries on from there next time. A **generator expression** looks like a comprehension in round brackets.",
+      "exampleCode": "it = iter([10, 20])\nprint(next(it))\nprint(next(it))\n\ndef countdown(n):\n    while n > 0:\n        yield n\n        n -= 1\n\nprint(list(countdown(3)))\nprint(sum(x * x for x in range(4)))",
+      "explanation": "Generators don't build the whole list in memory, so they can even be endless."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write a generator `evens(limit)` that yields the even numbers from 0 up to (but not including) `limit`.",
+      "starterCode": "def evens(limit):\n    pass\n",
+      "solution": "def evens(limit):\n    for n in range(0, limit, 2):\n        yield n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert list(evens(7)) == [0, 2, 4, 6] and list(evens(1)) == [0] and list(evens(0)) == [], 'evens(7) should yield 0, 2, 4, 6.'",
+          "message": "Yield the even numbers below limit."
+        },
+        {
+          "name": "generator",
+          "code": "import types\nassert isinstance(evens(3), types.GeneratorType), 'evens should be a generator — use yield.'",
+          "message": "Use yield."
+        }
+      ],
+      "hint": "Loop with `range` and `yield` each value.",
+      "explanation": "Any function containing `yield` becomes a generator."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "it = iter(\"ab\")\nprint(next(it), next(it))",
+      "expectedOutput": "a b",
+      "hint": "Each `next` moves one step along.",
+      "explanation": "The iterator gives the characters in order."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write an **endless** generator `fibonacci()` that yields 0, 1, 1, 2, 3, 5, 8, …",
+      "starterCode": "def fibonacci():\n    pass\n",
+      "solution": "def fibonacci():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a + b",
+      "tests": [
+        {
+          "name": "first",
+          "code": "g = fibonacci()\nassert [next(g) for _ in range(8)] == [0, 1, 1, 2, 3, 5, 8, 13], 'The first 8 values should be 0, 1, 1, 2, 3, 5, 8, 13.'",
+          "message": "Yield the Fibonacci numbers."
+        },
+        {
+          "name": "lazy",
+          "code": "g = fibonacci()\nfor _ in range(50):\n    v = next(g)\nassert v == 7778742049, 'It should keep going as long as you ask.'",
+          "message": "Keep going indefinitely."
+        }
+      ],
+      "hint": "Keep two numbers; `yield` the first, then move both along.",
+      "explanation": "`while True` is fine in a generator — it only runs when asked for the next value."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What happens when you call `next()` on an iterator that has run out?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It returns `None`"
+        },
+        {
+          "id": "b",
+          "text": "It starts again"
+        },
+        {
+          "id": "c",
+          "text": "It raises *StopIteration*"
+        },
+        {
+          "id": "d",
+          "text": "It returns the last value again"
+        }
+      ],
+      "answer": "c",
+      "hint": "`for` loops catch this signal for you.",
+      "explanation": "*StopIteration* is how an iterator says *no more values*."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`squares(n)` should produce 0, 1, 4, 9 … but `list(squares(4))` crashes. Fix it.",
+      "starterCode": "def squares(n):\n    for i in range(n):\n        return i * i\n",
+      "solution": "def squares(n):\n    for i in range(n):\n        yield i * i\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert list(squares(4)) == [0, 1, 4, 9] and list(squares(0)) == [], 'list(squares(4)) should be [0, 1, 4, 9].'",
+          "message": "Produce every square."
+        }
+      ],
+      "hint": "`return` ends the function on the first value.",
+      "explanation": "`yield` hands back a value and keeps going."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword to make a generator expression.",
+      "template": "total = sum(n * n ___ n in range(5))",
+      "blanks": [
+        "for"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 30, 'total should be 30.'",
+          "message": "total should be 30."
+        }
+      ],
+      "hint": "It reads just like a comprehension.",
+      "explanation": "`sum(n * n for n in range(5))` is 30, with no list built."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write a generator `chunks(text, size)` that yields consecutive pieces of `text`, each `size` characters long (the last may be shorter).",
+      "starterCode": "def chunks(text, size):\n    pass\n",
+      "solution": "def chunks(text, size):\n    for start in range(0, len(text), size):\n        yield text[start:start + size]",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert list(chunks('abcdefg', 3)) == ['abc', 'def', 'g'], 'chunks(\"abcdefg\", 3) should yield abc, def, g.'",
+          "message": "Split into pieces."
+        },
+        {
+          "name": "exact",
+          "code": "assert list(chunks('abcd', 2)) == ['ab', 'cd'] and list(chunks('', 4)) == [], 'Exact fits and empty text should work.'",
+          "message": "Handle exact fits and empty text."
+        }
+      ],
+      "hint": "`range(0, len(text), size)` gives each starting index.",
+      "explanation": "Processing big data in chunks keeps memory use low."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "A generator can only be used once. What does this print?",
+      "code": "def g():\n    yield 1\n    yield 2\n\ngen = g()\nprint(list(gen), list(gen))",
+      "expectedOutput": "[1, 2] []",
+      "hint": "The first `list` uses up every value.",
+      "explanation": "Once exhausted, a generator stays empty. Call `g()` again for a fresh one."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write a generator `running_total(numbers)` that yields the running sum after each number — for `[3, 1, 4]` it yields 3, 4, 8.",
+      "starterCode": "def running_total(numbers):\n    pass\n",
+      "solution": "def running_total(numbers):\n    total = 0\n    for n in numbers:\n        total += n\n        yield total",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert list(running_total([3, 1, 4])) == [3, 4, 8] and list(running_total([])) == [], 'running_total([3, 1, 4]) should yield 3, 4, 8.'",
+          "message": "Yield each running total."
+        },
+        {
+          "name": "any iterable",
+          "code": "assert list(running_total(range(1, 5))) == [1, 3, 6, 10], 'It should work with any iterable, like range.'",
+          "message": "Work with any iterable."
+        }
+      ],
+      "hint": "Keep a total; add each number and `yield` the total.",
+      "explanation": "Generators are great for streams of values like bank balances or sensor readings."
+    }
+  ]
+}

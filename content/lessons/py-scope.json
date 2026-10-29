@@ -1,0 +1,169 @@
+{
+  "id": "py-scope",
+  "moduleId": "functions",
+  "title": "Scope",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A variable's **scope** is where it can be used. Names created inside a function are **local**: they exist only while the function runs. Names created at the top level of the file are **global**. Python looks a name up in this order: **L**ocal, **E**nclosing function, **G**lobal, **B**uilt-in.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Assigning to a name inside a function creates a new local name, even if a global one has the same name. `global` and `nonlocal` change that — use them sparingly; returning values is usually clearer.",
+      "exampleCode": "x = \"global\"\n\ndef show():\n    x = \"local\"\n    print(x)\n\nshow()\nprint(x)",
+      "explanation": "The function's `x` is a different variable from the global `x`."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 5\n\ndef f():\n    x = 10\n    return x\n\nprint(f(), x)",
+      "expectedOutput": "10 5",
+      "hint": "Does assigning inside the function change the global?",
+      "explanation": "The function made its own local `x`; the global stays 5."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `add_points(score, points)` that **returns** the new score. Don't use `global` — take what you need as arguments and return the result.",
+      "starterCode": "def add_points(score, points):\n    pass\n",
+      "solution": "def add_points(score, points):\n    return score + points",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert add_points(10, 5) == 15 and add_points(0, -3) == -3, 'add_points should return score + points.'",
+          "message": "Return the new score."
+        }
+      ],
+      "hint": "One line: return the sum.",
+      "explanation": "Functions that take inputs and return outputs are easy to test and reuse."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "Calling `increment()` raises an *UnboundLocalError*. Make it add 1 to the global `count` (after two calls `count` should be 2).",
+      "starterCode": "count = 0\n\ndef increment():\n    count += 1\n\nincrement()\nincrement()\n",
+      "solution": "count = 0\n\ndef increment():\n    global count\n    count += 1\n\nincrement()\nincrement()\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert count == 2, 'count should be 2 after two calls.'",
+          "message": "count should be 2."
+        }
+      ],
+      "hint": "Assigning makes `count` local, so Python can't read it first. Tell Python it's the global one.",
+      "explanation": "`global count` lets the function change the global — but returning a value is usually cleaner."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Where does Python look **first** when it meets a name inside a function?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Built-in names"
+        },
+        {
+          "id": "b",
+          "text": "Global names"
+        },
+        {
+          "id": "c",
+          "text": "The function's local names"
+        },
+        {
+          "id": "d",
+          "text": "The enclosing function"
+        }
+      ],
+      "answer": "c",
+      "hint": "Remember L-E-G-B.",
+      "explanation": "Local first, then enclosing functions, then global, then built-in."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `tally(words)` that returns the total number of characters in `words`. Inside it, use a helper function `add(n)` that adds to a running `total` with `nonlocal`.",
+      "starterCode": "def tally(words):\n    total = 0\n    def add(n):\n        pass\n    for w in words:\n        add(len(w))\n    return total\n",
+      "solution": "def tally(words):\n    total = 0\n    def add(n):\n        nonlocal total\n        total += n\n    for w in words:\n        add(len(w))\n    return total",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert tally(['ab', 'c']) == 3 and tally([]) == 0 and tally(['hello', 'world']) == 10, 'tally should add up the lengths of the words.'",
+          "message": "Add up the word lengths."
+        }
+      ],
+      "hint": "`nonlocal total` lets `add` change the `total` that belongs to `tally`.",
+      "explanation": "`nonlocal` is for names in an enclosing function; `global` is for top-level names."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword so `visit()` changes the module-level `visits`.",
+      "template": "visits = 0\n\ndef visit():\n    ___ visits\n    visits += 1\n\nvisit()\nvisit()",
+      "blanks": [
+        "global"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert visits == 2, 'visits should be 2.'",
+          "message": "visits should be 2."
+        }
+      ],
+      "hint": "Which keyword refers to a top-level name?",
+      "explanation": "`global visits` makes the assignment change the top-level variable."
+    },
+    {
+      "id": "q08",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def outer():\n    msg = \"hi\"\n    def inner():\n        return msg.upper()\n    return inner()\n\nprint(outer())",
+      "expectedOutput": "HI",
+      "hint": "`inner` can **read** names from the function around it.",
+      "explanation": "Reading an enclosing name needs no keyword; only assigning does."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "This should print `6` and then `9`, but the last line crashes with *TypeError: 'int' object is not callable*. Fix it.",
+      "starterCode": "sum = 0\nfor n in [1, 2, 3]:\n    sum += n\nprint(sum)\nprint(sum([4, 5]))\n",
+      "solution": "total = 0\nfor n in [1, 2, 3]:\n    total += n\nprint(total)\nprint(sum([4, 5]))\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split() == ['6', '9'], 'The program should print 6 and then 9.'",
+          "message": "Print 6 then 9."
+        }
+      ],
+      "hint": "A global named `sum` hides the built-in `sum` function. Rename your variable.",
+      "explanation": "Avoid naming variables after built-ins like `sum`, `list` or `max`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `apply_transactions(balance, transactions)` that returns the final balance. Each transaction is a number (positive = deposit, negative = withdrawal). Skip any withdrawal that would take the balance below 0.",
+      "starterCode": "def apply_transactions(balance, transactions):\n    pass\n",
+      "solution": "def apply_transactions(balance, transactions):\n    for t in transactions:\n        if balance + t < 0:\n            continue\n        balance += t\n    return balance",
+      "tests": [
+        {
+          "name": "basic",
+          "code": "assert apply_transactions(100, [50, -30]) == 120, 'Deposits and withdrawals should be applied in order.'",
+          "message": "Apply each transaction."
+        },
+        {
+          "name": "skip",
+          "code": "assert apply_transactions(20, [-50, 10, -25]) == 5, 'A withdrawal that would go below 0 is skipped.'",
+          "message": "Skip overdrawing withdrawals."
+        },
+        {
+          "name": "none",
+          "code": "assert apply_transactions(7, []) == 7, 'No transactions → balance unchanged.'",
+          "message": "Handle an empty list."
+        }
+      ],
+      "hint": "Use the parameter `balance` as a local running total and return it.",
+      "explanation": "Passing state in and returning it out avoids hidden global changes."
+    }
+  ]
+}

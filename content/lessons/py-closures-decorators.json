@@ -1,0 +1,174 @@
+{
+  "id": "py-closures-decorators",
+  "moduleId": "functions",
+  "title": "Closures and Decorators",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Functions are values: you can return one from another function. An inner function that remembers names from the function around it is called a **closure**. A **decorator** is a function that takes a function and returns a new one that adds behaviour. `@decorator` above a `def` applies it.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`@shout` above `greet` means `greet = shout(greet)`.",
+      "exampleCode": "def make_multiplier(n):\n    def multiply(x):\n        return x * n\n    return multiply\n\ntriple = make_multiplier(3)\nprint(triple(5))\n\ndef shout(func):\n    def wrapper(*args):\n        return func(*args).upper()\n    return wrapper\n\n@shout\ndef greet(name):\n    return f\"hi {name}\"\n\nprint(greet(\"ana\"))",
+      "explanation": "`multiply` remembers `n` even after `make_multiplier` has finished."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `make_adder(n)` that returns a function which adds `n` to its argument.",
+      "starterCode": "def make_adder(n):\n    pass\n",
+      "solution": "def make_adder(n):\n    def add(x):\n        return x + n\n    return add",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert make_adder(5)(10) == 15 and make_adder(-1)(1) == 0, 'make_adder(5)(10) should be 15.'",
+          "message": "The returned function should add n."
+        },
+        {
+          "name": "independent",
+          "code": "a, b = make_adder(1), make_adder(100)\nassert a(1) == 2 and b(1) == 101, 'Each adder should remember its own n.'",
+          "message": "Each adder keeps its own n."
+        }
+      ],
+      "hint": "Define an inner function that uses `n`, then return it (no brackets).",
+      "explanation": "Each call to `make_adder` creates a new closure with its own `n`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def outer():\n    x = 1\n    def inner():\n        return x + 1\n    return inner\n\nf = outer()\nprint(f())",
+      "expectedOutput": "2",
+      "hint": "`f` is the inner function, which still knows `x`.",
+      "explanation": "The closure keeps `x` alive after `outer` returns."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `make_counter()` that returns a function. Each call of that function returns the next number: 1, 2, 3… Separate counters count separately.",
+      "starterCode": "def make_counter():\n    pass\n",
+      "solution": "def make_counter():\n    count = 0\n    def step():\n        nonlocal count\n        count += 1\n        return count\n    return step",
+      "tests": [
+        {
+          "name": "counts",
+          "code": "c = make_counter()\nassert (c(), c(), c()) == (1, 2, 3), 'Each call should return the next number.'",
+          "message": "Count 1, 2, 3."
+        },
+        {
+          "name": "separate",
+          "code": "a, b = make_counter(), make_counter()\na(); a()\nassert b() == 1, 'A new counter should start again at 1.'",
+          "message": "Counters should be independent."
+        }
+      ],
+      "hint": "Keep `count` in the outer function; use `nonlocal` to change it.",
+      "explanation": "Closures give a function private memory without a global variable."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `@decorator` written above `def f(): …` do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Calls `f` immediately"
+        },
+        {
+          "id": "b",
+          "text": "Replaces `f` with `decorator(f)`"
+        },
+        {
+          "id": "c",
+          "text": "Makes `f` private"
+        },
+        {
+          "id": "d",
+          "text": "Adds a comment"
+        }
+      ],
+      "answer": "b",
+      "hint": "It's a shortcut for one assignment.",
+      "explanation": "`@decorator` is the same as writing `f = decorator(f)` after the `def`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`add_one(3)` should give 5 (applied twice), but it crashes with *TypeError: 'NoneType' object is not callable*. Fix the decorator.",
+      "starterCode": "def twice(func):\n    def wrapper(x):\n        return func(func(x))\n\n@twice\ndef add_one(x):\n    return x + 1\n",
+      "solution": "def twice(func):\n    def wrapper(x):\n        return func(func(x))\n    return wrapper\n\n@twice\ndef add_one(x):\n    return x + 1\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert add_one(3) == 5, 'add_one(3) should be 5.'",
+          "message": "add_one(3) should be 5."
+        }
+      ],
+      "hint": "What does `twice` return?",
+      "explanation": "A decorator must return the new function, or the name ends up holding `None`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the symbol that applies the decorator.",
+      "template": "def log(func):\n    def wrapper(*args):\n        print(\"calling\", func.__name__)\n        return func(*args)\n    return wrapper\n\n___log\ndef square(n):\n    return n * n\n\nresult = square(4)",
+      "blanks": [
+        "@"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert result == 16 and 'calling square' in __output__, 'square should be decorated: it logs and still returns 16.'",
+          "message": "Apply the decorator."
+        }
+      ],
+      "hint": "Decorators are written with one special character.",
+      "explanation": "`@log` wraps `square` so every call is logged."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write a decorator `count_calls(func)` whose wrapper counts how many times it's been called, in an attribute `wrapper.calls` (start at 0).",
+      "starterCode": "def count_calls(func):\n    pass\n",
+      "solution": "def count_calls(func):\n    def wrapper(*args, **kwargs):\n        wrapper.calls += 1\n        return func(*args, **kwargs)\n    wrapper.calls = 0\n    return wrapper",
+      "tests": [
+        {
+          "name": "counts",
+          "code": "@count_calls\ndef hello(name):\n    return 'hi ' + name\nassert hello.calls == 0\nassert hello('a') == 'hi a'\nhello('b')\nassert hello.calls == 2, 'wrapper.calls should count the calls.'",
+          "message": "Count the calls and keep the result."
+        },
+        {
+          "name": "kwargs",
+          "code": "@count_calls\ndef add(a, b=0):\n    return a + b\nassert add(1, b=2) == 3, 'The wrapper should pass keyword arguments through.'",
+          "message": "Pass arguments through."
+        }
+      ],
+      "hint": "Functions can have attributes: set `wrapper.calls = 0` before returning it.",
+      "explanation": "`*args, **kwargs` in the wrapper lets it decorate any function."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def deco(f):\n    def w():\n        return \"[\" + f() + \"]\"\n    return w\n\n@deco\ndef hello():\n    return \"hi\"\n\nprint(hello())",
+      "expectedOutput": "[hi]",
+      "hint": "`hello` now refers to `w`.",
+      "explanation": "The wrapper calls the original and adds the brackets."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write a decorator `memoize(func)` that remembers results: if the function is called again with the same argument, return the saved result instead of calling it again. (Single-argument functions are enough.)",
+      "starterCode": "def memoize(func):\n    pass\n",
+      "solution": "def memoize(func):\n    cache = {}\n    def wrapper(n):\n        if n not in cache:\n            cache[n] = func(n)\n        return cache[n]\n    return wrapper",
+      "tests": [
+        {
+          "name": "cached",
+          "code": "calls = []\n@memoize\ndef slow_square(n):\n    calls.append(n)\n    return n * n\nassert slow_square(3) == 9 and slow_square(3) == 9 and slow_square(4) == 16\nassert calls == [3, 4], 'The original function should run once per distinct argument.'",
+          "message": "Run the original once per argument."
+        }
+      ],
+      "hint": "Keep a dictionary in the decorator; check it before calling `func`.",
+      "explanation": "Caching (memoising) can make slow repeated calculations instant."
+    }
+  ]
+}

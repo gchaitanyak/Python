@@ -1,0 +1,209 @@
+{
+  "id": "py-arguments",
+  "moduleId": "functions",
+  "title": "Arguments and Defaults",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Arguments can be passed by **position** (in order) or by **keyword** (`name=value`, in any order). A parameter can have a **default value**, used when the caller leaves it out. Keyword arguments make calls easier to read: `book(seats=2, window=True)`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Parameters with defaults must come after those without. Positional arguments must come before keyword ones in a call.",
+      "exampleCode": "def greet(name, greeting=\"Hello\"):\n    return f\"{greeting}, {name}!\"\n\nprint(greet(\"Ana\"))\nprint(greet(\"Ben\", \"Hi\"))\nprint(greet(greeting=\"Hey\", name=\"Cleo\"))",
+      "explanation": "The default is used only when that argument isn't given."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `power(base, exponent=2)` that returns `base` raised to `exponent`. With no exponent, it squares.",
+      "starterCode": "def power(base, exponent=2):\n    pass\n",
+      "solution": "def power(base, exponent=2):\n    return base ** exponent",
+      "tests": [
+        {
+          "name": "square",
+          "code": "assert power(3) == 9, 'power(3) should use the default exponent 2 and return 9.'",
+          "message": "power(3) should be 9."
+        },
+        {
+          "name": "given",
+          "code": "assert power(2, 5) == 32, 'power(2, 5) should be 32.'",
+          "message": "power(2, 5) should be 32."
+        },
+        {
+          "name": "keywords",
+          "code": "assert power(exponent=3, base=4) == 64, 'power(exponent=3, base=4) should be 64.'",
+          "message": "Keyword arguments should work too."
+        }
+      ],
+      "hint": "Return `base ** exponent`. The default is already in the `def` line.",
+      "explanation": "Defaults make the common case short while keeping the general case possible."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def f(a, b=10):\n    return a - b\n\nprint(f(3), f(3, 1), f(b=0, a=7))",
+      "expectedOutput": "-7 2 7",
+      "hint": "Work out each call separately; keywords can come in any order.",
+      "explanation": "3 − 10, then 3 − 1, then 7 − 0."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `label(item, price, currency=\"$\")` that returns text like `lamp: $24.00` — price always with 2 decimals.",
+      "starterCode": "def label(item, price, currency=\"$\"):\n    pass\n",
+      "solution": "def label(item, price, currency=\"$\"):\n    return f\"{item}: {currency}{price:.2f}\"",
+      "tests": [
+        {
+          "name": "default",
+          "code": "assert label('lamp', 24) == 'lamp: $24.00', 'label(\"lamp\", 24) should be \"lamp: $24.00\".'",
+          "message": "Use the default currency."
+        },
+        {
+          "name": "custom",
+          "code": "assert label('tea', 3.5, '£') == 'tea: £3.50', 'label(\"tea\", 3.5, \"£\") should be \"tea: £3.50\".'",
+          "message": "Use the given currency."
+        },
+        {
+          "name": "keyword",
+          "code": "assert label(price=1, item='pen', currency='€') == 'pen: €1.00', 'Keyword arguments should work.'",
+          "message": "Keyword arguments should work."
+        }
+      ],
+      "hint": "An f-string with `{price:.2f}` gives 2 decimals.",
+      "explanation": "Keyword calls like `label(price=1, item=\"pen\")` stay readable even with several arguments."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Given `def area(w, h)`, which call is **not** allowed?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`area(2, 3)`"
+        },
+        {
+          "id": "b",
+          "text": "`area(w=2, h=3)`"
+        },
+        {
+          "id": "c",
+          "text": "`area(2, h=3)`"
+        },
+        {
+          "id": "d",
+          "text": "`area(h=2, 3)`"
+        }
+      ],
+      "answer": "d",
+      "hint": "Look for a positional argument after a keyword one.",
+      "explanation": "Positional arguments must come first; `area(h=2, 3)` is a *SyntaxError*."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "Each call to `add_tag` should start with a fresh list unless one is passed in. Instead, tags pile up between calls. Fix it.",
+      "starterCode": "def add_tag(tag, tags=[]):\n    tags.append(tag)\n    return tags\n",
+      "solution": "def add_tag(tag, tags=None):\n    if tags is None:\n        tags = []\n    tags.append(tag)\n    return tags\n",
+      "tests": [
+        {
+          "name": "fresh",
+          "code": "assert add_tag('a') == ['a'] and add_tag('b') == ['b'], 'Each call without tags should start from an empty list.'",
+          "message": "Start fresh each call."
+        },
+        {
+          "name": "given",
+          "code": "assert add_tag('c', ['x']) == ['x', 'c'], 'add_tag(\"c\", [\"x\"]) should return [\"x\", \"c\"].'",
+          "message": "Append to the list passed in."
+        }
+      ],
+      "hint": "A default list is created **once** and shared by every call. Use `None` as the default instead.",
+      "explanation": "`None` plus an `is None` check is the safe pattern for mutable defaults."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Give `times` a default of 2 so `repeat(\"ab\")` returns `\"abab\"`.",
+      "template": "def repeat(text, times___):\n    return text * times",
+      "blanks": [
+        "=2"
+      ],
+      "tests": [
+        {
+          "name": "default",
+          "code": "assert repeat('ab') == 'abab', 'repeat(\"ab\") should be \"abab\".'",
+          "message": "Use the default."
+        },
+        {
+          "name": "given",
+          "code": "assert repeat('x', 3) == 'xxx', 'repeat(\"x\", 3) should still work.'",
+          "message": "A given value should override it."
+        }
+      ],
+      "hint": "Defaults are written with `=` in the `def` line.",
+      "explanation": "`times=2` is used whenever the caller leaves it out."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `shipping_cost(weight, express=False, country=\"UK\")`: 3.50 for the UK, 9.00 elsewhere, plus 0.50 per kg of `weight`; express doubles the total. Return it rounded to 2 decimals.",
+      "starterCode": "def shipping_cost(weight, express=False, country=\"UK\"):\n    pass\n",
+      "solution": "def shipping_cost(weight, express=False, country=\"UK\"):\n    cost = 3.5 if country == \"UK\" else 9.0\n    cost += 0.5 * weight\n    if express:\n        cost *= 2\n    return round(cost, 2)",
+      "tests": [
+        {
+          "name": "uk",
+          "code": "assert shipping_cost(2) == 4.5, 'A 2 kg UK parcel should cost 4.5.'",
+          "message": "Check the UK default."
+        },
+        {
+          "name": "abroad",
+          "code": "assert shipping_cost(1, country='FR') == 9.5, 'Outside the UK the base is 9.00.'",
+          "message": "Check other countries."
+        },
+        {
+          "name": "express",
+          "code": "assert shipping_cost(3, express=True, country='DE') == 21.0, 'Express should double the total.'",
+          "message": "Check express."
+        }
+      ],
+      "hint": "Start from the base cost, add the weight charge, then double if express.",
+      "explanation": "Defaults describe the most common order; keywords override just what's different."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def show(a, b, c):\n    print(a, b, c)\n\nshow(1, c=3, b=2)",
+      "expectedOutput": "1 2 3",
+      "hint": "Keywords are matched by name, not position.",
+      "explanation": "`a` gets 1 by position; `b` and `c` are matched by name."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `make_greeting(name, time_of_day=\"day\", formal=False)`. Formal greetings look like `Good evening, Ms Lee.` (name as given, then a full stop); informal ones like `Hi Sam!`.",
+      "starterCode": "def make_greeting(name, time_of_day=\"day\", formal=False):\n    pass\n",
+      "solution": "def make_greeting(name, time_of_day=\"day\", formal=False):\n    if formal:\n        return f\"Good {time_of_day}, {name}.\"\n    return f\"Hi {name}!\"",
+      "tests": [
+        {
+          "name": "informal",
+          "code": "assert make_greeting('Sam') == 'Hi Sam!', 'make_greeting(\"Sam\") should be \"Hi Sam!\".'",
+          "message": "Check the informal greeting."
+        },
+        {
+          "name": "formal",
+          "code": "assert make_greeting('Ms Lee', 'evening', formal=True) == 'Good evening, Ms Lee.', 'Formal greetings use Good <time>, <name>.'",
+          "message": "Check the formal greeting."
+        },
+        {
+          "name": "default time",
+          "code": "assert make_greeting('Dr Rao', formal=True) == 'Good day, Dr Rao.', 'The default time_of_day is day.'",
+          "message": "Use the default time."
+        }
+      ],
+      "hint": "Check `formal` first and return early.",
+      "explanation": "Boolean flags with defaults let one function cover several cases."
+    }
+  ]
+}

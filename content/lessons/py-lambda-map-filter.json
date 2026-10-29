@@ -1,0 +1,172 @@
+{
+  "id": "py-lambda-map-filter",
+  "moduleId": "functions",
+  "title": "Lambda, map and filter",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **lambda** is a small function written in one expression: `lambda n: n * 2`. It's handy where a function is needed just once — like a sorting `key`. `map(f, items)` applies `f` to every item, and `filter(f, items)` keeps the items where `f` is truthy. Both give back an iterator, so wrap them in `list()` to see the results.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "A lambda has no `return` — its single expression is the result.",
+      "exampleCode": "square = lambda n: n * n\nprint(square(4))\nprint(list(map(str.upper, [\"a\", \"b\"])))\nprint(list(filter(lambda n: n % 2, range(6))))\nprint(sorted([\"bb\", \"a\", \"ccc\"], key=lambda s: len(s)))",
+      "explanation": "List comprehensions can do the same jobs as `map` and `filter`; use whichever reads more clearly."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create `double`, a lambda that returns its argument times 2.",
+      "starterCode": "double = \n",
+      "solution": "double = lambda n: n * 2",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert double(4) == 8 and double(-1) == -2 and double(0) == 0, 'double should return its argument times 2.'",
+          "message": "double(n) should be n * 2."
+        }
+      ],
+      "hint": "`lambda n: …` — the expression after the colon is returned.",
+      "explanation": "A lambda is just a shorter way to write a tiny function."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(list(map(lambda x: x + 1, [1, 2, 3])))",
+      "expectedOutput": "[2, 3, 4]",
+      "hint": "`map` applies the lambda to each item.",
+      "explanation": "Each number gets 1 added."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Round every price in `prices` to the nearest whole number with `map` and the built-in `round`. Store the list in `rounded`.",
+      "starterCode": "rounded = \n",
+      "solution": "rounded = list(map(round, prices))",
+      "setupCode": "prices = [2.4, 9.99, 15.5, 0.49]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert rounded == [round(p) for p in prices], 'rounded should be each price rounded to a whole number.'",
+          "message": "Round every price."
+        }
+      ],
+      "hint": "Pass the function's name (no brackets) to `map`, then `list()` the result.",
+      "explanation": "Any function — built-in or lambda — can be used with `map`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `filter(f, items)` keep?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Items where `f` returns a truthy value"
+        },
+        {
+          "id": "b",
+          "text": "Items where `f` returns `False`"
+        },
+        {
+          "id": "c",
+          "text": "The results of `f`"
+        },
+        {
+          "id": "d",
+          "text": "Only the first match"
+        }
+      ],
+      "answer": "a",
+      "hint": "Think of it as a sieve.",
+      "explanation": "`filter` keeps the original items that pass the test; `map` keeps the results."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should print the first even number, but crashes with *TypeError: 'filter' object is not subscriptable*. Fix it.",
+      "starterCode": "nums = [5, 8, 11, 14]\nevens = filter(lambda n: n % 2 == 0, nums)\nprint(evens[0])\n",
+      "solution": "nums = [5, 8, 11, 14]\nevens = list(filter(lambda n: n % 2 == 0, nums))\nprint(evens[0])\n",
+      "tests": [
+        {
+          "name": "evens",
+          "code": "assert evens == [8, 14], 'evens should be the list [8, 14].'",
+          "message": "evens should be [8, 14]."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == '8', 'The program should print 8.'",
+          "message": "Print 8."
+        }
+      ],
+      "hint": "`filter` gives an iterator, not a list.",
+      "explanation": "Wrap it in `list()` to index or reuse the results."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the lambda's body so `by_price` is sorted from cheapest to dearest.",
+      "template": "items = [(\"pen\", 1.5), (\"book\", 12.0), (\"cup\", 4.0)]\nby_price = sorted(items, key=lambda item: item___)",
+      "blanks": [
+        "[1]"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert by_price == [('pen', 1.5), ('cup', 4.0), ('book', 12.0)], 'by_price should go from cheapest to dearest.'",
+          "message": "Sort by price."
+        }
+      ],
+      "hint": "The price is the second value in each tuple.",
+      "explanation": "`item[1]` picks the price for comparing."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`people` is a list of dictionaries with `\"name\"` and `\"age\"`. Using `filter` and then `map`, store the names of people aged 18 or over in `adult_names` (a list, in the original order).",
+      "starterCode": "adult_names = \n",
+      "solution": "adults = filter(lambda p: p[\"age\"] >= 18, people)\nadult_names = list(map(lambda p: p[\"name\"], adults))",
+      "setupCode": "people = [{\"name\": \"Ana\", \"age\": 17}, {\"name\": \"Ben\", \"age\": 34}, {\"name\": \"Cleo\", \"age\": 18}, {\"name\": \"Dev\", \"age\": 12}]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert adult_names == [p['name'] for p in people if p['age'] >= 18], 'adult_names should be the names of people aged 18+.'",
+          "message": "Keep the adults' names."
+        }
+      ],
+      "hint": "First `filter` the people, then `map` each to its name.",
+      "explanation": "`filter` then `map` is the same as a comprehension with an `if`."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "f = lambda a, b=2: a * b\nprint(f(3), f(3, 3))",
+      "expectedOutput": "6 9",
+      "hint": "Lambdas can have defaults too.",
+      "explanation": "`b` is 2 unless given."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`products` is a list of `(name, price)` tuples. Store the cheapest tuple in `cheapest` (use `min` with a `key`), and the names sorted by price in `names_by_price`.",
+      "starterCode": "cheapest = \nnames_by_price = \n",
+      "solution": "cheapest = min(products, key=lambda p: p[1])\nnames_by_price = [name for name, price in sorted(products, key=lambda p: p[1])]",
+      "setupCode": "products = [(\"lamp\", 34.0), (\"mug\", 7.5), (\"rug\", 59.0), (\"pen\", 2.25)]",
+      "tests": [
+        {
+          "name": "cheapest",
+          "code": "assert cheapest == min(products, key=lambda p: p[1]), 'cheapest should be the (name, price) with the lowest price.'",
+          "message": "Find the cheapest."
+        },
+        {
+          "name": "names",
+          "code": "assert names_by_price == [n for n, p in sorted(products, key=lambda p: p[1])], 'names_by_price should list names from cheapest to dearest.'",
+          "message": "Sort the names by price."
+        }
+      ],
+      "hint": "`min`, `max` and `sorted` all accept `key=`.",
+      "explanation": "A short lambda tells these functions *what* to compare."
+    }
+  ]
+}
