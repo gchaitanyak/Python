@@ -1,0 +1,183 @@
+{
+  "id": "text-adventure",
+  "title": "Text Adventure",
+  "summary": "Build a small castle adventure from a JSON world file: rooms, items, a locked door and a goal.",
+  "estimatedMinutes": 50,
+  "brief": "Text adventures were some of the first computer games: the program describes a place, you type what to do, and it replies. In this project you'll build one from a world described in `world.json`.\n\nYou'll practise **classes**, **dictionaries**, **string handling** and **control flow**, and see how keeping data separate from code makes a program easy to extend.",
+  "datasets": [
+    {
+      "file": "world.json",
+      "description": "Five rooms of a ruined castle with exits, items, one locked room and the goal."
+    }
+  ],
+  "steps": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Your world lives in `world.json`: rooms with descriptions, exits, items, one locked room and a goal. You'll turn it into a playable game with **classes**, **dictionaries** and **control flow**. Run the example to see the data.",
+      "exampleCode": "import json\n\nwith open(\"world.json\") as f:\n    world = json.load(f)\nprint(world[\"start\"], \"→ goal:\", world[\"goal\"])\nfor name, room in world[\"rooms\"].items():\n    print(name, sorted(room[\"exits\"]))",
+      "explanation": "Every step gives you the earlier pieces, so you can focus on one new idea at a time."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "**Step 1 — rooms.** Write a class `Room(name, description, exits, items=None, locked_by=None)`. Store each argument as an attribute (`items` as a new list, empty if `None`). `describe()` returns three lines — the name, the description, and `Exits: ` with the exit directions sorted and joined by `, ` — plus a fourth line `You see: ` and the items when there are any.",
+      "starterCode": "class Room:\n    pass\n",
+      "solution": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text",
+      "tests": [
+        {
+          "name": "describe",
+          "code": "r = Room('Cellar', 'Damp and dark.', {'up': 'Kitchen', 'east': 'Tunnel'})\nassert r.describe() == 'Cellar\\nDamp and dark.\\nExits: east, up', 'describe() should give name, description and sorted exits on three lines.'",
+          "message": "Describe a room."
+        },
+        {
+          "name": "items",
+          "code": "r = Room('Shed', 'Dusty.', {'out': 'Garden'}, ['rake', 'seeds'])\nassert r.describe().endswith('\\nYou see: rake, seeds'), 'List the items on a last line starting You see: '",
+          "message": "Show the items."
+        },
+        {
+          "name": "own list",
+          "code": "_items = ['rake']\nr = Room('Shed', 'Dusty.', {}, _items)\nr.items.append('hoe')\nassert _items == ['rake'], 'Copy items into a new list so rooms do not share the caller list.'",
+          "message": "Keep a copy of items."
+        },
+        {
+          "name": "locked",
+          "code": "assert Room('Vault', 'Shiny.', {}, locked_by='key').locked_by == 'key' and Room('A', 'B', {}).locked_by is None, 'Store locked_by (None by default).'",
+          "message": "Store locked_by."
+        }
+      ],
+      "hint": "Build the text with an f-string and `', '.join(sorted(self.exits))` — looping over a dictionary gives its keys.",
+      "explanation": "A class bundles the data about a room with the code that describes it."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "**Step 2 — load the world.** Write `load_world(path)` that reads the JSON file and returns a tuple `(rooms, start, goal)`: `rooms` maps each room name to a `Room`, `start` is the starting room's name and `goal` the goal dictionary.",
+      "starterCode": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    pass\n",
+      "solution": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    with open(path) as f:\n        data = json.load(f)\n    rooms = {name: Room(name, r[\"description\"], r[\"exits\"], r.get(\"items\"), r.get(\"locked_by\")) for name, r in data[\"rooms\"].items()}\n    return rooms, data[\"start\"], data[\"goal\"]",
+      "tests": [
+        {
+          "name": "rooms",
+          "code": "rooms, start, goal = load_world('world.json')\nassert sorted(rooms) == ['Courtyard', 'Gatehouse', 'Great Hall', 'Library', 'Treasury'] and all(isinstance(r, Room) for r in rooms.values()), 'rooms should map all five names to Room objects.'",
+          "message": "Build every room."
+        },
+        {
+          "name": "details",
+          "code": "rooms, start, goal = load_world('world.json')\nassert start == 'Gatehouse' and goal == {'room': 'Treasury', 'item': 'crown'}, 'Return the start room name and the goal.'\nassert rooms['Treasury'].locked_by == 'brass key' and rooms['Library'].items == ['brass key'], 'Pass items and locked_by to each Room.'",
+          "message": "Keep start, goal, items and locks."
+        }
+      ],
+      "hint": "`json.load(f)` gives nested dictionaries. Loop over `data[\"rooms\"].items()` and use `.get()` for the optional keys.",
+      "explanation": "Keeping the world in a data file means you can design new adventures without touching the code."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "**Step 3 — understand commands.** Write `parse(command)` returning a `(verb, noun)` tuple. Ignore case and extra spaces. A direction on its own (`north`, or the short forms `n`, `s`, `e`, `w`) means `(\"go\", direction)` with the direction written in full. Otherwise the first word is the verb and the rest (joined by single spaces) is the noun, or `None` if there's nothing else. An empty command gives `(None, None)`.",
+      "starterCode": "def parse(command):\n    pass\n",
+      "solution": "SHORT = {\"n\": \"north\", \"s\": \"south\", \"e\": \"east\", \"w\": \"west\"}\n\ndef parse(command):\n    words = command.lower().split()\n    if not words:\n        return (None, None)\n    if words[0] in SHORT:\n        return (\"go\", SHORT[words[0]])\n    if words[0] in (\"north\", \"south\", \"east\", \"west\"):\n        return (\"go\", words[0])\n    verb = words[0]\n    noun = \" \".join(words[1:]) or None\n    return (verb, noun)",
+      "tests": [
+        {
+          "name": "go",
+          "code": "assert parse('go north') == ('go', 'north') and parse('N') == ('go', 'north') and parse('  west ') == ('go', 'west'), 'Directions should become (\"go\", direction).'",
+          "message": "Understand directions."
+        },
+        {
+          "name": "nouns",
+          "code": "assert parse('Take   Brass Key') == ('take', 'brass key') and parse('look') == ('look', None), 'Split the verb from the rest; no noun gives None.'",
+          "message": "Split verb and noun."
+        },
+        {
+          "name": "empty",
+          "code": "assert parse('   ') == (None, None), 'An empty command gives (None, None).'",
+          "message": "Handle empty input."
+        }
+      ],
+      "hint": "`command.lower().split()` gives the words without extra spaces. A dictionary like `{\"n\": \"north\"}` handles the short forms.",
+      "explanation": "Normalising input first keeps the rest of the game simple."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "**Step 4 — moving.** Write `Player(location)` with an empty `inventory` list and `move(direction, rooms)`. If there's no exit that way, return `You can't go that way.`. If the target room has a `locked_by` item the player doesn't carry, return `The way is locked. You need the <item>.`. Otherwise move and return the new room's `describe()`.",
+      "starterCode": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nclass Player:\n    pass\n",
+      "solution": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nclass Player:\n    def __init__(self, location):\n        self.location = location\n        self.inventory = []\n\n    def move(self, direction, rooms):\n        here = rooms[self.location]\n        if direction not in here.exits:\n            return \"You can't go that way.\"\n        target = rooms[here.exits[direction]]\n        if target.locked_by and target.locked_by not in self.inventory:\n            return f\"The way is locked. You need the {target.locked_by}.\"\n        self.location = target.name\n        return target.describe()",
+      "tests": [
+        {
+          "name": "move",
+          "code": "rooms = {'A': Room('A', 'a', {'east': 'B'}), 'B': Room('B', 'b', {'west': 'A'})}\np = Player('A')\nassert p.move('east', rooms) == rooms['B'].describe() and p.location == 'B', 'Moving should change location and describe the new room.'",
+          "message": "Move between rooms."
+        },
+        {
+          "name": "no exit",
+          "code": "rooms = {'A': Room('A', 'a', {})}\np = Player('A')\nassert p.move('north', rooms) == \"You can't go that way.\" and p.location == 'A', 'With no exit, stay put and say so.'",
+          "message": "Block missing exits."
+        },
+        {
+          "name": "locked",
+          "code": "rooms = {'A': Room('A', 'a', {'east': 'V'}), 'V': Room('V', 'v', {}, locked_by='key')}\np = Player('A')\nassert p.move('east', rooms) == 'The way is locked. You need the key.' and p.location == 'A', 'A locked room needs its item.'\np.inventory.append('key')\np.move('east', rooms)\nassert p.location == 'V', 'With the key, the player can enter.'",
+          "message": "Respect locks."
+        }
+      ],
+      "hint": "Check the exits first, then the lock, then move.",
+      "explanation": "Returning messages instead of printing them makes the game easy to test."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "**Step 5 — the game.** Complete `Game.handle(command)` so it understands `go` (and bare directions), `take <item>`, `look`, `inventory` (or `i`) and `quit`. Unknown verbs reply `I don't understand that.`. After any command, if the player is in the goal room holding the goal item, set `over` to `True` and add a last line `You win!`. `take` is already written.",
+      "starterCode": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    with open(path) as f:\n        data = json.load(f)\n    rooms = {name: Room(name, r[\"description\"], r[\"exits\"], r.get(\"items\"), r.get(\"locked_by\")) for name, r in data[\"rooms\"].items()}\n    return rooms, data[\"start\"], data[\"goal\"]\n\n\nSHORT = {\"n\": \"north\", \"s\": \"south\", \"e\": \"east\", \"w\": \"west\"}\n\ndef parse(command):\n    words = command.lower().split()\n    if not words:\n        return (None, None)\n    if words[0] in SHORT:\n        return (\"go\", SHORT[words[0]])\n    if words[0] in (\"north\", \"south\", \"east\", \"west\"):\n        return (\"go\", words[0])\n    verb = words[0]\n    noun = \" \".join(words[1:]) or None\n    return (verb, noun)\n\n\nclass Player:\n    def __init__(self, location):\n        self.location = location\n        self.inventory = []\n\n    def move(self, direction, rooms):\n        here = rooms[self.location]\n        if direction not in here.exits:\n            return \"You can't go that way.\"\n        target = rooms[here.exits[direction]]\n        if target.locked_by and target.locked_by not in self.inventory:\n            return f\"The way is locked. You need the {target.locked_by}.\"\n        self.location = target.name\n        return target.describe()\n\n\nclass Game:\n    def __init__(self, path):\n        self.rooms, start, self.goal = load_world(path)\n        self.player = Player(start)\n        self.over = False\n\n    def take(self, item):\n        room = self.rooms[self.player.location]\n        if item not in room.items:\n            return f\"There is no {item} here.\"\n        room.items.remove(item)\n        self.player.inventory.append(item)\n        return f\"You take the {item}.\"\n\n    def handle(self, command):\n        return \"I don't understand that.\"\n",
+      "solution": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    with open(path) as f:\n        data = json.load(f)\n    rooms = {name: Room(name, r[\"description\"], r[\"exits\"], r.get(\"items\"), r.get(\"locked_by\")) for name, r in data[\"rooms\"].items()}\n    return rooms, data[\"start\"], data[\"goal\"]\n\n\nSHORT = {\"n\": \"north\", \"s\": \"south\", \"e\": \"east\", \"w\": \"west\"}\n\ndef parse(command):\n    words = command.lower().split()\n    if not words:\n        return (None, None)\n    if words[0] in SHORT:\n        return (\"go\", SHORT[words[0]])\n    if words[0] in (\"north\", \"south\", \"east\", \"west\"):\n        return (\"go\", words[0])\n    verb = words[0]\n    noun = \" \".join(words[1:]) or None\n    return (verb, noun)\n\n\nclass Player:\n    def __init__(self, location):\n        self.location = location\n        self.inventory = []\n\n    def move(self, direction, rooms):\n        here = rooms[self.location]\n        if direction not in here.exits:\n            return \"You can't go that way.\"\n        target = rooms[here.exits[direction]]\n        if target.locked_by and target.locked_by not in self.inventory:\n            return f\"The way is locked. You need the {target.locked_by}.\"\n        self.location = target.name\n        return target.describe()\n\n\nclass Game:\n    def __init__(self, path):\n        self.rooms, start, self.goal = load_world(path)\n        self.player = Player(start)\n        self.over = False\n\n    def take(self, item):\n        room = self.rooms[self.player.location]\n        if item not in room.items:\n            return f\"There is no {item} here.\"\n        room.items.remove(item)\n        self.player.inventory.append(item)\n        return f\"You take the {item}.\"\n\n    def handle(self, command):\n        verb, noun = parse(command)\n        if verb is None:\n            return \"Say something!\"\n        if verb == \"go\":\n            reply = self.player.move(noun, self.rooms)\n        elif verb == \"take\" and noun:\n            reply = self.take(noun)\n        elif verb == \"look\":\n            reply = self.rooms[self.player.location].describe()\n        elif verb in (\"inventory\", \"i\"):\n            reply = \"You carry: \" + (\", \".join(self.player.inventory) or \"nothing\")\n        elif verb == \"quit\":\n            self.over = True\n            reply = \"Bye!\"\n        else:\n            reply = \"I don't understand that.\"\n        if self.player.location == self.goal[\"room\"] and self.goal[\"item\"] in self.player.inventory:\n            self.over = True\n            reply += \"\\nYou win!\"\n        return reply",
+      "tests": [
+        {
+          "name": "moves",
+          "code": "g = Game('world.json')\nassert g.handle('n').startswith('Courtyard') and g.handle('look').startswith('Courtyard'), 'go/directions and look should work.'",
+          "message": "Move and look."
+        },
+        {
+          "name": "items",
+          "code": "g = Game('world.json')\nassert g.handle('take lantern') == 'You take the lantern.' and g.handle('i') == 'You carry: lantern' and g.handle('take sword') == 'There is no sword here.', 'take and inventory should work.'",
+          "message": "Take and list items."
+        },
+        {
+          "name": "unknown",
+          "code": "g = Game('world.json')\nassert g.handle('dance') == \"I don't understand that.\" and g.handle('quit') == 'Bye!' and g.over, 'Handle unknown verbs and quit.'",
+          "message": "Unknown verbs and quit."
+        },
+        {
+          "name": "win",
+          "code": "g = Game('world.json')\n_out = [g.handle(c) for c in ['n', 'e', 'take brass key', 'w', 'n', 'e', 'take crown']]\nassert _out[-1].endswith('\\nYou win!') and g.over, 'Taking the crown in the Treasury should win the game.'\nassert not any(o.endswith('You win!') for o in _out[:-1]), 'Only the last command should win.'",
+          "message": "Win the game."
+        }
+      ],
+      "hint": "Call `parse`, then an `if`/`elif` chain on the verb. Check the win condition at the end, before returning.",
+      "explanation": "The game loop is just: read a command, update the state, reply. Everything else is data."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "**Step 6 — play it.** Write `play(path, commands)` that creates a `Game`, sends it each command in order and returns the list of replies, stopping as soon as the game is over (after a win or `quit`).",
+      "starterCode": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    with open(path) as f:\n        data = json.load(f)\n    rooms = {name: Room(name, r[\"description\"], r[\"exits\"], r.get(\"items\"), r.get(\"locked_by\")) for name, r in data[\"rooms\"].items()}\n    return rooms, data[\"start\"], data[\"goal\"]\n\n\nSHORT = {\"n\": \"north\", \"s\": \"south\", \"e\": \"east\", \"w\": \"west\"}\n\ndef parse(command):\n    words = command.lower().split()\n    if not words:\n        return (None, None)\n    if words[0] in SHORT:\n        return (\"go\", SHORT[words[0]])\n    if words[0] in (\"north\", \"south\", \"east\", \"west\"):\n        return (\"go\", words[0])\n    verb = words[0]\n    noun = \" \".join(words[1:]) or None\n    return (verb, noun)\n\n\nclass Player:\n    def __init__(self, location):\n        self.location = location\n        self.inventory = []\n\n    def move(self, direction, rooms):\n        here = rooms[self.location]\n        if direction not in here.exits:\n            return \"You can't go that way.\"\n        target = rooms[here.exits[direction]]\n        if target.locked_by and target.locked_by not in self.inventory:\n            return f\"The way is locked. You need the {target.locked_by}.\"\n        self.location = target.name\n        return target.describe()\n\n\nclass Game:\n    def __init__(self, path):\n        self.rooms, start, self.goal = load_world(path)\n        self.player = Player(start)\n        self.over = False\n\n    def take(self, item):\n        room = self.rooms[self.player.location]\n        if item not in room.items:\n            return f\"There is no {item} here.\"\n        room.items.remove(item)\n        self.player.inventory.append(item)\n        return f\"You take the {item}.\"\n\n    def handle(self, command):\n        verb, noun = parse(command)\n        if verb is None:\n            return \"Say something!\"\n        if verb == \"go\":\n            reply = self.player.move(noun, self.rooms)\n        elif verb == \"take\" and noun:\n            reply = self.take(noun)\n        elif verb == \"look\":\n            reply = self.rooms[self.player.location].describe()\n        elif verb in (\"inventory\", \"i\"):\n            reply = \"You carry: \" + (\", \".join(self.player.inventory) or \"nothing\")\n        elif verb == \"quit\":\n            self.over = True\n            reply = \"Bye!\"\n        else:\n            reply = \"I don't understand that.\"\n        if self.player.location == self.goal[\"room\"] and self.goal[\"item\"] in self.player.inventory:\n            self.over = True\n            reply += \"\\nYou win!\"\n        return reply\n\n\ndef play(path, commands):\n    pass\n",
+      "solution": "class Room:\n    def __init__(self, name, description, exits, items=None, locked_by=None):\n        self.name = name\n        self.description = description\n        self.exits = exits\n        self.items = list(items or [])\n        self.locked_by = locked_by\n\n    def describe(self):\n        text = f\"{self.name}\\n{self.description}\\nExits: {', '.join(sorted(self.exits))}\"\n        if self.items:\n            text += f\"\\nYou see: {', '.join(self.items)}\"\n        return text\n\n\nimport json\n\ndef load_world(path):\n    with open(path) as f:\n        data = json.load(f)\n    rooms = {name: Room(name, r[\"description\"], r[\"exits\"], r.get(\"items\"), r.get(\"locked_by\")) for name, r in data[\"rooms\"].items()}\n    return rooms, data[\"start\"], data[\"goal\"]\n\n\nSHORT = {\"n\": \"north\", \"s\": \"south\", \"e\": \"east\", \"w\": \"west\"}\n\ndef parse(command):\n    words = command.lower().split()\n    if not words:\n        return (None, None)\n    if words[0] in SHORT:\n        return (\"go\", SHORT[words[0]])\n    if words[0] in (\"north\", \"south\", \"east\", \"west\"):\n        return (\"go\", words[0])\n    verb = words[0]\n    noun = \" \".join(words[1:]) or None\n    return (verb, noun)\n\n\nclass Player:\n    def __init__(self, location):\n        self.location = location\n        self.inventory = []\n\n    def move(self, direction, rooms):\n        here = rooms[self.location]\n        if direction not in here.exits:\n            return \"You can't go that way.\"\n        target = rooms[here.exits[direction]]\n        if target.locked_by and target.locked_by not in self.inventory:\n            return f\"The way is locked. You need the {target.locked_by}.\"\n        self.location = target.name\n        return target.describe()\n\n\nclass Game:\n    def __init__(self, path):\n        self.rooms, start, self.goal = load_world(path)\n        self.player = Player(start)\n        self.over = False\n\n    def take(self, item):\n        room = self.rooms[self.player.location]\n        if item not in room.items:\n            return f\"There is no {item} here.\"\n        room.items.remove(item)\n        self.player.inventory.append(item)\n        return f\"You take the {item}.\"\n\n    def handle(self, command):\n        verb, noun = parse(command)\n        if verb is None:\n            return \"Say something!\"\n        if verb == \"go\":\n            reply = self.player.move(noun, self.rooms)\n        elif verb == \"take\" and noun:\n            reply = self.take(noun)\n        elif verb == \"look\":\n            reply = self.rooms[self.player.location].describe()\n        elif verb in (\"inventory\", \"i\"):\n            reply = \"You carry: \" + (\", \".join(self.player.inventory) or \"nothing\")\n        elif verb == \"quit\":\n            self.over = True\n            reply = \"Bye!\"\n        else:\n            reply = \"I don't understand that.\"\n        if self.player.location == self.goal[\"room\"] and self.goal[\"item\"] in self.player.inventory:\n            self.over = True\n            reply += \"\\nYou win!\"\n        return reply\n\n\ndef play(path, commands):\n    game = Game(path)\n    replies = []\n    for command in commands:\n        replies.append(game.handle(command))\n        if game.over:\n            break\n    return replies",
+      "tests": [
+        {
+          "name": "win",
+          "code": "_r = play('world.json', ['n', 'e', 'take brass key', 'w', 'n', 'e', 'take crown', 'look', 'look'])\nassert len(_r) == 7 and _r[-1].endswith('You win!'), 'Stop as soon as the game is won.'",
+          "message": "Stop at the win."
+        },
+        {
+          "name": "quit",
+          "code": "assert play('world.json', ['look', 'quit', 'n']) == [play('world.json', ['look'])[0], 'Bye!'], 'Stop after quit.'",
+          "message": "Stop at quit."
+        },
+        {
+          "name": "locked",
+          "code": "assert 'locked' in play('world.json', ['n', 'n', 'e'])[-1], 'Without the key the Treasury stays locked.'",
+          "message": "Locks still work."
+        }
+      ],
+      "hint": "A `for` loop with `break` once `game.over` is `True`.",
+      "explanation": "To play for real on your computer, replace the list with `input()` in a `while not game.over:` loop."
+    }
+  ]
+}

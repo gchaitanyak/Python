@@ -1,0 +1,180 @@
+{
+  "id": "expense-tracker",
+  "title": "Expense Tracker",
+  "summary": "Load a month-by-month spending file, total it by category and month, add new expenses safely and write a report.",
+  "estimatedMinutes": 45,
+  "brief": "You share a flat and want to know where the money goes. In this project you'll build a small expense tracker around a CSV file of two months of spending.\n\nYou'll practise **reading and writing files**, **dictionaries**, **functions** and the **csv** module. Each step checks your code in the browser. Download the dataset and the starter file to carry on in your own editor.",
+  "datasets": [
+    {
+      "file": "expenses.csv",
+      "description": "34 purchases from September and October 2025: date, category, description, amount."
+    }
+  ],
+  "steps": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Your dataset is `expenses.csv`: one row per purchase with a `date`, a `category`, a `description` and an `amount`. Over the next steps you'll load it, total it by category and month, find the biggest costs, add new expenses and write a report. Run the example to peek at the file.",
+      "exampleCode": "with open(\"expenses.csv\") as f:\n    for line in f.readlines()[:5]:\n        print(line.rstrip())",
+      "explanation": "Each step stands on its own: earlier pieces you need are already in the starter code."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "**Step 1 — load the data.** Write `load_expenses(path)` that returns a list of dictionaries, one per row, with the keys `date`, `category`, `description` and `amount`. `amount` must be a **float**; the rest stay strings.",
+      "starterCode": "import csv\n\ndef load_expenses(path):\n    pass\n",
+      "solution": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]",
+      "tests": [
+        {
+          "name": "rows",
+          "code": "rows = load_expenses('expenses.csv')\nassert isinstance(rows, list) and len(rows) == 34, 'Return one dictionary per data row (34 rows, not counting the header).'",
+          "message": "Return one dictionary per row."
+        },
+        {
+          "name": "first row",
+          "code": "first = load_expenses('expenses.csv')[0]\nassert first == {'date': '2025-09-01', 'category': 'rent', 'description': 'monthly rent', 'amount': 950.0}, 'The first row should be ' + repr({'date': '2025-09-01', 'category': 'rent', 'description': 'monthly rent', 'amount': 950.0})",
+          "message": "Keep the four fields; make amount a float."
+        },
+        {
+          "name": "floats",
+          "code": "assert all(isinstance(r['amount'], float) for r in load_expenses('expenses.csv')), 'Every amount should be a float.'",
+          "message": "Amounts are floats."
+        }
+      ],
+      "hint": "`csv.DictReader` gives a dictionary per row. Convert `row[\"amount\"]` with `float()`.",
+      "explanation": "Converting types as soon as you load data saves you from `'12.50' + '3.00'` surprises later."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "**Step 2 — totals by category.** Write `total_by_category(expenses)` returning a dictionary that maps each category to the sum of its amounts, rounded to 2 decimal places.",
+      "starterCode": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef total_by_category(expenses):\n    pass\n",
+      "solution": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef total_by_category(expenses):\n    totals = {}\n    for e in expenses:\n        totals[e[\"category\"]] = round(totals.get(e[\"category\"], 0) + e[\"amount\"], 2)\n    return totals",
+      "tests": [
+        {
+          "name": "totals",
+          "code": "assert total_by_category(load_expenses('expenses.csv')) == {'rent': 1900.0, 'eating out': 207.39, 'groceries': 529.61, 'utilities': 571.42, 'fun': 56.89, 'transport': 70.49}, 'Check your totals for each category.'",
+          "message": "Total every category."
+        },
+        {
+          "name": "small",
+          "code": "assert total_by_category([{'category': 'fun', 'amount': 1.1}, {'category': 'fun', 'amount': 2.2}, {'category': 'rent', 'amount': 5.0}]) == {'fun': 3.3, 'rent': 5.0}, 'Add amounts per category and round to 2 places.'",
+          "message": "Round to 2 places."
+        },
+        {
+          "name": "empty",
+          "code": "assert total_by_category([]) == {}, 'No expenses give an empty dictionary.'",
+          "message": "Handle no expenses."
+        }
+      ],
+      "hint": "Start with `{}` and use `totals.get(category, 0)` to add to each running total.",
+      "explanation": "Rounding as you go keeps floating-point noise like `3.3000000000000003` out of your results."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "**Step 3 — totals by month.** Write `monthly_totals(expenses)` returning a dictionary that maps each month, written `YYYY-MM`, to that month's total (rounded to 2 places).",
+      "starterCode": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef monthly_totals(expenses):\n    pass\n",
+      "solution": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef monthly_totals(expenses):\n    totals = {}\n    for e in expenses:\n        month = e[\"date\"][:7]\n        totals[month] = round(totals.get(month, 0) + e[\"amount\"], 2)\n    return totals",
+      "tests": [
+        {
+          "name": "months",
+          "code": "assert monthly_totals(load_expenses('expenses.csv')) == {'2025-09': 1710.84, '2025-10': 1624.96}, 'Check the total for each month.'",
+          "message": "Total every month."
+        }
+      ],
+      "hint": "The first 7 characters of `2025-09-14` are the month: `date[:7]`.",
+      "explanation": "Slicing a well-formatted date string is a quick way to group by month; for anything fancier, parse it with `datetime`."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "**Step 4 — the biggest costs.** Write `biggest(expenses, n=3)` returning the `n` most expensive expenses, largest first. Don't change the list you're given.",
+      "starterCode": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef biggest(expenses, n=3):\n    pass\n",
+      "solution": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef biggest(expenses, n=3):\n    return sorted(expenses, key=lambda e: e[\"amount\"], reverse=True)[:n]",
+      "tests": [
+        {
+          "name": "top 3",
+          "code": "assert biggest(load_expenses('expenses.csv')) == [{'date': '2025-09-01', 'category': 'rent', 'description': 'monthly rent', 'amount': 950.0}, {'date': '2025-10-01', 'category': 'rent', 'description': 'monthly rent', 'amount': 950.0}, {'date': '2025-09-21', 'category': 'utilities', 'description': 'phone plan', 'amount': 83.09}], 'Return the three largest expenses, largest first.'",
+          "message": "Return the top three."
+        },
+        {
+          "name": "n",
+          "code": "assert [e['amount'] for e in biggest([{'amount': 1.0}, {'amount': 9.0}, {'amount': 5.0}], n=2)] == [9.0, 5.0], 'Use n to choose how many to return.'",
+          "message": "Respect n."
+        },
+        {
+          "name": "unchanged",
+          "code": "data = [{'amount': 1.0}, {'amount': 9.0}]\nbiggest(data)\nassert data == [{'amount': 1.0}, {'amount': 9.0}], 'Do not change the original list.'",
+          "message": "Leave the input alone."
+        }
+      ],
+      "hint": "`sorted(..., key=lambda e: e[\"amount\"], reverse=True)` then slice `[:n]`.",
+      "explanation": "`sorted` returns a new list, so the caller's data stays as it was."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "**Step 5 — add an expense.** Write `add_expense(path, date, category, description, amount)` that appends a row to the CSV file. Raise `ValueError` if `amount` isn't positive or `date` isn't a real date in `YYYY-MM-DD` form. Write the amount with 2 decimal places.",
+      "starterCode": "import csv\nfrom datetime import date as _date\n\ndef add_expense(path, date, category, description, amount):\n    with open(path, \"a\", newline=\"\") as f:\n        csv.writer(f).writerow([date, category, description, amount])\n",
+      "solution": "import csv\nfrom datetime import date as _date\n\ndef add_expense(path, date, category, description, amount):\n    if amount <= 0:\n        raise ValueError(\"amount must be positive\")\n    _date.fromisoformat(date)  # raises ValueError for a bad date\n    if len(date) != 10:\n        raise ValueError(\"use YYYY-MM-DD\")\n    with open(path, \"a\", newline=\"\") as f:\n        csv.writer(f).writerow([date, category, description, f\"{amount:.2f}\"])",
+      "tests": [
+        {
+          "name": "appends",
+          "code": "add_expense('expenses.csv', '2025-11-02', 'fun', 'arcade', 7.5)\nwith open('expenses.csv') as _f:\n    _last = _f.read().strip().splitlines()[-1]\nassert _last == '2025-11-02,fun,arcade,7.50', 'The new last line should be 2025-11-02,fun,arcade,7.50'",
+          "message": "Append the row with 2 decimals."
+        },
+        {
+          "name": "bad amount",
+          "code": "try:\n    add_expense('expenses.csv', '2025-11-02', 'fun', 'refund?', -3)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('A negative amount should raise ValueError.')",
+          "message": "Reject amounts that aren't positive."
+        },
+        {
+          "name": "bad date",
+          "code": "for _bad in ['2025-02-30', '02/11/2025']:\n    try:\n        add_expense('expenses.csv', _bad, 'fun', 'x', 3)\n    except ValueError:\n        pass\n    else:\n        raise AssertionError(f'The date {_bad} should raise ValueError.')",
+          "message": "Reject bad dates."
+        }
+      ],
+      "hint": "`date.fromisoformat(text)` raises `ValueError` for impossible or badly formatted dates. Use mode `\"a\"` to append.",
+      "explanation": "Validate before you write: once a bad row is in the file, every later step has to cope with it."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "**Step 6 — budgets.** `over_budget(totals, budgets)` should list the categories whose total is **more than** their budget, sorted by name. Categories with no budget are ignored. It has two bugs. Fix them.",
+      "starterCode": "def over_budget(totals, budgets):\n    over = []\n    for category, budget in budgets.items():\n        if totals[category] >= budget:\n            over.append(category)\n    return over\n",
+      "solution": "def over_budget(totals, budgets):\n    over = []\n    for category, budget in budgets.items():\n        if totals.get(category, 0) > budget:\n            over.append(category)\n    return sorted(over)\n",
+      "tests": [
+        {
+          "name": "over",
+          "code": "assert over_budget({'fun': 120.0, 'groceries': 300.0, 'rent': 950.0}, {'groceries': 250, 'fun': 100, 'rent': 950}) == ['fun', 'groceries'], 'fun and groceries are over budget; rent is exactly on budget.'",
+          "message": "Only strictly over budget, sorted."
+        },
+        {
+          "name": "missing",
+          "code": "assert over_budget({'fun': 10.0}, {'fun': 50, 'travel': 100}) == [], 'A budgeted category with no spending is not over budget.'",
+          "message": "Handle budgets with no spending."
+        }
+      ],
+      "hint": "Exactly on budget isn't over. And what if a budgeted category has no spending at all?",
+      "explanation": "`dict.get(key, 0)` avoids a `KeyError` for categories that never appear in the totals."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "**Step 7 — the report.** Write `write_report(expenses, path)` that writes a text file with one line per category, `category: total`, from largest total to smallest, then a last line `TOTAL: grand total`. Show every number with 2 decimal places.",
+      "starterCode": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef total_by_category(expenses):\n    totals = {}\n    for e in expenses:\n        totals[e[\"category\"]] = round(totals.get(e[\"category\"], 0) + e[\"amount\"], 2)\n    return totals\n\n\ndef write_report(expenses, path):\n    pass\n",
+      "solution": "import csv\n\ndef load_expenses(path):\n    with open(path, newline=\"\") as f:\n        return [{**row, \"amount\": float(row[\"amount\"])} for row in csv.DictReader(f)]\n\n\ndef total_by_category(expenses):\n    totals = {}\n    for e in expenses:\n        totals[e[\"category\"]] = round(totals.get(e[\"category\"], 0) + e[\"amount\"], 2)\n    return totals\n\n\ndef write_report(expenses, path):\n    totals = total_by_category(expenses)\n    lines = [f\"{cat}: {amount:.2f}\" for cat, amount in sorted(totals.items(), key=lambda kv: kv[1], reverse=True)]\n    lines.append(f\"TOTAL: {sum(totals.values()):.2f}\")\n    with open(path, \"w\") as f:\n        f.write(\"\\n\".join(lines) + \"\\n\")",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['report.txt']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\n",
+      "tests": [
+        {
+          "name": "report",
+          "code": "write_report(load_expenses('expenses.csv'), 'report.txt')\nwith open('report.txt') as _f:\n    _lines = _f.read().strip().splitlines()\nassert _lines == ['rent: 1900.00', 'utilities: 571.42', 'groceries: 529.61', 'eating out: 207.39', 'transport: 70.49', 'fun: 56.89', 'TOTAL: 3335.80'], 'The report lines are not right yet: check the order, the format and the TOTAL line.'",
+          "message": "Write the sorted report."
+        }
+      ],
+      "hint": "Reuse `total_by_category`, sort its items by value (largest first), format each with `:.2f`, then add the TOTAL line.",
+      "explanation": "You've built a small but complete data tool: load, summarise, validate and report. Download the starter file to keep working on it on your own computer."
+    }
+  ]
+}

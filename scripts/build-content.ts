@@ -1,13 +1,15 @@
 /**
  * Content build step.
- *   --emit-free       write dist/data/curriculum.json and dist/data/lessons/<id>.json for free lessons
- *   --upload-premium  write premium lessons to Firestore lessonContent/{id} (readable only by premium
+ *   --emit-free       write dist/data/curriculum.json, dist/data/lessons/<id>.json for free lessons, and
+ *                     dist/data/projects/<id>.json plus its dataset files for free projects
+ *   --upload-premium  write premium lessons to Firestore lessonContent/{id} and premium projects (with their
+ *                     dataset files) to projectContent/{id} (readable only by premium
  *                     users, per firestore.rules). Uses the Firestore emulator when FIRESTORE_EMULATOR_HOST
  *                     is set; otherwise application-default credentials and GCLOUD_PROJECT / --project=<id>.
  */
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { freeLessonIds, lessonPath, premiumLessonIds, publicCurriculum } from './content-data';
+import { bundleProject, datasetPath, freeLessonIds, lessonPath, premiumLessonIds, publicCurriculum, writtenProjects } from './content-data';
 
 const dist = resolve(import.meta.dirname, '../dist');
 
@@ -19,8 +21,10 @@ export async function uploadPremium(projectId: string): Promise<number> {
   const ids = premiumLessonIds();
   const batch = db.batch();
   for (const id of ids) batch.set(db.collection('lessonContent').doc(id), JSON.parse(readFileSync(lessonPath(id), 'utf8')));
+  const projects = writtenProjects().filter((p) => !p.free);
+  for (const p of projects) batch.set(db.collection('projectContent').doc(p.id), bundleProject(p.id));
   await batch.commit();
-  return ids.length;
+  return ids.length + projects.length;
 }
 
 async function main(): Promise<void> {
@@ -32,11 +36,19 @@ async function main(): Promise<void> {
     const ids = freeLessonIds();
     for (const id of ids) copyFileSync(lessonPath(id), resolve(lessonsOut, `${id}.json`));
     console.log(`content: ${ids.length} free lessons → dist/data/lessons/`);
+    const projects = writtenProjects().filter((p) => p.free);
+    for (const p of projects) {
+      const bundle = bundleProject(p.id);
+      mkdirSync(resolve(dist, 'data/projects', p.id), { recursive: true });
+      writeFileSync(resolve(dist, 'data/projects', `${p.id}.json`), JSON.stringify(bundle));
+      for (const d of bundle.datasets) copyFileSync(datasetPath(p.id, d.file), resolve(dist, 'data/projects', p.id, d.file));
+    }
+    console.log(`content: ${projects.length} free projects → dist/data/projects/`);
   }
   if (args.includes('--upload-premium')) {
     const projectId = args.find((a) => a.startsWith('--project='))?.slice(10) ?? process.env.GCLOUD_PROJECT ?? 'demo-python-exercises';
     const n = await uploadPremium(projectId);
-    console.log(`content: ${n} premium lessons → Firestore lessonContent/ (${process.env.FIRESTORE_EMULATOR_HOST ? 'emulator' : projectId})`);
+    console.log(`content: ${n} premium lessons and projects → Firestore lessonContent/, projectContent/ (${process.env.FIRESTORE_EMULATOR_HOST ? 'emulator' : projectId})`);
   }
   if (!args.includes('--emit-free') && !args.includes('--upload-premium')) {
     console.error('usage: tsx scripts/build-content.ts [--emit-free] [--upload-premium [--project=<id>]]');

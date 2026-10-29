@@ -43,6 +43,17 @@ service cloud.firestore {
         allow read: if isSelf(uid);
         allow write: if false;
       }
+
+      // Finished projects (no points, so the learner may record this themselves).
+      match /projects/{projectId} {
+        allow read: if isSelf(uid);
+        allow create, update: if isSelf(uid)
+          && projectId.matches('^[a-z0-9-]{1,60}$')
+          && request.resource.data.keys().hasOnly(['completed', 'completedAt'])
+          && request.resource.data.completed == true
+          && request.resource.data.completedAt == request.time;
+        allow delete: if false;
+      }
     }
 
     match /usernames/{name} {
@@ -52,6 +63,12 @@ service cloud.firestore {
 
     // Premium lesson content: the paywall lives here, not only in the UI.
     match /lessonContent/{lessonId} {
+      allow read: if isPremium();
+      allow write: if false;
+    }
+
+    // Premium projects (steps and dataset files), same paywall as lessons.
+    match /projectContent/{projectId} {
       allow read: if isPremium();
       allow write: if false;
     }

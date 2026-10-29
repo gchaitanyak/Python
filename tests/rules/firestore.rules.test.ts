@@ -45,6 +45,7 @@ beforeEach(async () => {
     await setDoc(doc(a, 'users/alice/attempts/a1'), { lessonId: 'py-variables', points: 10 });
     await setDoc(doc(a, 'usernames/alice'), { uid: 'alice' });
     await setDoc(doc(a, 'lessonContent/py-comparison-logical'), { title: 'Comparison', questions: [] });
+    await setDoc(doc(a, 'projectContent/text-adventure'), { title: 'Text Adventure', steps: [] });
     await setDoc(doc(a, 'dailyScores/2026-10-29/users/alice'), { username: 'alice', points: 30, streak: 1 });
     await setDoc(doc(a, 'dailyChallenges/2026-10-29'), { questionRefs: [] });
     await setDoc(doc(a, 'dailyChallenges/2026-10-29/results/alice'), { accuracy: 80 });
@@ -110,6 +111,30 @@ describe('users/{uid}/attempts', () => {
     await assertFails(getDoc(doc(db('pat'), 'users/alice/attempts/a1')));
     await assertFails(setDoc(doc(db('alice'), 'users/alice/attempts/a2'), { points: 100 }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice/attempts/a1'), { points: 100 }));
+  });
+});
+
+describe('users/{uid}/projects', () => {
+  it('lets the owner record a finished project, and nothing else', async () => {
+    await assertSucceeds(setDoc(doc(db('alice'), 'users/alice/projects/expense-tracker'), { completed: true, completedAt: serverTimestamp() }));
+    await assertSucceeds(getDoc(doc(db('alice'), 'users/alice/projects/expense-tracker')));
+    await assertFails(getDoc(doc(db('pat'), 'users/alice/projects/expense-tracker')));
+    await assertFails(setDoc(doc(db('pat'), 'users/alice/projects/text-adventure'), { completed: true, completedAt: serverTimestamp() }));
+    await assertFails(setDoc(doc(db('alice'), 'users/alice/projects/text-adventure'), { completed: true, completedAt: serverTimestamp(), points: 500 }));
+    await assertFails(setDoc(doc(db('alice'), 'users/alice/projects/text-adventure'), { completed: false, completedAt: serverTimestamp() }));
+    await assertFails(setDoc(doc(db('alice'), 'users/alice/projects/Bad_Id'), { completed: true, completedAt: serverTimestamp() }));
+    await assertFails(deleteDoc(doc(db('alice'), 'users/alice/projects/expense-tracker')));
+  });
+});
+
+describe('projectContent (paywall)', () => {
+  it('is readable only while premium', async () => {
+    const ref = (uid?: string) => doc(db(uid), 'projectContent/text-adventure');
+    await assertFails(getDoc(ref()));
+    await assertFails(getDoc(ref('alice')));
+    await assertFails(getDoc(ref('lapsed')));
+    await assertSucceeds(getDoc(ref('pat')));
+    await assertFails(setDoc(ref('pat'), { title: 'x' }));
   });
 });
 

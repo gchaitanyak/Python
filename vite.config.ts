@@ -11,14 +11,19 @@ import { renderFooter } from './src/components/footer';
 import { renderHeader, SITE_NAME } from './src/components/header';
 import { boardCard } from './src/components/leaderboard-html';
 import { renderPlans, renderPremiumFeatures } from './src/components/pricing-html';
+import { renderProjectCards, renderProjectPage } from './src/components/projects-html';
 import { fillPlayerShell } from './src/components/player-shell';
 import {
   PYODIDE_FILES,
+  bundleProject,
+  datasetPath,
   freeLessonIds,
   lessonPath,
   loadCurriculumFile,
   publicCurriculum,
+  projectCatalogue,
   pyodideDir,
+  writtenProjects,
 } from './scripts/content-data';
 import { lessonUrl, lessonsInOrder } from './src/lib/curriculum';
 import { routes } from './src/lib/routes';
@@ -41,6 +46,8 @@ const MIME: Record<string, string> = {
 
 /** Template rendered once per module at /learn/<moduleId>/. */
 const MODULE_TEMPLATE = resolve(pagesDir, 'module/index.html');
+/** Template rendered once per written project at /projects/<projectId>/. */
+const PROJECT_TEMPLATE = resolve(pagesDir, 'project/index.html');
 
 /** Page file relative to src/pages → public URL path, e.g. "home/index.html" → "/". */
 function routeForHtml(relPath: string): string | undefined {
@@ -62,6 +69,7 @@ function fillCurriculum(html: string, c: Curriculum): string {
     .replace('<!-- @board:challenge -->', boardCard('challenge', 'Today’s challenge leaderboard'))
     .replace('<!-- @plans -->', renderPlans(loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, 'VITE_PRICE_')))
     .replace('<!-- @premium-features -->', renderPremiumFeatures())
+    .replace('<!-- @projects -->', renderProjectCards(projectCatalogue()))
     .replace('<!-- @next-title -->', first?.title ?? '')
     .replace('<!-- @next-href -->', first ? lessonUrl(first.id) : '/learn/');
 }
@@ -69,6 +77,12 @@ function fillCurriculum(html: string, c: Curriculum): string {
 function fillModule(html: string, m: CurriculumModule, c: Curriculum): string {
   const page = renderModulePage(m, c);
   return html.replace('<!-- @module-head -->', page.head).replace('<!-- @module-id -->', m.id).replace('<!-- @module -->', page.body);
+}
+
+function fillProject(html: string, id: string): string {
+  const info = writtenProjects().find((p) => p.id === id)!;
+  const page = renderProjectPage(info, bundleProject(id));
+  return html.replace('<!-- @project-head -->', page.head).replace('<!-- @project-intro -->', page.intro);
 }
 
 /**
@@ -101,6 +115,21 @@ function pagesPlugin(): Plugin {
           res.setHeader('Content-Type', 'application/json');
           return res.end(readFileSync(lessonPath(preview[1])));
         }
+        // Free projects: the bundled steps and their dataset files. Premium ones come from Firestore.
+        const project = /^\/data\/projects\/([a-z0-9-]+)(?:\.json|\/([\w.-]+))$/.exec(pathname);
+        if (project?.[1]) {
+          const info = writtenProjects().find((p) => p.id === project[1] && p.free);
+          const bundle = info ? bundleProject(info.id) : undefined;
+          if (bundle && !project[2]) {
+            res.setHeader('Content-Type', 'application/json');
+            return res.end(JSON.stringify(bundle));
+          }
+          if (bundle && bundle.datasets.some((d) => d.file === project[2])) {
+            return void createReadStream(datasetPath(bundle.id, project[2]!)).pipe(res);
+          }
+          res.statusCode = 404;
+          return res.end('Not found');
+        }
         const py = /^\/pyodide\/([\w.-]+)$/.exec(pathname);
         if (py?.[1] && PYODIDE_FILES.includes(py[1])) {
           res.setHeader('Content-Type', MIME[py[1].slice(py[1].lastIndexOf('.'))] ?? 'application/octet-stream');
@@ -128,6 +157,19 @@ function pagesPlugin(): Plugin {
           })
           .catch(next);
       });
+      // Project pages: /projects/<id>/ rendered from the project template.
+      server.middlewares.use((req, res, next) => {
+        const pathname = (req.url ?? '/').split('?')[0] ?? '/';
+        const match = /^\/projects\/([a-z0-9-]+)\/$/.exec(pathname);
+        if (!match || !writtenProjects().some((p) => p.id === match[1])) return next();
+        server
+          .transformIndexHtml(pathname, fillProject(readFileSync(PROJECT_TEMPLATE, 'utf8'), match[1]!))
+          .then((html) => {
+            res.setHeader('Content-Type', 'text/html');
+            res.end(html);
+          })
+          .catch(next);
+      });
       server.middlewares.use((req, _res, next) => {
         const [pathname = '/', query] = (req.url ?? '/').split('?');
         if (/^\/certificate\/[A-Za-z0-9]{10}\/$/.test(pathname)) req.url = `/credential/index.html${query ? `?${query}` : ''}`;
@@ -140,7 +182,7 @@ function pagesPlugin(): Plugin {
       order: 'pre',
       handler(html, ctx) {
         const rel = ctx.filename.slice(pagesDir.length + 1).replaceAll('\\', '/');
-        const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : `/${rel.replace(/index\.html$/, '')}`);
+        const path = routeForHtml(rel) ?? (rel.startsWith('module/') ? '/learn/' : rel.startsWith('project/') ? '/projects/' : `/${rel.replace(/index\.html$/, '')}`);
         return fillPlayerShell(fillCurriculum(html, loadCurriculumFile()))
           .replace('</head>', `${FAVICON}\n  </head>`)
           .replace('<!-- @header -->', renderHeader(path))
@@ -162,6 +204,16 @@ function pagesPlugin(): Plugin {
           writeFileSync(resolve(outDir, 'learn', m.id, 'index.html'), fillModule(html, m, c));
         }
         rmSync(resolve(outDir, 'module'), { recursive: true, force: true });
+      }
+      // One static page per written project from the built template.
+      const projectTemplate = resolve(outDir, 'project/index.html');
+      if (existsSync(projectTemplate)) {
+        const html = readFileSync(projectTemplate, 'utf8');
+        for (const p of writtenProjects()) {
+          mkdirSync(resolve(outDir, 'projects', p.id), { recursive: true });
+          writeFileSync(resolve(outDir, 'projects', p.id, 'index.html'), fillProject(html, p.id));
+        }
+        rmSync(resolve(outDir, 'project'), { recursive: true, force: true });
       }
       // Move each page to its public path: dist/home/index.html → dist/index.html.
       for (const r of routes) {
@@ -188,7 +240,11 @@ export default defineConfig({
     outDir,
     emptyOutDir: true,
     rollupOptions: {
-      input: { ...Object.fromEntries(routes.map((r) => [r.dir, resolve(pagesDir, r.dir, 'index.html')])), module: MODULE_TEMPLATE },
+      input: {
+        ...Object.fromEntries(routes.map((r) => [r.dir, resolve(pagesDir, r.dir, 'index.html')])),
+        module: MODULE_TEMPLATE,
+        project: PROJECT_TEMPLATE,
+      },
     },
   },
 });

@@ -35,7 +35,7 @@ interface Work {
   feedback?: { kind: 'pass' | 'fail' | 'info'; html: string };
 }
 
-export type PlayerMode = 'lesson' | 'challenge' | 'flashcards';
+export type PlayerMode = 'lesson' | 'challenge' | 'flashcards' | 'project';
 
 /** One answered question, in the shape the server re-checks (see SubmitPayload). */
 export interface SubmittedAnswer {
@@ -272,7 +272,7 @@ export class Player {
     this.editor = undefined;
 
     this.el.intro.hidden = this.index !== 0 || !this.el.intro.innerHTML;
-    const unit = this.mode === 'flashcards' ? 'Card' : 'Question';
+    const unit = this.mode === 'flashcards' ? 'Card' : this.mode === 'project' ? 'Step' : 'Question';
     this.el.qTitle.textContent = `${unit} ${this.index + 1}`;
     this.el.qType.textContent = TYPE_LABEL[q.type];
     this.el.prompt.innerHTML = renderMarkdown(q.prompt);
@@ -298,7 +298,8 @@ export class Player {
         break;
       case 'write_code':
       case 'fix_code': {
-        const lessonMode = this.mode === 'lesson';
+        // Drafts are kept for lessons and projects (both have stable ids).
+        const lessonMode = this.mode === 'lesson' || this.mode === 'project';
         const draft = this.current.code ?? (lessonMode ? loadDraft(this.lesson.id, q.id) : null) ?? q.starterCode;
         this.mountEditor(draft, q.type === 'fix_code' ? 'Code to fix' : 'Your code', lessonMode);
         if ([q.starterCode, q.solution].some((c) => c.includes('input('))) this.mountStdin(!!q.setupCode?.includes('__input__'));
@@ -428,7 +429,7 @@ export class Player {
       done || !(q.type === 'write_code' || q.type === 'fix_code' || q.type === 'fill_blank' || (q.type === 'explain' && q.exampleCode));
     this.el.btnRun.hidden = !runnable;
     const last = this.index === this.lesson.questions.length - 1;
-    const finish = { lesson: 'Finish lesson →', challenge: 'Finish challenge →', flashcards: 'Finish round →' }[this.mode];
+    const finish = { lesson: 'Finish lesson →', challenge: 'Finish challenge →', flashcards: 'Finish round →', project: 'Finish project →' }[this.mode];
     this.el.btnPrimary.textContent = done ? (last ? finish : 'Continue →') : 'Check';
     this.el.btnPrimary.dataset.mode = done ? 'continue' : 'check';
     this.el.btnPrimary.disabled = this.busy;
@@ -506,6 +507,10 @@ export class Player {
     } else if (this.mode === 'flashcards') {
       this.el.points.textContent = `${Object.values(this.states).filter((x) => x.correct).length} correct`;
       this.el.points.setAttribute('aria-label', 'Cards correct');
+    } else if (this.mode === 'project') {
+      const steps = this.lesson.questions.filter(isGradable);
+      this.el.points.textContent = `${steps.filter((q) => this.states[q.id]?.correct).length} of ${steps.length} steps done`;
+      this.el.points.setAttribute('aria-label', 'Steps done');
     } else {
       this.el.points.textContent = `${totalPoints(this.states)} pts`;
       this.el.points.setAttribute('aria-label', 'Points this lesson');

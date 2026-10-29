@@ -46,3 +46,25 @@ export const pyodideDir = resolve(import.meta.dirname, '../node_modules/pyodide'
 export function loadCurriculumFile(): import('../src/player/types').Curriculum {
   return JSON.parse(readFileSync(resolve(contentDir, 'curriculum.json'), 'utf8'));
 }
+
+/* ---------- projects (SPEC §5.8) ---------- */
+
+export const projectsDir = resolve(contentDir, 'projects');
+
+/** content/projects/projects.json: every planned project, in order. Public. */
+export function projectCatalogue(): import('../src/lib/projects').ProjectInfo[] {
+  const file = resolve(projectsDir, 'projects.json');
+  if (!existsSync(file)) return [];
+  const { projects } = JSON.parse(readFileSync(file, 'utf8')) as { projects: import('../src/lib/projects').ProjectInfo[] };
+  return [...projects].sort((a, b) => a.order - b.order);
+}
+
+export const writtenProjects = () => projectCatalogue().filter((p) => p.status === 'written');
+
+/** A written project with its dataset files' contents included. */
+export function bundleProject(id: string): import('../src/lib/projects').Project {
+  const p = JSON.parse(readFileSync(resolve(projectsDir, id, 'project.json'), 'utf8')) as import('../src/lib/projects').Project;
+  return { ...p, datasets: p.datasets.map((d) => ({ ...d, content: readFileSync(resolve(projectsDir, id, d.file), 'utf8') })) };
+}
+
+export const datasetPath = (id: string, file: string): string => resolve(projectsDir, id, file);

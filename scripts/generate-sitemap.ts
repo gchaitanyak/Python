@@ -1,9 +1,10 @@
-/** Writes dist/sitemap.xml and dist/robots.txt from the route table and module pages. Run after `vite build`. */
+/** Writes dist/sitemap.xml and dist/robots.txt from the route table, module and project pages. Run after `vite build`. */
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { moduleUrl, sortedModules } from '../src/lib/curriculum';
 import { routes } from '../src/lib/routes';
-import { loadCurriculumFile } from './content-data';
+import { projectUrl } from '../src/lib/projects';
+import { loadCurriculumFile, writtenProjects } from './content-data';
 
 const site = (process.env.SITE_URL ?? 'https://example.com').replace(/\/$/, '');
 const dist = resolve(import.meta.dirname, '../dist');
@@ -11,6 +12,7 @@ const dist = resolve(import.meta.dirname, '../dist');
 const listed = [
   ...routes.filter((r) => r.sitemap !== false).map((r) => r.path),
   ...sortedModules(loadCurriculumFile()).map((m) => moduleUrl(m.id)),
+  ...writtenProjects().map((p) => projectUrl(p.id)),
 ];
 const urls = listed.map((path) => `  <url><loc>${site}${path}</loc></url>`).join('\n');
 writeFileSync(

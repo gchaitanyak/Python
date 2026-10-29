@@ -8,7 +8,7 @@ import { FAKE_LLM_PORT, startFakeLlm } from './fake-llm';
 import { FAKE_STRIPE_PORT, startFakeStripe } from './fake-stripe';
 
 const n = await uploadPremium(process.env.GCLOUD_PROJECT ?? 'demo-python-exercises');
-console.log(`[dev-services] ${n} premium lessons uploaded to the Firestore emulator`);
+console.log(`[dev-services] ${n} premium lessons and projects uploaded to the Firestore emulator`);
 await startFakeLlm();
 console.log(`[dev-services] fake Claude API on http://127.0.0.1:${FAKE_LLM_PORT}`);
 await startFakeStripe();

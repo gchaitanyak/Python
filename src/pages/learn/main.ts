@@ -1,8 +1,10 @@
 import '../../lib/page';
 import '../../styles/curriculum.css';
+import '../../styles/projects.css';
 import { certificateProgress } from '../../../functions/src/lib/certificate';
 import { mountBoard } from '../../components/leaderboard';
 import { findLesson, lessonUrl, nextRecommended } from '../../lib/curriculum';
+import { markFinishedProjects } from '../../lib/project-progress';
 import { decorateLessons } from '../../lib/progress-view';
 import { challengeHistory, utcDay, type Session } from '../../lib/session';
 import { resolveVisitor } from '../../lib/visitor';
@@ -29,6 +31,7 @@ void (async () => {
   }
 
   decorateLessons(document, curriculum, visitor, now);
+  void markFinishedProjects(document);
   const next = nextRecommended(curriculum, visitor, now);
   const link = $<HTMLAnchorElement>('[data-next-link]');
   if (next) {

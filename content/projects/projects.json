@@ -1,0 +1,84 @@
+{
+  "projects": [
+    {
+      "id": "expense-tracker",
+      "order": 1,
+      "title": "Expense Tracker",
+      "free": true,
+      "status": "written",
+      "skills": [
+        "Files",
+        "Dictionaries",
+        "Functions",
+        "CSV"
+      ],
+      "packages": [],
+      "summary": "Load a month-by-month spending file, total it by category and month, add new expenses safely and write a report."
+    },
+    {
+      "id": "text-adventure",
+      "order": 2,
+      "title": "Text Adventure",
+      "free": false,
+      "status": "written",
+      "skills": [
+        "Classes",
+        "Control flow",
+        "JSON",
+        "Strings"
+      ],
+      "packages": [],
+      "summary": "Build a small castle adventure from a JSON world file: rooms, items, a locked door and a goal."
+    },
+    {
+      "id": "weather-report",
+      "order": 3,
+      "title": "Weather Data Report",
+      "free": false,
+      "status": "to-write",
+      "skills": [
+        "CSV",
+        "Pandas",
+        "Matplotlib"
+      ],
+      "packages": [
+        "pandas",
+        "matplotlib"
+      ],
+      "summary": "Clean a year of weather readings, summarise each month and chart the results."
+    },
+    {
+      "id": "movie-ratings",
+      "order": 4,
+      "title": "Movie Ratings Analysis",
+      "free": false,
+      "status": "to-write",
+      "skills": [
+        "Pandas",
+        "groupby",
+        "Plotting"
+      ],
+      "packages": [
+        "pandas",
+        "matplotlib"
+      ],
+      "summary": "Find the best-loved genres and decades in a table of movie ratings."
+    },
+    {
+      "id": "spam-classifier",
+      "order": 5,
+      "title": "Spam Classifier",
+      "free": false,
+      "status": "to-write",
+      "skills": [
+        "scikit-learn",
+        "Train/test split",
+        "Accuracy"
+      ],
+      "packages": [
+        "scikit-learn"
+      ],
+      "summary": "Train a model that tells spam from real messages, and measure how well it does."
+    }
+  ]
+}

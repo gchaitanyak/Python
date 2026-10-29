@@ -19,6 +19,7 @@ export const routes: Route[] = [
   { path: '/login/', dir: 'login', title: 'Log in' },
   { path: '/register/', dir: 'register', title: 'Create account' },
   { path: '/account/', dir: 'account', title: 'Account', sitemap: false },
+  { path: '/projects/', dir: 'projects', title: 'Projects' },
   { path: '/certificate/', dir: 'certificate', title: 'Certificate' },
   // Every /certificate/<id>/ is rewritten to this page (firebase.json, and the dev server).
   { path: '/certificate/view/', dir: 'credential', title: 'Certificate', sitemap: false },

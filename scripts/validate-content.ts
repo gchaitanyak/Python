@@ -9,14 +9,18 @@
  *   - multiple_choice: answer is one of the option ids
  * Style rules from docs/CONTENT_GUIDE.md are reported as warnings.
  *
- * Usage: tsx scripts/validate-content.ts [lessonId ...]
+ * Written projects (content/projects/) get the same checks, with their dataset
+ * files in place, as the browser runs them.
+ *
+ * Usage: tsx scripts/validate-content.ts [lessonId | projectId ...]
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { basename, resolve } from 'node:path';
 import { Ajv2020 } from 'ajv/dist/2020.js';
 import { loadPyodide } from 'pyodide';
 import type { Lesson, Question } from '../src/player/types';
-import { contentDir } from './content-data';
+import { projectToLesson } from '../src/lib/projects';
+import { bundleProject, contentDir, projectCatalogue } from './content-data';
 
 interface CurriculumFile {
   modules: { id: string; lessons: { id: string; type: string; status: string }[] }[];
@@ -151,6 +155,7 @@ const files = readdirSync(lessonsDir)
   .filter((f) => f.endsWith('.json'))
   .sort()
   .filter((f) => only.length === 0 || only.includes(basename(f, '.json')));
+const projectIds = new Set(projectCatalogue().map((p) => p.id));
 
 let failed = 0;
 let missing = 0;
@@ -174,4 +179,28 @@ if (only.length === 0) {
 }
 
 console.log(`${files.length - failed}/${files.length} lessons valid${missing ? `, ${missing} missing` : ''}`);
-process.exit(failed || missing ? 1 : 0);
+
+// Projects: each written project's steps, run with its dataset files in place.
+const projects = projectCatalogue().filter((p) => p.status === 'written' && (only.length === 0 || only.includes(p.id)));
+let projectsFailed = 0;
+for (const info of projects) {
+  const errors: string[] = [];
+  try {
+    const project = bundleProject(info.id);
+    if (project.id !== info.id) errors.push(`project.json id ${project.id} should be ${info.id}`);
+    if (!project.title || !project.summary || !project.brief) errors.push('title, summary and brief are required');
+    if (!(project.estimatedMinutes >= 10 && project.estimatedMinutes <= 120)) errors.push('estimatedMinutes should be 10–120');
+    if (project.datasets.length === 0) errors.push('a project needs at least one dataset file');
+    const lesson = projectToLesson(project);
+    // Steps use the lesson question format; the id pattern and length limit are lesson-only.
+    if (!validateSchema({ ...lesson, id: `py-${lesson.id}`, estimatedMinutes: 30 })) for (const e of validateSchema.errors ?? []) errors.push(`schema: ${e.instancePath || '/'} ${e.message}`);
+    else lesson.questions.forEach((q, i) => errors.push(...checkQuestion(q, i)));
+  } catch (e) {
+    errors.push(`cannot load: ${(e as Error).message}`);
+  }
+  console.log(`${errors.length ? 'FAIL' : 'ok  '} project ${info.id}`);
+  for (const e of errors) console.log(`     - ${e}`);
+  if (errors.length) projectsFailed++;
+}
+if (projects.length) console.log(`${projects.length - projectsFailed}/${projects.length} projects valid`);
+process.exit(failed || missing || projectsFailed ? 1 : 0);
