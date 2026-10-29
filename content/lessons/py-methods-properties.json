@@ -1,0 +1,184 @@
+{
+  "id": "py-methods-properties",
+  "moduleId": "oop",
+  "title": "Methods and Properties",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Besides normal **instance methods**, a class can have **class methods** (`@classmethod`, receiving the class as `cls` — handy for alternative constructors) and **static methods** (`@staticmethod`, receiving neither). A **property** (`@property`) is a method you read like an attribute, without brackets.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "A property can be calculated from other attributes, so it's always up to date.",
+      "exampleCode": "class Circle:\n    def __init__(self, radius):\n        self.radius = radius\n\n    @property\n    def area(self):\n        return round(3.14159 * self.radius ** 2, 2)\n\n    @classmethod\n    def from_diameter(cls, d):\n        return cls(d / 2)\n\n    @staticmethod\n    def unit():\n        return \"cm\"\n\nc = Circle.from_diameter(10)\nprint(c.radius, c.area, Circle.unit())",
+      "explanation": "`c.area` — no brackets — even though it's a method underneath."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `Temperature(celsius)` with a property `fahrenheit` (°C × 9/5 + 32).",
+      "starterCode": "class Temperature:\n    pass\n",
+      "solution": "class Temperature:\n    def __init__(self, celsius):\n        self.celsius = celsius\n\n    @property\n    def fahrenheit(self):\n        return self.celsius * 9 / 5 + 32",
+      "tests": [
+        {
+          "name": "value",
+          "code": "t = Temperature(100)\nassert t.fahrenheit == 212, 'Temperature(100).fahrenheit should be 212.'",
+          "message": "Convert to Fahrenheit."
+        },
+        {
+          "name": "live",
+          "code": "t = Temperature(0)\nt.celsius = 20\nassert t.fahrenheit == 68, 'The property should follow changes to celsius.'",
+          "message": "Recalculate when celsius changes."
+        }
+      ],
+      "hint": "Decorate a method with `@property`.",
+      "explanation": "Properties are recalculated on every read."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "A **class attribute** is shared by every instance. What does this print?",
+      "code": "class Visitor:\n    count = 0\n\n    def __init__(self):\n        Visitor.count += 1\n\nVisitor()\nVisitor()\nprint(Visitor.count)",
+      "expectedOutput": "2",
+      "hint": "`count` belongs to the class, not each object.",
+      "explanation": "Each new visitor adds 1 to the shared counter."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Add a class method `from_string(text)` to `Point` that builds a point from text like `\"3,4\"`.",
+      "starterCode": "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n",
+      "solution": "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    @classmethod\n    def from_string(cls, text):\n        x, y = text.split(\",\")\n        return cls(int(x), int(y))",
+      "tests": [
+        {
+          "name": "value",
+          "code": "p = Point.from_string('3,4')\nassert isinstance(p, Point) and (p.x, p.y) == (3, 4), 'Point.from_string(\"3,4\") should give Point(3, 4).'",
+          "message": "Build a Point from text."
+        },
+        {
+          "name": "negative",
+          "code": "p = Point.from_string('-2,10')\nassert (p.x, p.y) == (-2, 10), 'Negative numbers should work.'",
+          "message": "Handle negatives."
+        }
+      ],
+      "hint": "`@classmethod`, then `return cls(…)` with the two numbers.",
+      "explanation": "Class methods are the usual way to offer extra ways of creating objects."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "`radius_area` is a property of `c`. How do you read it?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`c.radius_area()`"
+        },
+        {
+          "id": "b",
+          "text": "`c.radius_area`"
+        },
+        {
+          "id": "c",
+          "text": "`Circle.radius_area(c)()`"
+        },
+        {
+          "id": "d",
+          "text": "`property(c)`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Properties look like attributes.",
+      "explanation": "No brackets: the property runs its method for you."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This crashes with *TypeError: 'float' object is not callable*. Fix it.",
+      "starterCode": "class Square:\n    def __init__(self, side):\n        self.side = side\n\n    @property\n    def area(self):\n        return self.side ** 2\n\nprint(Square(1.5).area())\n",
+      "solution": "class Square:\n    def __init__(self, side):\n        self.side = side\n\n    @property\n    def area(self):\n        return self.side ** 2\n\nprint(Square(1.5).area)\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == '2.25', 'The program should print 2.25.'",
+          "message": "Print 2.25."
+        }
+      ],
+      "hint": "`area` is a property — it already gives back the number.",
+      "explanation": "Calling the number with `()` is what fails."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the decorator symbol.",
+      "template": "class Maths:\n    ___staticmethod\n    def double(x):\n        return x * 2\n\nresult = Maths.double(21)",
+      "blanks": [
+        "@"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert result == 42, 'result should be 42.'",
+          "message": "result should be 42."
+        }
+      ],
+      "hint": "Decorators start with one character.",
+      "explanation": "`@staticmethod` means no `self` or `cls` is passed in."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `Product(name, price)` where `price` is a property with a **setter** that raises `ValueError` for negative prices. Store the value in `self._price`.",
+      "starterCode": "class Product:\n    pass\n",
+      "solution": "class Product:\n    def __init__(self, name, price):\n        self.name = name\n        self.price = price\n\n    @property\n    def price(self):\n        return self._price\n\n    @price.setter\n    def price(self, value):\n        if value < 0:\n            raise ValueError(\"price cannot be negative\")\n        self._price = value",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "p = Product('mug', 8)\np.price = 9.5\nassert p.price == 9.5, 'Setting a valid price should work.'",
+          "message": "Allow valid prices."
+        },
+        {
+          "name": "setter",
+          "code": "try:\n    Product('mug', 8).__setattr__('price', -1)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Setting a negative price should raise ValueError.')",
+          "message": "Reject negative prices."
+        },
+        {
+          "name": "init",
+          "code": "try:\n    Product('mug', -3)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Creating a product with a negative price should raise ValueError too.')",
+          "message": "Validate in __init__ too."
+        }
+      ],
+      "hint": "`@property def price`, then `@price.setter def price(self, value)`. Setting `self.price` in `__init__` uses the setter.",
+      "explanation": "Setters let you validate every change in one place."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class M:\n    @staticmethod\n    def double(x):\n        return x * 2\n\nprint(M.double(4), M().double(5))",
+      "expectedOutput": "8 10",
+      "hint": "Static methods work on the class or an instance.",
+      "explanation": "Neither call passes `self`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `Invoice(customer)` with `add_line(description, amount)`, and properties `subtotal`, `tax` (20% of the subtotal, rounded to 2 decimals) and `total`. Add a class method `empty(customer)` that returns a new invoice.",
+      "starterCode": "class Invoice:\n    pass\n",
+      "solution": "class Invoice:\n    def __init__(self, customer):\n        self.customer = customer\n        self.lines = []\n\n    @classmethod\n    def empty(cls, customer):\n        return cls(customer)\n\n    def add_line(self, description, amount):\n        self.lines.append((description, amount))\n\n    @property\n    def subtotal(self):\n        return round(sum(a for d, a in self.lines), 2)\n\n    @property\n    def tax(self):\n        return round(self.subtotal * 0.2, 2)\n\n    @property\n    def total(self):\n        return round(self.subtotal + self.tax, 2)",
+      "tests": [
+        {
+          "name": "totals",
+          "code": "inv = Invoice.empty('Ana')\ninv.add_line('design', 120)\ninv.add_line('hosting', 15.5)\nassert (inv.subtotal, inv.tax, inv.total) == (135.5, 27.1, 162.6), 'Check subtotal, tax and total.'",
+          "message": "Check the three properties."
+        },
+        {
+          "name": "empty",
+          "code": "inv = Invoice.empty('Ben')\nassert isinstance(inv, Invoice) and inv.customer == 'Ben' and inv.total == 0, 'Invoice.empty should give an invoice with no lines.'",
+          "message": "Invoice.empty should work."
+        }
+      ],
+      "hint": "Properties can use other properties: `total` uses `subtotal` and `tax`.",
+      "explanation": "Calculated properties never go out of date."
+    }
+  ]
+}

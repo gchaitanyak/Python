@@ -1,0 +1,184 @@
+{
+  "id": "py-inheritance",
+  "moduleId": "oop",
+  "title": "Inheritance",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A class can **inherit** from another: `class Dog(Animal):`. The child gets every method of the **parent** and can add new ones or **override** existing ones. `super()` calls the parent's version — often `super().__init__(…)` to reuse the parent's set-up.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`isinstance(obj, Parent)` is True for children too.",
+      "exampleCode": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def speak(self):\n        return \"...\"\n\nclass Dog(Animal):\n    def speak(self):\n        return f\"{self.name}: Woof\"\n\nclass Puppy(Dog):\n    def __init__(self, name, age_weeks):\n        super().__init__(name)\n        self.age_weeks = age_weeks\n\np = Puppy(\"Bo\", 9)\nprint(p.speak(), p.age_weeks, isinstance(p, Animal))",
+      "explanation": "Python looks for a method on the object's class first, then its parents."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `Vehicle(wheels)` with `describe()` returning `\"A vehicle with N wheels\"`. Then write `Bike(Vehicle)` whose `__init__` takes no arguments and calls `super().__init__(2)`.",
+      "starterCode": "class Vehicle:\n    pass\n",
+      "solution": "class Vehicle:\n    def __init__(self, wheels):\n        self.wheels = wheels\n\n    def describe(self):\n        return f\"A vehicle with {self.wheels} wheels\"\n\nclass Bike(Vehicle):\n    def __init__(self):\n        super().__init__(2)",
+      "tests": [
+        {
+          "name": "vehicle",
+          "code": "assert Vehicle(6).describe() == 'A vehicle with 6 wheels', 'Vehicle(6).describe() should mention 6 wheels.'",
+          "message": "Describe a vehicle."
+        },
+        {
+          "name": "bike",
+          "code": "b = Bike()\nassert isinstance(b, Vehicle) and b.describe() == 'A vehicle with 2 wheels', 'Bike() should be a Vehicle with 2 wheels.'",
+          "message": "Bike inherits describe()."
+        }
+      ],
+      "hint": "`class Bike(Vehicle):` and `super().__init__(2)` inside its `__init__`.",
+      "explanation": "`Bike` gets `describe` for free from `Vehicle`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Bird:\n    def move(self):\n        return \"flies\"\n\nclass Penguin(Bird):\n    def move(self):\n        return \"swims\"\n\nprint(Bird().move(), Penguin().move())",
+      "expectedOutput": "flies swims",
+      "hint": "The child's method replaces the parent's.",
+      "explanation": "Overriding lets a subclass change behaviour."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `Employee(name, salary)` with `annual()` returning `salary * 12`. Then `Manager(Employee)` with an extra `bonus`; its `annual()` adds the bonus to the parent's result via `super()`.",
+      "starterCode": "class Employee:\n    pass\n",
+      "solution": "class Employee:\n    def __init__(self, name, salary):\n        self.name = name\n        self.salary = salary\n\n    def annual(self):\n        return self.salary * 12\n\nclass Manager(Employee):\n    def __init__(self, name, salary, bonus):\n        super().__init__(name, salary)\n        self.bonus = bonus\n\n    def annual(self):\n        return super().annual() + self.bonus",
+      "tests": [
+        {
+          "name": "employee",
+          "code": "assert Employee('Ana', 3000).annual() == 36000, 'Employee annual() should be salary × 12.'",
+          "message": "Employee annual pay."
+        },
+        {
+          "name": "manager",
+          "code": "m = Manager('Ben', 4000, 5000)\nassert m.annual() == 53000 and m.name == 'Ben', 'Manager annual() should add the bonus.'",
+          "message": "Manager adds the bonus."
+        }
+      ],
+      "hint": "`super().annual()` runs the parent's calculation.",
+      "explanation": "Calling `super()` reuses the parent's logic instead of copying it."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `super().__init__(name)` do inside a child's `__init__`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Creates a second object"
+        },
+        {
+          "id": "b",
+          "text": "Runs the parent class's `__init__` on this object"
+        },
+        {
+          "id": "c",
+          "text": "Deletes the parent"
+        },
+        {
+          "id": "d",
+          "text": "Calls the child's `__init__` again"
+        }
+      ],
+      "answer": "b",
+      "hint": "It reuses the parent's set-up.",
+      "explanation": "The parent sets up its attributes on the same `self`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`s.name` raises *AttributeError*. Fix `Student` so it also sets up everything `Person` does.",
+      "starterCode": "class Person:\n    def __init__(self, name):\n        self.name = name\n\nclass Student(Person):\n    def __init__(self, name, school):\n        self.school = school\n",
+      "solution": "class Person:\n    def __init__(self, name):\n        self.name = name\n\nclass Student(Person):\n    def __init__(self, name, school):\n        super().__init__(name)\n        self.school = school\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "s = Student('Ivy', 'Hill High')\nassert (s.name, s.school) == ('Ivy', 'Hill High'), 'Student should have both name and school.'",
+          "message": "Set name and school."
+        }
+      ],
+      "hint": "Overriding `__init__` replaces the parent's — unless you call it.",
+      "explanation": "Forgetting `super().__init__` is a very common inheritance bug."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the parent class so `Square` reuses `Rectangle`.",
+      "template": "class Rectangle:\n    def __init__(self, w, h):\n        self.w, self.h = w, h\n\n    def area(self):\n        return self.w * self.h\n\nclass Square(___):\n    def __init__(self, side):\n        super().__init__(side, side)\n\narea = Square(4).area()",
+      "blanks": [
+        "Rectangle"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert area == 16, 'area should be 16.'",
+          "message": "area should be 16."
+        }
+      ],
+      "hint": "A square is a kind of rectangle.",
+      "explanation": "`Square(Rectangle)` inherits `area`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write a base class `Shape` with `area()` returning 0, and subclasses `Circle(radius)` (area `3.14159 * r * r`) and `Square(side)`. Then write `total_area(shapes)` that adds up the areas, rounded to 2 decimals.",
+      "starterCode": "class Shape:\n    def area(self):\n        return 0\n",
+      "solution": "class Shape:\n    def area(self):\n        return 0\n\nclass Circle(Shape):\n    def __init__(self, radius):\n        self.radius = radius\n\n    def area(self):\n        return 3.14159 * self.radius * self.radius\n\nclass Square(Shape):\n    def __init__(self, side):\n        self.side = side\n\n    def area(self):\n        return self.side * self.side\n\ndef total_area(shapes):\n    return round(sum(s.area() for s in shapes), 2)",
+      "tests": [
+        {
+          "name": "classes",
+          "code": "assert isinstance(Circle(1), Shape) and isinstance(Square(1), Shape), 'Circle and Square should inherit from Shape.'",
+          "message": "Inherit from Shape."
+        },
+        {
+          "name": "total",
+          "code": "assert total_area([Circle(1), Square(2), Shape()]) == 7.14 and total_area([]) == 0, 'total_area should add up every area.'",
+          "message": "Add up the areas."
+        }
+      ],
+      "hint": "Each subclass overrides `area`. `total_area` doesn't care which kind each shape is.",
+      "explanation": "A shared parent lets one function handle every kind of shape."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "With two parents, Python follows the **method resolution order** (MRO). What does this print?",
+      "code": "class A:\n    def hi(self):\n        return \"A\"\n\nclass B(A):\n    def hi(self):\n        return \"B\"\n\nclass C(A):\n    def hi(self):\n        return \"C\"\n\nclass D(B, C):\n    pass\n\nprint(D().hi(), [k.__name__ for k in D.__mro__])",
+      "expectedOutput": "B ['D', 'B', 'C', 'A', 'object']",
+      "hint": "Python checks the parents left to right.",
+      "explanation": "`D(B, C)` looks in `B` before `C`; every class finally inherits from `object`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `Notification(recipient)` with `send()` returning `\"To <recipient>: <message>\"` built from a method `message()` that returns `\"You have a notification\"`. Add `EmailNotification(recipient, subject)` whose `message()` returns `\"Subject: <subject>\"`, and `SMSNotification(recipient, text)` whose `message()` returns the text cut to 20 characters.",
+      "starterCode": "class Notification:\n    pass\n",
+      "solution": "class Notification:\n    def __init__(self, recipient):\n        self.recipient = recipient\n\n    def message(self):\n        return \"You have a notification\"\n\n    def send(self):\n        return f\"To {self.recipient}: {self.message()}\"\n\nclass EmailNotification(Notification):\n    def __init__(self, recipient, subject):\n        super().__init__(recipient)\n        self.subject = subject\n\n    def message(self):\n        return f\"Subject: {self.subject}\"\n\nclass SMSNotification(Notification):\n    def __init__(self, recipient, text):\n        super().__init__(recipient)\n        self.text = text\n\n    def message(self):\n        return self.text[:20]",
+      "tests": [
+        {
+          "name": "base",
+          "code": "assert Notification('ana').send() == 'To ana: You have a notification', 'The base send() should use the default message.'",
+          "message": "Base notification."
+        },
+        {
+          "name": "email",
+          "code": "assert EmailNotification('ben@x.org', 'Invoice').send() == 'To ben@x.org: Subject: Invoice', 'Email messages show the subject.'",
+          "message": "Email notification."
+        },
+        {
+          "name": "sms",
+          "code": "assert SMSNotification('+351', 'Your parcel arrives tomorrow morning').send() == 'To +351: Your parcel arrives ', 'SMS messages are cut to 20 characters.'",
+          "message": "SMS notification."
+        }
+      ],
+      "hint": "Only `message()` changes in each subclass; `send()` is shared.",
+      "explanation": "Putting the shared steps in the parent and the differences in children is the heart of inheritance."
+    }
+  ]
+}

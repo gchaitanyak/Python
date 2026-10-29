@@ -1,0 +1,189 @@
+{
+  "id": "py-classes-objects",
+  "moduleId": "oop",
+  "title": "Classes and Objects",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **class** is a blueprint for making things — **objects** (or **instances**). `__init__` runs when an object is created and sets up its **attributes** on `self`. Functions defined inside a class are **methods**; their first parameter, `self`, is the object they're called on.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Create an object by calling the class like a function. Each object keeps its own attributes.",
+      "exampleCode": "class Dog:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n    def bark(self):\n        return f\"{self.name} says woof\"\n\nrex = Dog(\"Rex\", 3)\nfido = Dog(\"Fido\", 7)\nprint(rex.bark())\nprint(fido.name, fido.age)",
+      "explanation": "`rex.bark()` passes `rex` in as `self` automatically."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write a class `Book` whose `__init__` takes `title` and `author` and stores them as attributes with the same names.",
+      "starterCode": "class Book:\n    pass\n",
+      "solution": "class Book:\n    def __init__(self, title, author):\n        self.title = title\n        self.author = author",
+      "tests": [
+        {
+          "name": "attrs",
+          "code": "b = Book('Kindred', 'Octavia Butler')\nassert (b.title, b.author) == ('Kindred', 'Octavia Butler'), 'Book(title, author) should store both attributes.'",
+          "message": "Store title and author."
+        },
+        {
+          "name": "separate",
+          "code": "a, b = Book('A', 'x'), Book('B', 'y')\nassert a.title == 'A' and b.title == 'B', 'Each Book keeps its own title.'",
+          "message": "Each object keeps its own values."
+        }
+      ],
+      "hint": "Inside `__init__`: `self.title = title`.",
+      "explanation": "Attributes set on `self` belong to that one object."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Counter:\n    def __init__(self):\n        self.count = 0\n\nc = Counter()\nc.count += 2\nprint(c.count)",
+      "expectedOutput": "2",
+      "hint": "The attribute starts at 0.",
+      "explanation": "You can read and change an object's attributes with a dot."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write a class `Rectangle(width, height)` with methods `area()` and `perimeter()`.",
+      "starterCode": "class Rectangle:\n    pass\n",
+      "solution": "class Rectangle:\n    def __init__(self, width, height):\n        self.width = width\n        self.height = height\n\n    def area(self):\n        return self.width * self.height\n\n    def perimeter(self):\n        return 2 * (self.width + self.height)",
+      "tests": [
+        {
+          "name": "area",
+          "code": "assert Rectangle(3, 4).area() == 12 and Rectangle(2.5, 2).area() == 5, 'area() should be width × height.'",
+          "message": "Check area()."
+        },
+        {
+          "name": "perimeter",
+          "code": "assert Rectangle(3, 4).perimeter() == 14, 'perimeter() should be 2 × (width + height).'",
+          "message": "Check perimeter()."
+        }
+      ],
+      "hint": "Methods read the attributes through `self`.",
+      "explanation": "Data and the code that uses it live together in the class."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "In a method, what is `self`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The class itself"
+        },
+        {
+          "id": "b",
+          "text": "The object the method was called on"
+        },
+        {
+          "id": "c",
+          "text": "A global variable"
+        },
+        {
+          "id": "d",
+          "text": "A keyword you can't change"
+        }
+      ],
+      "answer": "b",
+      "hint": "`rex.bark()` — which object is barking?",
+      "explanation": "`self` is the instance; Python passes it in for you."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`p.describe()` crashes with *TypeError: describe() takes 0 positional arguments but 1 was given*. Fix it.",
+      "starterCode": "class Planet:\n    def __init__(self, name):\n        self.name = name\n\n    def describe():\n        return f\"{self.name} is a planet\"\n",
+      "solution": "class Planet:\n    def __init__(self, name):\n        self.name = name\n\n    def describe(self):\n        return f\"{self.name} is a planet\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert Planet('Mars').describe() == 'Mars is a planet', 'Planet(\"Mars\").describe() should be \"Mars is a planet\".'",
+          "message": "describe() should work."
+        }
+      ],
+      "hint": "Python passes the object in automatically — the method needs a parameter for it.",
+      "explanation": "Every instance method's first parameter is `self`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the first parameter of `__init__`.",
+      "template": "class Plant:\n    def __init__(___, name):\n        self.name = name\n\nfern = Plant(\"fern\")",
+      "blanks": [
+        "self"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert fern.name == 'fern', 'fern.name should be fern.'",
+          "message": "fern.name should be fern."
+        }
+      ],
+      "hint": "It's the object being created.",
+      "explanation": "`self` comes first in every instance method, including `__init__`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `BankAccount(owner, balance=0)` with `deposit(amount)` and `withdraw(amount)`, each returning the new balance. `withdraw` raises `ValueError` if there isn't enough money.",
+      "starterCode": "class BankAccount:\n    pass\n",
+      "solution": "class BankAccount:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        self.balance += amount\n        return self.balance\n\n    def withdraw(self, amount):\n        if amount > self.balance:\n            raise ValueError(\"insufficient funds\")\n        self.balance -= amount\n        return self.balance",
+      "tests": [
+        {
+          "name": "flow",
+          "code": "a = BankAccount('Ana')\nassert a.balance == 0 and a.deposit(50) == 50 and a.withdraw(20) == 30 and a.balance == 30, 'deposit and withdraw should update and return the balance.'",
+          "message": "Deposit and withdraw."
+        },
+        {
+          "name": "start",
+          "code": "assert BankAccount('Ben', 100).balance == 100, 'balance should default to 0 but accept a starting value.'",
+          "message": "Use the starting balance."
+        },
+        {
+          "name": "overdraw",
+          "code": "try:\n    BankAccount('Cleo', 10).withdraw(11)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Withdrawing more than the balance should raise ValueError.')",
+          "message": "Refuse to overdraw."
+        }
+      ],
+      "hint": "Methods change `self.balance` and return it.",
+      "explanation": "An object remembers its state between method calls."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Box:\n    def __init__(self, value):\n        self.value = value\n\na = Box(1)\nb = Box(2)\na.value = 5\nprint(a.value, b.value)",
+      "expectedOutput": "5 2",
+      "hint": "Changing one object doesn't touch another.",
+      "explanation": "Each instance has its own attributes."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write a `ShoppingCart` with `add(item, price, qty=1)`, `total()` (rounded to 2 decimals) and `item_count()` (the total quantity).",
+      "starterCode": "class ShoppingCart:\n    pass\n",
+      "solution": "class ShoppingCart:\n    def __init__(self):\n        self.lines = []\n\n    def add(self, item, price, qty=1):\n        self.lines.append((item, price, qty))\n\n    def total(self):\n        return round(sum(price * qty for item, price, qty in self.lines), 2)\n\n    def item_count(self):\n        return sum(qty for item, price, qty in self.lines)",
+      "tests": [
+        {
+          "name": "empty",
+          "code": "c = ShoppingCart()\nassert c.total() == 0 and c.item_count() == 0, 'A new cart is empty.'",
+          "message": "Start empty."
+        },
+        {
+          "name": "filled",
+          "code": "c = ShoppingCart()\nc.add('tea', 3.5, 2)\nc.add('cake', 4.25)\nassert c.total() == 11.25 and c.item_count() == 3, 'total() and item_count() should cover every line.'",
+          "message": "Total the cart."
+        },
+        {
+          "name": "separate",
+          "code": "a, b = ShoppingCart(), ShoppingCart()\na.add('x', 1)\nassert b.item_count() == 0, 'Each cart keeps its own items.'",
+          "message": "Carts shouldn't share items."
+        }
+      ],
+      "hint": "Create the list in `__init__` (not on the class), so every cart gets its own.",
+      "explanation": "A small class bundles a list and the calculations on it."
+    }
+  ]
+}

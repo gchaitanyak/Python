@@ -1730,7 +1730,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Define a class",
             "Use __init__ and self",
@@ -1774,7 +1774,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write instance and class methods",
             "Use @property"
@@ -1801,7 +1801,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Extend a class",
             "Call super()",
@@ -1837,7 +1837,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use one interface for many types"
           ],
@@ -1863,7 +1863,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Hide internals with naming conventions",
             "Validate in setters"
@@ -1894,7 +1894,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement __str__ and __repr__",
             "Overload operators with __add__ and __eq__"
@@ -1917,7 +1917,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Design a small class hierarchy"
           ],

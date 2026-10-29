@@ -1,0 +1,189 @@
+{
+  "id": "py-encapsulation",
+  "moduleId": "oop",
+  "title": "Encapsulation",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "**Encapsulation** means keeping an object's inner details private and offering a clean way to use it. Python relies on naming: a single underscore (`_balance`) means *internal — please don't touch*, and a double underscore (`__secret`) makes Python rename the attribute to discourage outside access. Properties give controlled, validated access.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "A property without a setter is read-only. A setter can validate every change.",
+      "exampleCode": "class Account:\n    def __init__(self, owner):\n        self.owner = owner\n        self._balance = 0\n\n    @property\n    def balance(self):\n        return self._balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError(\"deposit must be positive\")\n        self._balance += amount\n\nacct = Account(\"Ana\")\nacct.deposit(25)\nprint(acct.balance)\ntry:\n    acct.balance = 1000\nexcept AttributeError:\n    print(\"balance is read-only\")",
+      "explanation": "Only `deposit` can change the balance, so the rule is enforced in one place."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `Account(owner)` storing the balance in `_balance` (starting at 0), a **read-only** property `balance`, and `deposit(amount)` that adds to it.",
+      "starterCode": "class Account:\n    pass\n",
+      "solution": "class Account:\n    def __init__(self, owner):\n        self.owner = owner\n        self._balance = 0\n\n    @property\n    def balance(self):\n        return self._balance\n\n    def deposit(self, amount):\n        self._balance += amount",
+      "tests": [
+        {
+          "name": "deposit",
+          "code": "a = Account('Ana')\na.deposit(40)\na.deposit(2)\nassert a.balance == 42, 'balance should reflect deposits.'",
+          "message": "Deposits update the balance."
+        },
+        {
+          "name": "read only",
+          "code": "try:\n    Account('Ben').__setattr__('balance', 99)\nexcept AttributeError:\n    pass\nelse:\n    raise AssertionError('balance should be read-only (a property with no setter).')",
+          "message": "Make balance read-only."
+        }
+      ],
+      "hint": "A `@property` with no setter can't be assigned.",
+      "explanation": "Read-only properties stop outside code changing state directly."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "Double underscores trigger **name mangling**. What does this print?",
+      "code": "class A:\n    def __init__(self):\n        self.__secret = 1\n\na = A()\nprint(hasattr(a, '__secret'), a._A__secret)",
+      "expectedOutput": "False 1",
+      "hint": "Python renames `__secret` inside the class.",
+      "explanation": "It becomes `_A__secret` — hidden, but not truly private."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `Thermostat(target)` with a `target` property whose setter raises `ValueError` unless the value is between 10 and 30. Store it in `_target`.",
+      "starterCode": "class Thermostat:\n    pass\n",
+      "solution": "class Thermostat:\n    def __init__(self, target):\n        self.target = target\n\n    @property\n    def target(self):\n        return self._target\n\n    @target.setter\n    def target(self, value):\n        if not 10 <= value <= 30:\n            raise ValueError(\"target must be between 10 and 30\")\n        self._target = value",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "t = Thermostat(20)\nt.target = 22.5\nassert t.target == 22.5, 'Valid targets should be accepted.'",
+          "message": "Accept valid targets."
+        },
+        {
+          "name": "range",
+          "code": "try:\n    Thermostat(20).__setattr__('target', 35)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Targets above 30 should raise ValueError.')",
+          "message": "Reject out-of-range targets."
+        },
+        {
+          "name": "init",
+          "code": "try:\n    Thermostat(5)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('The starting target should be validated too.')",
+          "message": "Validate the starting target."
+        }
+      ],
+      "hint": "Assign `self.target` in `__init__` so the setter checks it.",
+      "explanation": "Validation in the setter covers every way the value can change."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does a single leading underscore, like `_cache`, mean?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Python makes it private"
+        },
+        {
+          "id": "b",
+          "text": "It's a constant"
+        },
+        {
+          "id": "c",
+          "text": "It's internal — other code shouldn't use it directly"
+        },
+        {
+          "id": "d",
+          "text": "It's a class attribute"
+        }
+      ],
+      "answer": "c",
+      "hint": "It's a convention, not a rule Python enforces.",
+      "explanation": "Other programmers read `_name` as *don't rely on this*."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "Reading `t.temp` crashes with *AttributeError*: the setter stores the value under the wrong name. Fix the setter.",
+      "starterCode": "class Thermo:\n    def __init__(self, temp):\n        self.temp = temp\n\n    @property\n    def temp(self):\n        return self._temp\n\n    @temp.setter\n    def temp(self, value):\n        self.temperature = value\n",
+      "solution": "class Thermo:\n    def __init__(self, temp):\n        self.temp = temp\n\n    @property\n    def temp(self):\n        return self._temp\n\n    @temp.setter\n    def temp(self, value):\n        self._temp = value\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "t = Thermo(18)\nt.temp = 21\nassert t.temp == 21, 't.temp should be 21.'",
+          "message": "Store the value."
+        }
+      ],
+      "hint": "The getter reads `self._temp` — does the setter write there?",
+      "explanation": "The getter and setter must agree on the hidden attribute, `_temp`. (Don't write `self.temp` inside the setter — that calls the setter again forever.)"
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the decorator that adds a setter to the `name` property.",
+      "template": "class User:\n    def __init__(self, name):\n        self._name = name\n\n    @property\n    def name(self):\n        return self._name\n\n    @name.___\n    def name(self, value):\n        self._name = value.strip()\n\nu = User(\"ana\")\nu.name = \"  Ana  \"",
+      "blanks": [
+        "setter"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert u.name == 'Ana', 'u.name should be Ana.'",
+          "message": "u.name should be Ana."
+        }
+      ],
+      "hint": "`@<property>.____`",
+      "explanation": "`@name.setter` attaches the setter to the `name` property."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `Password(text)` that stores only a SHA-256 hash of the text in `_hash` (use `hashlib.sha256(text.encode()).hexdigest()`), never the text itself, and has `check(text)` returning whether the text matches.",
+      "starterCode": "import hashlib\n",
+      "solution": "import hashlib\n\nclass Password:\n    def __init__(self, text):\n        self._hash = self._digest(text)\n\n    @staticmethod\n    def _digest(text):\n        return hashlib.sha256(text.encode()).hexdigest()\n\n    def check(self, text):\n        return self._digest(text) == self._hash",
+      "tests": [
+        {
+          "name": "check",
+          "code": "p = Password('correct horse')\nassert p.check('correct horse') and not p.check('wrong'), 'check should accept only the original text.'",
+          "message": "Check passwords."
+        },
+        {
+          "name": "no plain text",
+          "code": "p = Password('s3cret!')\nassert 's3cret!' not in str(vars(p)), 'The plain password must not be stored anywhere on the object.'",
+          "message": "Never store the plain text."
+        }
+      ],
+      "hint": "Hash in `__init__`, hash again in `check`, compare.",
+      "explanation": "Never keep secrets in plain text — even inside your own objects."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Item:\n    def __init__(self):\n        self._sku = 'A1'\n\n    @property\n    def sku(self):\n        return self._sku\n\ni = Item()\ntry:\n    i.sku = 'B2'\nexcept AttributeError:\n    print('read-only')\nprint(i.sku)",
+      "expectedOutput": "read-only\nA1",
+      "hint": "There's no setter.",
+      "explanation": "Assigning to a property without a setter raises `AttributeError`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `Inventory` with a private dictionary `_items`. `add(name, qty)` adds stock (`ValueError` if `qty` isn't positive); `remove(name, qty)` takes it away (`ValueError` if there isn't enough). A read-only property `items` returns a **copy** of the dictionary, so outside code can't change the real one.",
+      "starterCode": "class Inventory:\n    pass\n",
+      "solution": "class Inventory:\n    def __init__(self):\n        self._items = {}\n\n    def add(self, name, qty):\n        if qty <= 0:\n            raise ValueError(\"qty must be positive\")\n        self._items[name] = self._items.get(name, 0) + qty\n\n    def remove(self, name, qty):\n        if self._items.get(name, 0) < qty:\n            raise ValueError(\"not enough stock\")\n        self._items[name] -= qty\n\n    @property\n    def items(self):\n        return dict(self._items)",
+      "tests": [
+        {
+          "name": "flow",
+          "code": "inv = Inventory()\ninv.add('pens', 10)\ninv.add('pens', 5)\ninv.remove('pens', 3)\nassert inv.items == {'pens': 12}, 'add and remove should update the stock.'",
+          "message": "Add and remove stock."
+        },
+        {
+          "name": "copy",
+          "code": "inv = Inventory()\ninv.add('tape', 2)\ninv.items['tape'] = 999\nassert inv.items == {'tape': 2}, 'items should return a copy; changing it must not change the inventory.'",
+          "message": "Return a copy."
+        },
+        {
+          "name": "rules",
+          "code": "try:\n    Inventory().remove('x', 1)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Removing missing stock should raise ValueError.')\ntry:\n    Inventory().add('x', 0)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Adding 0 should raise ValueError.')",
+          "message": "Validate add and remove."
+        }
+      ],
+      "hint": "`dict(self._items)` makes a copy.",
+      "explanation": "Returning a copy keeps the object in charge of its own data."
+    }
+  ]
+}
