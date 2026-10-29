@@ -59,7 +59,7 @@ const PROJECT_TEMPLATE = resolve(pagesDir, 'project/index.html');
 const GUIDE_TEMPLATE = resolve(pagesDir, 'guide/index.html');
 
 /** Public site address for canonical and Open Graph URLs (SITE_URL in .env.local or the environment). */
-const siteUrl = (): string => loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, '').SITE_URL || 'https://example.com';
+const siteUrl = (): string => loadEnv(process.env.BUILD_MODE ?? (process.env.NODE_ENV === 'production' ? 'production' : 'development'), __dirname, '').SITE_URL || 'https://example.com';
 
 function withSeo(html: string, path: string): string {
   return addSeoTags(html, path, siteUrl(), ogImageFor(path, new Set(loadGuides().map((g) => g.slug))));
@@ -97,7 +97,7 @@ function fillCurriculum(html: string, c: Curriculum): string {
     .replace('<!-- @board:points -->', boardCard('points', 'Today’s top points'))
     .replace('<!-- @board:streak -->', boardCard('streak', 'Today’s top streaks'))
     .replace('<!-- @board:challenge -->', boardCard('challenge', 'Today’s challenge leaderboard'))
-    .replace('<!-- @plans -->', renderPlans(loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, 'VITE_PRICE_')))
+    .replace('<!-- @plans -->', renderPlans(loadEnv(process.env.BUILD_MODE ?? (process.env.NODE_ENV === 'production' ? 'production' : 'development'), __dirname, 'VITE_PRICE_')))
     .replace('<!-- @premium-features -->', renderPremiumFeatures())
     .replace('<!-- @projects -->', renderProjectCards(projectCatalogue()))
     .replace('<!-- @guides -->', renderGuideCards(loadGuides()))

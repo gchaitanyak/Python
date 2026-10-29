@@ -23,7 +23,7 @@ export function sitemapPaths(): string[] {
 
 if (process.argv[1] && import.meta.filename === resolve(process.argv[1])) {
   const root = resolve(import.meta.dirname, '..');
-  const site = (loadEnv('production', root, '').SITE_URL || 'https://example.com').replace(/\/$/, '');
+  const site = (loadEnv(process.env.BUILD_MODE ?? 'production', root, '').SITE_URL || 'https://example.com').replace(/\/$/, '');
   const dist = resolve(root, 'dist');
   const listed = sitemapPaths();
   const urls = listed.map((path) => `  <url><loc>${site}${path}</loc></url>`).join('\n');

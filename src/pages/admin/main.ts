@@ -29,10 +29,11 @@ function renderReport(r: Report): void {
   $('[data-group]').hidden = false;
   $('[data-group-name]').textContent = r.group.name;
   $('[data-member-count]').textContent = String(r.group.memberCount);
+  $('[data-group-id]').textContent = r.group.id;
   const used = r.members.filter((m) => m.premiumSeat).length;
   $('[data-seats]').innerHTML = r.group.premiumSeats
     ? `${used} of ${r.group.premiumSeats} in use`
-    : 'None — <a href="mailto:hello@example.com?subject=Premium%20seats">ask us</a> to add premium for your members';
+    : 'None — <a href="mailto:hello@example.com?subject=Premium%20seats">ask us</a> (quote the group ID) to add premium for your members';
   $<HTMLInputElement>('[data-invite]').value = inviteUrl(r.group.inviteCode);
   $('[data-empty]').hidden = r.members.length > 0;
   $('[data-table-wrap]').hidden = r.members.length === 0;

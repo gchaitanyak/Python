@@ -11,16 +11,19 @@
     "dev": "concurrently -k -n web,fb -c cyan,yellow \"npm:dev:web\" \"npm:dev:emulators\"",
     "dev:web": "vite",
     "dev:emulators": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --ui --project demo-python-exercises \"tsx scripts/dev-services.ts\"",
-    "build": "npm run validate:content && tsc --noEmit && vite build && tsx scripts/build-content.ts --emit-free && tsx scripts/generate-sitemap.ts",
+    "build": "tsx scripts/build.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && npm --prefix functions run typecheck",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:rules": "firebase emulators:exec --only firestore --project demo-python-exercises \"vitest run --config vitest.rules.config.ts\"",
     "validate:content": "tsx scripts/validate-content.ts",
-    "deploy": "npm run build && firebase deploy --only hosting,functions,firestore:rules,firestore:indexes && tsx scripts/build-content.ts --upload-premium",
+    "deploy": "tsx scripts/deploy.ts --env=production",
     "test:functions": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises \"vitest run --config vitest.functions.config.ts\"",
-    "fetch:pyodide": "tsx scripts/pyodide-packages.ts"
+    "fetch:pyodide": "tsx scripts/pyodide-packages.ts",
+    "build:staging": "tsx scripts/build.ts --mode=staging",
+    "deploy:staging": "tsx scripts/deploy.ts --env=staging",
+    "deploy:production": "tsx scripts/deploy.ts --env=production"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
