@@ -1,0 +1,174 @@
+{
+  "id": "py-csv-files",
+  "moduleId": "files-data",
+  "title": "CSV Files",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **CSV** file stores a table as text: one row per line, values separated by commas. The `csv` module handles the tricky parts, like commas inside quoted values. `csv.reader` gives each row as a list; `csv.DictReader` gives each row as a dictionary keyed by the header. Open CSV files with `newline=\"\"`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Every value read from a CSV is text — convert numbers yourself. `csv.writer(f).writerow([...])` writes one row.",
+      "exampleCode": "import csv\nwith open(\"demo.csv\", \"w\", newline=\"\") as f:\n    writer = csv.writer(f)\n    writer.writerow([\"city\", \"temp\"])\n    writer.writerow([\"Lima\", 19])\n    writer.writerow([\"Oslo\", 4])\n\nwith open(\"demo.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        print(row[\"city\"], int(row[\"temp\"]) + 1)",
+      "explanation": "`DictReader` uses the first row as the keys."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Read `people.csv` (columns `name,age`) with `csv.DictReader` into a list `rows`, and store the names in a list `names`.",
+      "starterCode": "import csv\n",
+      "solution": "import csv\nwith open(\"people.csv\", newline=\"\") as f:\n    rows = list(csv.DictReader(f))\nnames = [r[\"name\"] for r in rows]",
+      "setupCode": "with open('people.csv', 'w') as _f:\n    _f.write('name,age\\nAna,34\\nBen,27\\nCleo,41\\n')\n",
+      "tests": [
+        {
+          "name": "rows",
+          "code": "assert len(rows) == 3 and rows[0] == {'name': 'Ana', 'age': '34'}, 'rows should hold one dictionary per data row.'",
+          "message": "Read every row."
+        },
+        {
+          "name": "names",
+          "code": "assert names == ['Ana', 'Ben', 'Cleo'], 'names should be [\"Ana\", \"Ben\", \"Cleo\"].'",
+          "message": "Collect the names."
+        }
+      ],
+      "hint": "`list(csv.DictReader(f))` reads every row.",
+      "explanation": "Notice the ages are text: `'34'`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "Quotes protect commas inside a value. What does this print?",
+      "code": "import csv\nwith open(\"quoted.csv\", \"w\") as f:\n    f.write('a,\"b,c\",d\\n')\nwith open(\"quoted.csv\", newline=\"\") as f:\n    print(next(csv.reader(f)))",
+      "expectedOutput": "['a', 'b,c', 'd']",
+      "hint": "The quoted part is one value.",
+      "explanation": "This is why you use `csv` instead of `split(\",\")`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`sales.csv` has columns `product,qty,price`. Store the total revenue (qty × price for every row) in `revenue`, rounded to 2 decimals.",
+      "starterCode": "import csv\nrevenue = 0\n",
+      "solution": "import csv\nrevenue = 0\nwith open(\"sales.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        revenue += int(row[\"qty\"]) * float(row[\"price\"])\nrevenue = round(revenue, 2)",
+      "setupCode": "with open('sales.csv', 'w') as _f:\n    _f.write('product,qty,price\\nmug,3,8.50\\npen,10,1.20\\nlamp,1,24.25\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert revenue == 61.75, 'revenue should be 61.75.'",
+          "message": "Add up qty × price."
+        }
+      ],
+      "hint": "Convert `qty` with `int` and `price` with `float`.",
+      "explanation": "Always convert CSV values before doing maths."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Why open CSV files with `newline=\"\"`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It makes them smaller"
+        },
+        {
+          "id": "b",
+          "text": "So the `csv` module handles line endings itself (avoiding blank rows on Windows)"
+        },
+        {
+          "id": "c",
+          "text": "It's needed to read numbers"
+        },
+        {
+          "id": "d",
+          "text": "It removes the header"
+        }
+      ],
+      "answer": "b",
+      "hint": "The `csv` module wants to see the raw line endings.",
+      "explanation": "Without it, writing on Windows can produce an empty line between rows."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should add up the ages, but crashes with a *TypeError*. Fix it.",
+      "starterCode": "import csv\ntotal = 0\nwith open(\"ages.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        total += row[\"age\"]\n",
+      "solution": "import csv\ntotal = 0\nwith open(\"ages.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        total += int(row[\"age\"])\n",
+      "setupCode": "with open('ages.csv', 'w') as _f:\n    _f.write('name,age\\nAna,34\\nBen,27\\nCleo,41\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 102, 'total should be 102.'",
+          "message": "total should be 102."
+        }
+      ],
+      "hint": "What type is every value read from a CSV?",
+      "explanation": "CSV values are text; `int()` turns them into numbers."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method that writes one row.",
+      "template": "import csv\nwith open(\"header_demo.csv\", \"w\", newline=\"\") as f:\n    writer = csv.writer(f)\n    writer.___([\"name\", \"score\"])",
+      "blanks": [
+        "writerow"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "with open('header_demo.csv') as _f:\n    assert _f.read().strip() == 'name,score', 'The file should contain name,score.'",
+          "message": "Write the header row."
+        }
+      ],
+      "hint": "Write a single row.",
+      "explanation": "`writerow` writes one list as one line."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `scores` (a list of dictionaries) to `scores.csv` with a header row `name,score`, using `csv.DictWriter`.",
+      "starterCode": "import csv\n",
+      "solution": "import csv\nwith open(\"scores.csv\", \"w\", newline=\"\") as f:\n    writer = csv.DictWriter(f, fieldnames=[\"name\", \"score\"])\n    writer.writeheader()\n    writer.writerows(scores)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['scores.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nscores = [{'name': 'Ana', 'score': 91}, {'name': 'Ben', 'score': 78}]\n",
+      "tests": [
+        {
+          "name": "content",
+          "code": "import csv as _c\nwith open('scores.csv', newline='') as _f:\n    back = list(_c.DictReader(_f))\nassert back == [{'name': 'Ana', 'score': '91'}, {'name': 'Ben', 'score': '78'}], 'scores.csv should have the header and both rows.'",
+          "message": "Write the header and rows."
+        }
+      ],
+      "hint": "`DictWriter(f, fieldnames=[…])`, then `writeheader()` and `writerows(…)`.",
+      "explanation": "`DictWriter` matches each dictionary's keys to the columns."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import csv\nwith open(\"weather.csv\", \"w\") as f:\n    f.write(\"city,temp\\nLima,19\\n\")\nwith open(\"weather.csv\", newline=\"\") as f:\n    row = next(csv.DictReader(f))\nprint(list(row.keys()))",
+      "expectedOutput": "['city', 'temp']",
+      "hint": "The header row becomes the keys.",
+      "explanation": "Each row dictionary has one key per column."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Read `orders.csv` (`id,customer,total`) and write `big_orders.csv` with the same header, keeping only orders with a total of 100 or more. Store how many you kept in `kept`.",
+      "starterCode": "import csv\nkept = 0\n",
+      "solution": "import csv\nkept = 0\nwith open(\"orders.csv\", newline=\"\") as src, open(\"big_orders.csv\", \"w\", newline=\"\") as dst:\n    reader = csv.DictReader(src)\n    writer = csv.DictWriter(dst, fieldnames=reader.fieldnames)\n    writer.writeheader()\n    for row in reader:\n        if float(row[\"total\"]) >= 100:\n            writer.writerow(row)\n            kept += 1",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['big_orders.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('orders.csv', 'w') as _f:\n    _f.write('id,customer,total\\nA1,Ana,45.50\\nA2,Ben,120.00\\nA3,Cleo,99.99\\nA4,Dev,310.25\\n')\n",
+      "tests": [
+        {
+          "name": "kept",
+          "code": "assert kept == 2, 'kept should be 2.'",
+          "message": "Count the kept orders."
+        },
+        {
+          "name": "file",
+          "code": "import csv as _c\nwith open('big_orders.csv', newline='') as _f:\n    back = list(_c.DictReader(_f))\nassert [r['id'] for r in back] == ['A2', 'A4'], 'big_orders.csv should hold orders A2 and A4.'",
+          "message": "Write only the big orders."
+        }
+      ],
+      "hint": "Open both files in one `with`; reuse `reader.fieldnames` for the writer.",
+      "explanation": "Filtering one CSV into another is a classic data-cleaning step."
+    }
+  ]
+}

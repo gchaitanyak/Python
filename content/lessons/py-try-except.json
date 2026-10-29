@@ -1,0 +1,181 @@
+{
+  "id": "py-try-except",
+  "moduleId": "errors-exceptions",
+  "title": "try, except, else, finally",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "When something goes wrong, Python **raises an exception** and stops — unless you catch it. Put risky code in a `try` block and handle a specific problem in an `except` block. `else` runs only if nothing went wrong, and `finally` runs no matter what.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Catch the specific exception you expect, like `ValueError` or `ZeroDivisionError`. `as err` gives you the error to look at.",
+      "exampleCode": "for text in [\"42\", \"abc\"]:\n    try:\n        n = int(text)\n    except ValueError as err:\n        print(\"Not a number:\", err)\n    else:\n        print(\"Got\", n)\n    finally:\n        print(\"Checked\", repr(text))",
+      "explanation": "`finally` is where clean-up goes — closing files, releasing locks — because it always runs."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`text` came from a form. Store it as a whole number in `number`, or `None` if it isn't one. Use `try`/`except ValueError`.",
+      "starterCode": "# your try/except here\n",
+      "solution": "try:\n    number = int(text)\nexcept ValueError:\n    number = None",
+      "setupCode": "text = \"12a\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "try:\n    expected = int(text)\nexcept ValueError:\n    expected = None\nassert number == expected, 'number should be int(text), or None when text is not a whole number.'",
+          "message": "Use None when the text isn't a number."
+        }
+      ],
+      "hint": "Try the conversion; in the `except` block set `number = None`.",
+      "explanation": "Catching `ValueError` handles bad input without hiding other bugs."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "try:\n    print(1 / 0)\nexcept ZeroDivisionError:\n    print(\"oops\")\nfinally:\n    print(\"done\")",
+      "expectedOutput": "oops\ndone",
+      "hint": "The division fails before anything is printed.",
+      "explanation": "The `except` block handles it, then `finally` runs as always."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `safe_divide(a, b)` that returns `a / b`, or `None` when `b` is 0.",
+      "starterCode": "def safe_divide(a, b):\n    pass\n",
+      "solution": "def safe_divide(a, b):\n    try:\n        return a / b\n    except ZeroDivisionError:\n        return None",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert safe_divide(10, 4) == 2.5 and safe_divide(0, 5) == 0, 'safe_divide(10, 4) should be 2.5.'",
+          "message": "Divide normally."
+        },
+        {
+          "name": "zero",
+          "code": "assert safe_divide(3, 0) is None, 'Dividing by 0 should return None.'",
+          "message": "Return None for division by 0."
+        }
+      ],
+      "hint": "Return inside `try`; return `None` in `except ZeroDivisionError`.",
+      "explanation": "Handling the error where it happens keeps callers simple."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "When does the `else` block of a `try` statement run?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Always"
+        },
+        {
+          "id": "b",
+          "text": "Only if an exception was raised"
+        },
+        {
+          "id": "c",
+          "text": "Only if no exception was raised"
+        },
+        {
+          "id": "d",
+          "text": "Only after `finally`"
+        }
+      ],
+      "answer": "c",
+      "hint": "Think of it as *no errors happened*.",
+      "explanation": "`else` holds code that should run only when the `try` block succeeded."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`price_of` should return 0 for unknown items, but its bare `except` also hides real bugs: passing `None` instead of a dictionary silently returns 0. Make it catch only the missing-key error.",
+      "starterCode": "def price_of(item, prices):\n    try:\n        return prices[item]\n    except:\n        return 0\n",
+      "solution": "def price_of(item, prices):\n    try:\n        return prices[item]\n    except KeyError:\n        return 0\n",
+      "tests": [
+        {
+          "name": "missing",
+          "code": "assert price_of('x', {}) == 0 and price_of('tea', {'tea': 2}) == 2, 'Unknown items should still give 0.'",
+          "message": "Unknown items give 0."
+        },
+        {
+          "name": "bugs surface",
+          "code": "try:\n    price_of('x', None)\nexcept TypeError:\n    pass\nelse:\n    raise AssertionError('Passing None should raise a TypeError, not return 0 — catch only KeyError.')",
+          "message": "Only catch KeyError."
+        }
+      ],
+      "hint": "A missing dictionary key raises `KeyError`.",
+      "explanation": "A bare `except:` catches everything, including mistakes you want to see."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the exception so a bad number is reported instead of crashing.",
+      "template": "messages = []\nfor text in [\"7\", \"seven\"]:\n    try:\n        messages.append(int(text))\n    except ___ as err:\n        messages.append(\"bad\")",
+      "blanks": [
+        "ValueError"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert messages == [7, 'bad'], 'messages should be [7, \"bad\"].'",
+          "message": "messages should be [7, 'bad']."
+        }
+      ],
+      "hint": "Which exception does `int(\"seven\")` raise?",
+      "explanation": "`int()` raises `ValueError` for text it can't read."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `parse_scores(text)` for comma-separated scores like `\"8, 9, x, 10\"`. Return a tuple `(scores, bad)`: the valid whole numbers in order, and how many entries were not numbers.",
+      "starterCode": "def parse_scores(text):\n    pass\n",
+      "solution": "def parse_scores(text):\n    scores = []\n    bad = 0\n    for part in text.split(','):\n        try:\n            scores.append(int(part))\n        except ValueError:\n            bad += 1\n    return scores, bad",
+      "tests": [
+        {
+          "name": "mixed",
+          "code": "assert parse_scores('8, 9, x, 10') == ([8, 9, 10], 1), 'parse_scores(\"8, 9, x, 10\") should be ([8, 9, 10], 1).'",
+          "message": "Keep the numbers and count the rest."
+        },
+        {
+          "name": "all bad",
+          "code": "assert parse_scores('a,b') == ([], 2), 'All bad entries → ([], 2).'",
+          "message": "Count every bad entry."
+        }
+      ],
+      "hint": "`int()` ignores surrounding spaces. Count failures in the `except`.",
+      "explanation": "Keeping going after bad data — and counting it — is how real importers behave."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "`finally` even runs when the `try` block returns. What does this print?",
+      "code": "def f():\n    try:\n        return \"try\"\n    finally:\n        print(\"cleanup\")\n\nprint(f())",
+      "expectedOutput": "cleanup\ntry",
+      "hint": "The function prints before its result is printed.",
+      "explanation": "`finally` runs on the way out of the function, before the caller prints the result."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `read_age(prompt)`: keep asking with `input(prompt)` until the user types a whole number from 0 to 120, printing `Please enter a whole number.` or `Please enter an age from 0 to 120.` after bad answers. Return the age. Then call `age = read_age(\"Age? \")`.",
+      "starterCode": "def read_age(prompt):\n    pass\n",
+      "solution": "def read_age(prompt):\n    while True:\n        try:\n            age = int(input(prompt))\n        except ValueError:\n            print(\"Please enter a whole number.\")\n            continue\n        if 0 <= age <= 120:\n            return age\n        print(\"Please enter an age from 0 to 120.\")\n\nage = read_age(\"Age? \")",
+      "setupCode": "__input__ = \"forty\\n150\\n42\\n\"",
+      "tests": [
+        {
+          "name": "age",
+          "code": "assert age == 42, 'age should be the first valid answer, 42.'",
+          "message": "Return the first valid age."
+        },
+        {
+          "name": "messages",
+          "code": "assert __output__.count('Please enter a whole number.') == 1 and __output__.count('Please enter an age from 0 to 120.') == 1, 'Print the right message after each bad answer.'",
+          "message": "Explain each bad answer."
+        }
+      ],
+      "hint": "`while True` with `try`/`except` inside; `return` once the age is in range.",
+      "explanation": "Robust input loops are the most common place you'll use `try`."
+    }
+  ]
+}

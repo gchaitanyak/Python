@@ -1,0 +1,191 @@
+{
+  "id": "py-assert-debugging",
+  "moduleId": "errors-exceptions",
+  "title": "assert and Debugging",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "`assert condition, \"message\"` checks something that must be true. If it's false, Python raises `AssertionError` with your message — catching a bug close to where it starts. When a program crashes, read the **traceback** from the bottom: the last line says what went wrong; the lines above show where.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Use `assert` for things that should never happen in correct code, not for checking user input (that's what `raise ValueError` is for).",
+      "exampleCode": "def average(nums):\n    assert len(nums) > 0, \"average needs at least one number\"\n    return sum(nums) / len(nums)\n\nprint(average([2, 4]))\ntry:\n    average([])\nexcept AssertionError as err:\n    print(\"Bug caught:\", err)",
+      "explanation": "A traceback lists calls oldest-first; the error itself is on the last line."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `average(nums)` that asserts the list isn't empty, with the message `average needs at least one number`, then returns the mean.",
+      "starterCode": "def average(nums):\n    pass\n",
+      "solution": "def average(nums):\n    assert len(nums) > 0, \"average needs at least one number\"\n    return sum(nums) / len(nums)",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert average([2, 4, 9]) == 5, 'average([2, 4, 9]) should be 5.'",
+          "message": "Return the mean."
+        },
+        {
+          "name": "empty",
+          "code": "try:\n    average([])\nexcept AssertionError as e:\n    assert str(e) == 'average needs at least one number', 'Use the message: average needs at least one number'\nelse:\n    raise AssertionError('average([]) should fail its assert.')",
+          "message": "Assert the list isn't empty."
+        }
+      ],
+      "hint": "`assert len(nums) > 0, \"…\"` on the first line.",
+      "explanation": "The assert turns a confusing *ZeroDivisionError* into a clear message."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 5\nassert x > 0, \"x must be positive\"\nprint(\"ok\")",
+      "expectedOutput": "ok",
+      "hint": "Is the condition true?",
+      "explanation": "A passing assert does nothing at all."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "A program crashes with this traceback. Which line tells you **what** went wrong?\n\n```\nTraceback (most recent call last):\n  File \"shop.py\", line 9, in <module>\n    total = add_tax(price)\n  File \"shop.py\", line 4, in add_tax\n    return price * rate\nNameError: name 'rate' is not defined\n```",
+      "options": [
+        {
+          "id": "a",
+          "text": "The first line"
+        },
+        {
+          "id": "b",
+          "text": "`line 9, in <module>`"
+        },
+        {
+          "id": "c",
+          "text": "`line 4, in add_tax`"
+        },
+        {
+          "id": "d",
+          "text": "The last line"
+        }
+      ],
+      "answer": "d",
+      "hint": "Read from the bottom up.",
+      "explanation": "The last line names the error and why; the line above it (line 4) shows where."
+    },
+    {
+      "id": "q05",
+      "type": "fix_code",
+      "prompt": "`last_item` crashes with *IndexError: list index out of range*. Fix it.",
+      "starterCode": "def last_item(items):\n    return items[len(items)]\n",
+      "solution": "def last_item(items):\n    return items[-1]\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert last_item([1, 2, 3]) == 3 and last_item(['x']) == 'x', 'last_item should return the final item.'",
+          "message": "Return the final item."
+        }
+      ],
+      "hint": "A list of 3 items has indexes 0, 1 and 2.",
+      "explanation": "The traceback's last line names the error; `items[-1]` is the simplest fix."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `apply_discount(price, percent)`. Assert that `percent` is between 0 and 100, compute the discounted price rounded to 2 decimals, assert that it's no more than `price`, and return it.",
+      "starterCode": "def apply_discount(price, percent):\n    pass\n",
+      "solution": "def apply_discount(price, percent):\n    assert 0 <= percent <= 100, \"percent must be 0-100\"\n    result = round(price * (1 - percent / 100), 2)\n    assert result <= price, \"discount made the price bigger\"\n    return result",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert apply_discount(50, 10) == 45.0 and apply_discount(19.99, 0) == 19.99, 'apply_discount(50, 10) should be 45.0.'",
+          "message": "Apply the discount."
+        },
+        {
+          "name": "bad percent",
+          "code": "try:\n    apply_discount(50, 120)\nexcept AssertionError:\n    pass\nelse:\n    raise AssertionError('A percent above 100 should fail the assert.')",
+          "message": "Assert the percent range."
+        }
+      ],
+      "hint": "Two asserts: one before calculating, one after.",
+      "explanation": "Asserts on inputs and outputs (*invariants*) catch mistakes early."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the operator so the assert passes.",
+      "template": "total = 4 + 6\nassert total ___ 10, \"total should be 10\"",
+      "blanks": [
+        "=="
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 10",
+          "message": "total should be 10."
+        }
+      ],
+      "hint": "Compare, don't assign.",
+      "explanation": "`assert total == 10` checks the value."
+    },
+    {
+      "id": "q08",
+      "type": "multiple_choice",
+      "prompt": "Where is the bug most likely to be, given this traceback?\n\n```\nTraceback (most recent call last):\n  File \"report.py\", line 12, in <module>\n    print(summary(scores))\n  File \"report.py\", line 6, in summary\n    best = max(values)\nValueError: max() arg is an empty sequence\n```",
+      "options": [
+        {
+          "id": "a",
+          "text": "`max()` itself is broken"
+        },
+        {
+          "id": "b",
+          "text": "`summary` was given an empty list on line 12"
+        },
+        {
+          "id": "c",
+          "text": "Line 6 has a typo"
+        },
+        {
+          "id": "d",
+          "text": "`print` failed"
+        }
+      ],
+      "answer": "b",
+      "hint": "What does `max()` complain about?",
+      "explanation": "Built-ins are rarely the problem: `scores` must have been empty when passed in."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "`sum_positive([3, -1, 4])` should be 7, but it returns 4. Find and fix the bug.",
+      "starterCode": "def sum_positive(nums):\n    for n in nums:\n        total = 0\n        if n > 0:\n            total += n\n    return total\n",
+      "solution": "def sum_positive(nums):\n    total = 0\n    for n in nums:\n        if n > 0:\n            total += n\n    return total\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert sum_positive([3, -1, 4]) == 7 and sum_positive([-2]) == 0 and sum_positive([]) == 0, 'sum_positive([3, -1, 4]) should be 7.'",
+          "message": "Add every positive number."
+        }
+      ],
+      "hint": "Where is `total` reset? Try `print(total)` inside the loop to see.",
+      "explanation": "Starting the total inside the loop wiped it on every pass."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `check_order(order)` for a dictionary like `{\"qty\": 2, \"price\": 9.5}`. Return a list of problems (empty if fine): `\"missing qty\"` if there's no `qty`, `\"qty must be positive\"` if it's 0 or less, and `\"price must not be negative\"` if `price` is below 0.",
+      "starterCode": "def check_order(order):\n    pass\n",
+      "solution": "def check_order(order):\n    problems = []\n    if \"qty\" not in order:\n        problems.append(\"missing qty\")\n    elif order[\"qty\"] <= 0:\n        problems.append(\"qty must be positive\")\n    if order.get(\"price\", 0) < 0:\n        problems.append(\"price must not be negative\")\n    return problems",
+      "tests": [
+        {
+          "name": "fine",
+          "code": "assert check_order({'qty': 2, 'price': 9.5}) == [], 'A good order has no problems.'",
+          "message": "Accept good orders."
+        },
+        {
+          "name": "problems",
+          "code": "assert check_order({'price': 1}) == ['missing qty'] and check_order({'qty': 0, 'price': -2}) == ['qty must be positive', 'price must not be negative'], 'Report every problem, in order.'",
+          "message": "Report each problem."
+        }
+      ],
+      "hint": "Check each rule and append a message when it fails.",
+      "explanation": "Collecting every problem at once is friendlier than stopping at the first."
+    }
+  ]
+}

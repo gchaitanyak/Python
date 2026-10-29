@@ -1,0 +1,163 @@
+{
+  "id": "py-read-write-files",
+  "moduleId": "files-data",
+  "title": "Reading and Writing Files",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "`open(name, mode)` opens a file. Mode `\"r\"` reads (the default), `\"w\"` writes (replacing what was there) and `\"a\"` appends to the end. Always open files in a `with` block: Python closes the file for you when the block ends, even if something goes wrong.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`read()` gives the whole file as one string. Looping over the file gives one line at a time, each ending in `\\n`. Files here live in your browser for this session.",
+      "exampleCode": "with open(\"notes.txt\", \"w\") as f:\n    f.write(\"first line\\n\")\n    f.write(\"second line\\n\")\n\nwith open(\"notes.txt\", \"a\") as f:\n    f.write(\"added later\\n\")\n\nwith open(\"notes.txt\") as f:\n    for line in f:\n        print(line.strip())",
+      "explanation": "`write()` doesn't add new lines for you — include `\\n` yourself."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write the text `Hello file` into a file called `greeting.txt`, using `with open(…)`.",
+      "starterCode": "# your code\n",
+      "solution": "with open(\"greeting.txt\", \"w\") as f:\n    f.write(\"Hello file\")",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['greeting.txt']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\n",
+      "tests": [
+        {
+          "name": "content",
+          "code": "with open('greeting.txt') as _f:\n    assert _f.read().strip() == 'Hello file', 'greeting.txt should contain Hello file.'",
+          "message": "greeting.txt should contain Hello file."
+        }
+      ],
+      "hint": "Open with mode `\"w\"`, then `f.write(…)`.",
+      "explanation": "Mode `\"w\"` creates the file if it doesn't exist."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "with open(\"lines_demo.txt\", \"w\") as f:\n    f.write(\"a\\nb\\n\")\n\nwith open(\"lines_demo.txt\") as f:\n    print(len(f.readlines()))",
+      "expectedOutput": "2",
+      "hint": "`readlines()` gives a list with one entry per line.",
+      "explanation": "Two `\\n` characters make two lines."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`shopping.txt` has one item per line. Read it into a list `items` with each line's spaces and new line removed (skip empty lines).",
+      "starterCode": "items = []\n",
+      "solution": "items = []\nwith open(\"shopping.txt\") as f:\n    for line in f:\n        if line.strip():\n            items.append(line.strip())",
+      "setupCode": "with open('shopping.txt', 'w') as _f:\n    _f.write('bread\\n  eggs \\nolive oil\\n\\ntea\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert items == ['bread', 'eggs', 'olive oil', 'tea'], 'items should be the four items without spaces or new lines.'",
+          "message": "Read the four items."
+        }
+      ],
+      "hint": "Loop over the file; `strip()` each line; skip ones that are empty after stripping.",
+      "explanation": "Stripping removes the `\\n` that every line ends with."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does opening a file with mode `\"a\"` do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Reads it"
+        },
+        {
+          "id": "b",
+          "text": "Deletes it"
+        },
+        {
+          "id": "c",
+          "text": "Adds new text to the end, keeping what's there"
+        },
+        {
+          "id": "d",
+          "text": "Replaces everything"
+        }
+      ],
+      "answer": "c",
+      "hint": "`a` is for append.",
+      "explanation": "`\"w\"` would wipe the file first; `\"a\"` keeps it and writes at the end."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should write a log line, but crashes with *io.UnsupportedOperation: not writable*. Fix it.",
+      "starterCode": "with open(\"log.txt\") as f:\n    f.write(\"started\\n\")\n",
+      "solution": "with open(\"log.txt\", \"w\") as f:\n    f.write(\"started\\n\")\n",
+      "tests": [
+        {
+          "name": "content",
+          "code": "with open('log.txt') as _f:\n    assert _f.read() == 'started\\n', 'log.txt should contain the started line.'",
+          "message": "Write the line to log.txt."
+        }
+      ],
+      "hint": "With no mode, `open` reads.",
+      "explanation": "Pass `\"w\"` (or `\"a\"`) to write."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the mode so the second block adds `two` after `one`.",
+      "template": "with open(\"append_demo.txt\", \"w\") as f:\n    f.write(\"one\\n\")\nwith open(\"append_demo.txt\", ___) as f:\n    f.write(\"two\\n\")",
+      "blanks": [
+        "\"a\""
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "with open('append_demo.txt') as _f:\n    assert _f.read() == 'one\\ntwo\\n', 'The file should hold one, then two.'",
+          "message": "The file should hold one then two."
+        }
+      ],
+      "hint": "Which mode keeps the existing text?",
+      "explanation": "Append mode writes after what's already there."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Count the lines and words in `poem.txt`. Store them in `line_count` and `word_count`.",
+      "starterCode": "line_count = 0\nword_count = 0\n",
+      "solution": "line_count = 0\nword_count = 0\nwith open(\"poem.txt\") as f:\n    for line in f:\n        line_count += 1\n        word_count += len(line.split())",
+      "setupCode": "with open('poem.txt', 'w') as _f:\n    _f.write('The river bends past sleeping mills\\nand carries leaves to sea\\nno map can hold its every turn\\nso follow it with me\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert (line_count, word_count) == (4, 23), 'poem.txt has 4 lines and 23 words.'",
+          "message": "Count lines and words."
+        }
+      ],
+      "hint": "Add 1 per line; `len(line.split())` counts its words.",
+      "explanation": "Reading line by line works even for files too big to load at once."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "with open(\"pets.txt\", \"w\") as f:\n    f.write(\"cat\\ndog\\n\")\n\nwith open(\"pets.txt\") as f:\n    for line in f:\n        print(line.strip().upper())",
+      "expectedOutput": "CAT\nDOG",
+      "hint": "Each line is stripped, then upper-cased.",
+      "explanation": "Without `strip()`, each print would add an extra blank line."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`temps.txt` has one temperature per line (some lines are blank). Work out the average and write it to `summary.txt` as `Average: 18.5` (rounded to 1 decimal).",
+      "starterCode": "# your code\n",
+      "solution": "temps = []\nwith open(\"temps.txt\") as f:\n    for line in f:\n        if line.strip():\n            temps.append(float(line))\naverage = round(sum(temps) / len(temps), 1)\nwith open(\"summary.txt\", \"w\") as f:\n    f.write(f\"Average: {average}\")",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['summary.txt']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('temps.txt', 'w') as _f:\n    _f.write('17.5\\n19\\n\\n20.25\\n17.25\\n')\n",
+      "tests": [
+        {
+          "name": "summary",
+          "code": "with open('summary.txt') as _f:\n    assert _f.read().strip() == 'Average: 18.5', 'summary.txt should say Average: 18.5'",
+          "message": "Write the average to summary.txt."
+        }
+      ],
+      "hint": "Read and convert each non-blank line, then write one line to a new file.",
+      "explanation": "Read → calculate → write is the pattern behind most data scripts."
+    }
+  ]
+}

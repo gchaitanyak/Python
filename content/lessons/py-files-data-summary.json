@@ -1,0 +1,184 @@
+{
+  "id": "py-files-data-summary",
+  "moduleId": "files-data",
+  "title": "Files: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: text files, `pathlib`, CSV and JSON — load data, transform it and save the result.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Count the non-empty lines in `todo.txt`. Store the number in `count`.",
+      "starterCode": "count = 0\n",
+      "solution": "count = 0\nwith open(\"todo.txt\") as f:\n    for line in f:\n        if line.strip():\n            count += 1",
+      "setupCode": "with open('todo.txt', 'w') as _f:\n    _f.write('call bank\\n\\nwater plants\\nbook flights\\n\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert count == 3, 'count should be 3.'",
+          "message": "Count the non-empty lines."
+        }
+      ],
+      "hint": "Skip lines that are empty after `strip()`.",
+      "explanation": "Blank lines are common at the end of files."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from pathlib import Path\nprint(Path(\"backup.tar.gz\").suffix)",
+      "expectedOutput": ".gz",
+      "hint": "Only the last extension counts as the suffix.",
+      "explanation": "`.suffixes` would give `['.tar', '.gz']`."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Convert `cities.csv` (`name,population`) into `cities.json`: a list of dictionaries with the population as a whole number.",
+      "starterCode": "import csv\nimport json\n",
+      "solution": "import csv\nimport json\nwith open(\"cities.csv\", newline=\"\") as f:\n    cities = [{\"name\": r[\"name\"], \"population\": int(r[\"population\"])} for r in csv.DictReader(f)]\nwith open(\"cities.json\", \"w\") as f:\n    json.dump(cities, f)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['cities.json']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('cities.csv', 'w') as _f:\n    _f.write('name,population\\nQuito,2800000\\nPerth,2100000\\n')\n",
+      "tests": [
+        {
+          "name": "file",
+          "code": "import json as _j\nwith open('cities.json') as _f:\n    assert _j.load(_f) == [{'name': 'Quito', 'population': 2800000}, {'name': 'Perth', 'population': 2100000}], 'cities.json should list both cities with whole-number populations.'",
+          "message": "Write the converted data."
+        }
+      ],
+      "hint": "Read with `DictReader`, convert the numbers, `json.dump` the list.",
+      "explanation": "Converting between formats is everyday data work."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This crashes with *ValueError: I/O operation on closed file*. Fix it.",
+      "starterCode": "with open(\"memo.txt\") as f:\n    pass\ntext = f.read()\n",
+      "solution": "with open(\"memo.txt\") as f:\n    text = f.read()\n",
+      "setupCode": "with open('memo.txt', 'w') as _f:\n    _f.write('Meeting at 3pm')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert text == 'Meeting at 3pm', 'text should be the file’s content.'",
+          "message": "Read inside the with block."
+        }
+      ],
+      "hint": "The file closes when the `with` block ends.",
+      "explanation": "Do all the reading inside the block."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which `open` mode creates a new file but **fails** if it already exists?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"w\"`"
+        },
+        {
+          "id": "b",
+          "text": "`\"a\"`"
+        },
+        {
+          "id": "c",
+          "text": "`\"x\"`"
+        },
+        {
+          "id": "d",
+          "text": "`\"r\"`"
+        }
+      ],
+      "answer": "c",
+      "hint": "`x` for exclusive.",
+      "explanation": "`\"x\"` protects you from overwriting a file by accident."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "`text` is a JSON list of products with `name` and `price`. Store the names of products under 10 in `cheap`, sorted alphabetically.",
+      "starterCode": "import json\n",
+      "solution": "import json\ncheap = sorted(p[\"name\"] for p in json.loads(text) if p[\"price\"] < 10)",
+      "setupCode": "text = '[{\"name\": \"mint\", \"price\": 2.5}, {\"name\": \"melon\", \"price\": 12}, {\"name\": \"kiwi\", \"price\": 0.8}, {\"name\": \"lime\", \"price\": 9.99}]'",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert cheap == ['kiwi', 'lime', 'mint'], 'cheap should be [\"kiwi\", \"lime\", \"mint\"].'",
+          "message": "Filter and sort."
+        }
+      ],
+      "hint": "Parse, filter with a comprehension, then sort.",
+      "explanation": "JSON from an API often needs exactly this kind of filtering."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method that reads a whole file as text.",
+      "template": "from pathlib import Path\nPath(\"read_demo.txt\").write_text(\"hello\")\ntext = Path(\"read_demo.txt\").___()",
+      "blanks": [
+        "read_text"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert text == 'hello', 'text should be hello.'",
+          "message": "text should be hello."
+        }
+      ],
+      "hint": "It's the partner of `write_text`.",
+      "explanation": "`read_text()` opens, reads and closes in one call."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`expenses.csv` has `category,amount`. Total each category (rounded to 2 decimals) into a dictionary `totals`, then save it as `totals.json`.",
+      "starterCode": "import csv\nimport json\ntotals = {}\n",
+      "solution": "import csv\nimport json\ntotals = {}\nwith open(\"expenses.csv\", newline=\"\") as f:\n    for row in csv.DictReader(f):\n        totals[row[\"category\"]] = round(totals.get(row[\"category\"], 0) + float(row[\"amount\"]), 2)\nwith open(\"totals.json\", \"w\") as f:\n    json.dump(totals, f)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['totals.json']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('expenses.csv', 'w') as _f:\n    _f.write('category,amount\\nfood,12.50\\ntravel,30\\nfood,29\\nbooks,12.99\\n')\n",
+      "tests": [
+        {
+          "name": "totals",
+          "code": "assert totals == {'food': 41.5, 'travel': 30.0, 'books': 12.99}, 'totals should add up each category.'",
+          "message": "Total each category."
+        },
+        {
+          "name": "file",
+          "code": "import json as _j\nwith open('totals.json') as _f:\n    assert _j.load(_f) == totals, 'totals.json should contain the totals.'",
+          "message": "Save totals.json."
+        }
+      ],
+      "hint": "`totals.get(cat, 0) + amount` for each row.",
+      "explanation": "Grouping and summing is the heart of most reports."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import json\nprint(json.dumps([1, \"a\"]))",
+      "expectedOutput": "[1, \"a\"]",
+      "hint": "JSON strings always use double quotes.",
+      "explanation": "Lists become JSON arrays."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`raw_scores.txt` has lines like `ana:82`. Some lines are broken. Write `report.csv` with header `name,score` and one row per valid line, highest score first. Count the broken lines in `skipped`.",
+      "starterCode": "import csv\nskipped = 0\n",
+      "solution": "import csv\nskipped = 0\nrows = []\nwith open(\"raw_scores.txt\") as f:\n    for line in f:\n        parts = line.strip().split(\":\")\n        if len(parts) != 2 or not parts[1].isdigit():\n            skipped += 1\n            continue\n        rows.append((parts[0], int(parts[1])))\nrows.sort(key=lambda r: r[1], reverse=True)\nwith open(\"report.csv\", \"w\", newline=\"\") as f:\n    writer = csv.writer(f)\n    writer.writerow([\"name\", \"score\"])\n    writer.writerows(rows)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['report.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('raw_scores.txt', 'w') as _f:\n    _f.write('ana:82\\nben:67\\noops\\ndev:95\\ncleo:x\\n')\n",
+      "tests": [
+        {
+          "name": "skipped",
+          "code": "assert skipped == 2, 'skipped should be 2.'",
+          "message": "Count the broken lines."
+        },
+        {
+          "name": "report",
+          "code": "import csv as _c\nwith open('report.csv', newline='') as _f:\n    back = list(_c.reader(_f))\nassert back == [['name', 'score'], ['dev', '95'], ['ana', '82'], ['ben', '67']], 'report.csv should list valid scores, highest first.'",
+          "message": "Write the sorted report."
+        }
+      ],
+      "hint": "Split each line on `:`; a valid line has two parts and digits after the colon.",
+      "explanation": "A small pipeline: read, validate, sort, write — with a count of what was rejected."
+    }
+  ]
+}

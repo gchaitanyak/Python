@@ -1,0 +1,189 @@
+{
+  "id": "py-raising-custom",
+  "moduleId": "errors-exceptions",
+  "title": "Raising and Custom Exceptions",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "You can **raise** an exception yourself when a function gets something it can't work with: `raise ValueError(\"amount must be positive\")`. Give a clear message. For errors specific to your program, define your own exception **class**: `class OutOfStock(Exception): pass` — a short line that makes a new kind of error (you'll learn classes fully in module 11).",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Custom exceptions can be caught by name, and a family of them can share a parent.",
+      "exampleCode": "class OutOfStock(Exception):\n    pass\n\ndef take(stock, n):\n    if n > stock:\n        raise OutOfStock(f\"only {stock} left\")\n    return stock - n\n\ntry:\n    take(2, 5)\nexcept OutOfStock as err:\n    print(\"Sorry:\", err)",
+      "explanation": "`raise` stops the function straight away, like `return` but for errors."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `set_age(age)` that returns `age` if it's between 0 and 150, otherwise raises `ValueError(\"age must be between 0 and 150\")`.",
+      "starterCode": "def set_age(age):\n    pass\n",
+      "solution": "def set_age(age):\n    if not 0 <= age <= 150:\n        raise ValueError(\"age must be between 0 and 150\")\n    return age",
+      "tests": [
+        {
+          "name": "valid",
+          "code": "assert set_age(30) == 30 and set_age(0) == 0, 'Valid ages should be returned.'",
+          "message": "Return valid ages."
+        },
+        {
+          "name": "invalid",
+          "code": "for bad in (-1, 151):\n    try:\n        set_age(bad)\n    except ValueError as e:\n        assert 'between 0 and 150' in str(e), 'Use the message: age must be between 0 and 150'\n    else:\n        raise AssertionError(f'set_age({bad}) should raise ValueError.')",
+          "message": "Raise ValueError out of range."
+        }
+      ],
+      "hint": "`raise ValueError(\"…\")` when the check fails.",
+      "explanation": "Failing loudly with a clear message beats silently accepting bad data."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "`KeyError` is a kind of `LookupError`. What does this print?",
+      "code": "try:\n    raise KeyError(\"missing\")\nexcept LookupError:\n    print(\"caught lookup\")",
+      "expectedOutput": "caught lookup",
+      "hint": "Catching a parent class catches its children too.",
+      "explanation": "Exceptions form a family tree; `except LookupError` catches `KeyError` and `IndexError`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Define an exception `OutOfStock`. Then write `take(stock, n)` that returns `stock - n`, or raises `OutOfStock` with the message `only <stock> left` when `n` is more than `stock`.",
+      "starterCode": "class OutOfStock(Exception):\n    pass\n\ndef take(stock, n):\n    pass\n",
+      "solution": "class OutOfStock(Exception):\n    pass\n\ndef take(stock, n):\n    if n > stock:\n        raise OutOfStock(f\"only {stock} left\")\n    return stock - n",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert take(5, 2) == 3 and take(4, 4) == 0, 'take should return the remaining stock.'",
+          "message": "Return what's left."
+        },
+        {
+          "name": "raises",
+          "code": "try:\n    take(2, 5)\nexcept OutOfStock as e:\n    assert str(e) == 'only 2 left', 'The message should be: only 2 left'\nelse:\n    raise AssertionError('take(2, 5) should raise OutOfStock.')",
+          "message": "Raise OutOfStock with the message."
+        }
+      ],
+      "hint": "`raise OutOfStock(f\"only {stock} left\")`.",
+      "explanation": "A named exception tells callers exactly what went wrong."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "`withdraw(-5)` is called. Which built-in exception fits best?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`TypeError`"
+        },
+        {
+          "id": "b",
+          "text": "`ValueError`"
+        },
+        {
+          "id": "c",
+          "text": "`KeyError`"
+        },
+        {
+          "id": "d",
+          "text": "`ZeroDivisionError`"
+        }
+      ],
+      "answer": "b",
+      "hint": "The type (a number) is right; the value isn't.",
+      "explanation": "`ValueError` means the right type with an unacceptable value."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should raise an error for codes that aren't 6 characters, but crashes with *TypeError: exceptions must derive from BaseException*. Fix it.",
+      "starterCode": "def check_code(code):\n    if len(code) != 6:\n        raise \"Invalid code\"\n    return code\n",
+      "solution": "def check_code(code):\n    if len(code) != 6:\n        raise ValueError(\"Invalid code\")\n    return code\n",
+      "tests": [
+        {
+          "name": "valid",
+          "code": "assert check_code('ABC123') == 'ABC123', 'Valid codes should be returned.'",
+          "message": "Return valid codes."
+        },
+        {
+          "name": "invalid",
+          "code": "try:\n    check_code('ABC')\nexcept ValueError as e:\n    assert 'Invalid code' in str(e), 'Keep the message Invalid code.'\nelse:\n    raise AssertionError('Short codes should raise ValueError.')",
+          "message": "Raise a ValueError."
+        }
+      ],
+      "hint": "You can only raise exception objects, not plain text.",
+      "explanation": "Wrap the message in an exception class: `ValueError(\"…\")`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the parent class so `TooCold` is an exception.",
+      "template": "class TooCold(___):\n    pass",
+      "blanks": [
+        "Exception"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert issubclass(TooCold, Exception), 'TooCold should inherit from Exception.'",
+          "message": "Inherit from Exception."
+        }
+      ],
+      "hint": "Custom exceptions inherit from Python's base class for errors.",
+      "explanation": "`Exception` is the usual parent for your own errors."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Create a small family of errors: `AppError(Exception)`, then `NotFound(AppError)` and `Forbidden(AppError)`. Write `fetch(page)` that raises `NotFound` for `\"missing\"`, `Forbidden` for `\"admin\"`, and otherwise returns `f\"Content of {page}\"`.",
+      "starterCode": "class AppError(Exception):\n    pass\n",
+      "solution": "class AppError(Exception):\n    pass\n\nclass NotFound(AppError):\n    pass\n\nclass Forbidden(AppError):\n    pass\n\ndef fetch(page):\n    if page == \"missing\":\n        raise NotFound(page)\n    if page == \"admin\":\n        raise Forbidden(page)\n    return f\"Content of {page}\"",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert fetch('home') == 'Content of home', 'Normal pages should return their content.'",
+          "message": "Return content for normal pages."
+        },
+        {
+          "name": "family",
+          "code": "for page, kind in (('missing', NotFound), ('admin', Forbidden)):\n    try:\n        fetch(page)\n    except AppError as e:\n        assert type(e) is kind, f'fetch(\"{page}\") should raise {kind.__name__}.'\n    else:\n        raise AssertionError(f'fetch(\"{page}\") should raise an error.')",
+          "message": "Raise the right error type."
+        }
+      ],
+      "hint": "`class NotFound(AppError): pass` makes a child of `AppError`.",
+      "explanation": "Callers can catch one specific error, or the whole family with `except AppError`."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "try:\n    int(\"x\")\nexcept ValueError as e:\n    print(type(e).__name__)",
+      "expectedOutput": "ValueError",
+      "hint": "`type(e)` is the exception's class.",
+      "explanation": "`__name__` gives the class's name as text."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Define `InsufficientFunds(Exception)`. Write `withdraw(balance, amount)` that raises `ValueError` if `amount` is 0 or less, raises `InsufficientFunds` if it's more than `balance`, and otherwise returns the new balance.",
+      "starterCode": "class InsufficientFunds(Exception):\n    pass\n\ndef withdraw(balance, amount):\n    pass\n",
+      "solution": "class InsufficientFunds(Exception):\n    pass\n\ndef withdraw(balance, amount):\n    if amount <= 0:\n        raise ValueError(\"amount must be positive\")\n    if amount > balance:\n        raise InsufficientFunds(f\"balance is only {balance}\")\n    return balance - amount",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert withdraw(100, 30) == 70 and withdraw(50, 50) == 0, 'withdraw should return the new balance.'",
+          "message": "Return the new balance."
+        },
+        {
+          "name": "bad amount",
+          "code": "try:\n    withdraw(100, 0)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('An amount of 0 or less should raise ValueError.')",
+          "message": "Reject amounts ≤ 0."
+        },
+        {
+          "name": "too much",
+          "code": "try:\n    withdraw(20, 25)\nexcept InsufficientFunds:\n    pass\nelse:\n    raise AssertionError('Withdrawing more than the balance should raise InsufficientFunds.')",
+          "message": "Raise InsufficientFunds."
+        }
+      ],
+      "hint": "Check the amount first, then the balance.",
+      "explanation": "Different exceptions for different problems let callers react appropriately."
+    }
+  ]
+}

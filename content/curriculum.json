@@ -1466,7 +1466,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Catch specific exceptions",
             "Clean up with finally"
@@ -1501,7 +1501,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Raise exceptions with clear messages",
             "Define your own exception classes"
@@ -1528,7 +1528,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use assert for invariants",
             "Read a traceback"
@@ -1551,7 +1551,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Make a program robust to bad input"
           ],
@@ -1574,7 +1574,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Open files with with",
             "Read lines",
@@ -1614,7 +1614,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Build paths with pathlib",
             "List and filter files"
@@ -1645,7 +1645,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Read rows with csv",
             "Write CSV safely"
@@ -1676,7 +1676,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Convert between JSON and Python",
             "Read and write JSON files"
@@ -1707,7 +1707,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Load, transform and save a dataset"
           ],
