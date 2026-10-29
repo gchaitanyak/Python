@@ -145,3 +145,42 @@ Choices made where the spec was open. Newest last.
 13. **The worker's network block now has one narrow exception.** It allows `fetch` of the site's own `/pyodide/` files, only while the worker itself is loading packages, and messages are handled one at a time, so learner code never runs during that window. A browser test checks that learner code still can't fetch even `/pyodide/` files. Package downloads get their own 2-minute limit; the 5 s limit starts when the learner's code does.
 14. **Flask isn't in Pyodide either**, so `py-flask-api` uses a practice `flask` module installed by `setupCode`, like `requests` in module 12. It supports `Flask`, `route` (with `<int:…>` converters and methods), `jsonify`, `request` (`args`, `get_json`, `method`), `abort` and the test client — the same API learners would use with real Flask. `sqlite3` is in Pyodide's standard library and works directly.
 15. **Content:** module 14 adds 4 lessons (73 written in total). Checks that need to see a learner's code (e.g. "don't call `sorted`") read the function's code object (`__code__.co_names`), because `inspect.getsource` can't see code run with `exec`.
+
+## Phase 8 — Groups, SEO, polish, launch
+
+1. **Anyone signed in can create a group** (up to 10 each) and becomes its admin. Admins don't have to be members. Other members can be made admins too. Groups hold up to 500 members.
+2. **Invite links are `/join/?code=XXXXXXXX`**: 8 characters from the certificate alphabet, mapped in `inviteCodes/{code}` (function-only). `/join/` isn't in SPEC §2's route list; it was added because an invite link needs a page. Regenerating the link retires the old code at once.
+3. **The admin report is computed when it's asked for** (`groupReport`, `exportGroupCsv`). The functions read each member's progress with the Admin SDK, so members' progress stays private under the rules and the numbers are never stale.
+   - The columns are those SPEC §5.7 names: lessons completed, average best accuracy, last active.
+   - The CSV is quoted properly, and cells that would start a spreadsheet formula are neutralised.
+4. **Premium seats** (SPEC §5.7, set by hand):
+   - The site owner runs `scripts/set-group-seats.ts`, and seats go to the group's earliest members.
+   - A seat gives premium (`entitlementSource: group`) only to someone not already premium; paying members keep their own source.
+   - When a member's own subscription ends while they hold a seat, the webhook keeps them premium through the group.
+   - Leaving or being removed releases the seat to the next member.
+   - Lifetime access is never touched.
+5. **Users' `groups` map** (`{gid: {name, role}}`) is written only by functions. It drives the account menu's Admin link and the "Groups" section (with Leave) on the account page. Deleting an account leaves its groups; a group left with no admin is closed and its seats freed.
+6. **Guides** are Markdown with front matter in `content/guides/`, rendered with their own small renderer (headings with anchors, lists, internal links, fenced code). There are 10, written from scratch for this site, 660–820 words each. ```` ```python ```` blocks get a Run button that loads Pyodide only on the first press. The validator runs every example and checks length and the "Practise this" lesson.
+7. **Canonical and Open Graph tags are added to every built page** from its own `<title>` and description (`src/lib/seo.ts`). The build does this once pages are at their final paths; the dev server does it per request.
+   - `SITE_URL` (from `.env.<mode>.local`) sets the address.
+   - Share images are drawn by `scripts/make-og-images.ts` (Playwright) and committed under `src/assets/og/`, one for the site and one per guide, so builds don't need a browser.
+8. **Sitemap and robots.txt:** a unit test checks the sitemap lists every public route, module, project and guide, and that every left-out route is `noindex`. `robots.txt` disallows the private pages.
+9. **Analytics need consent.** The banner appears only when `VITE_GA_MEASUREMENT_ID` is set; without it there is nothing to consent to.
+   - gtag.js loads only after "Accept"; "Cookie settings" in the footer reopens the banner, and turning analytics off reloads the page to stop them.
+   - The choice is stored outside the `pe:*` keys, so signing out keeps it.
+   - The privacy page names Firebase, Stripe, Google Analytics and Anthropic.
+10. **Content-Security-Policy** (firebase.json, all files):
+    - Scripts may come only from the site itself, Google Tag Manager and reCAPTCHA. `'wasm-unsafe-eval'` lets Pyodide compile WebAssembly; no `unsafe-eval` is needed.
+    - **Styles allow `'unsafe-inline'`**, because CodeMirror (via `style-mod`) adds a `<style>` element when it runs in a normal page, and a static host can't hand out per-request nonces. Inline styles are much lower risk than inline scripts, which stay blocked. The one inline `style=""` in our own markup (dashboard trend bars) now sets values through the DOM instead.
+    - Also sent: `nosniff`, `strict-origin-when-cross-origin`, a Permissions-Policy and COOP `same-origin` (no Firebase popups are used).
+    - `vite preview` serves the same headers. The new `production` Playwright project builds the site (with a test GA id) and checks pages, a lesson, guide examples and a project for CSP violations, plus the consent flow.
+11. **App Check:**
+    - The client registers reCAPTCHA Enterprise when `VITE_RECAPTCHA_ENTERPRISE_KEY` is set.
+    - Every callable takes shared `callOptions`, which enforce App Check when the project's `functions/.env.<projectId>` has `ENFORCE_APP_CHECK=true`; a unit test fails if a callable skips them.
+    - The emulator and tests run without it. The Stripe webhook is an HTTP endpoint and is protected by its signature instead.
+12. **Lesson feedback** (SPEC §5.10, not in any earlier phase): "Was this lesson clear?" 👍/👎 plus an optional comment on the lesson summary, for signed-in learners. It is stored create-only in `feedback/`, readable only from the console.
+13. **Deploying** (`docs/DEPLOY.md`):
+    - `npm run build` now runs `scripts/build.ts`, which takes `--mode` so staging builds use `.env.staging.local`.
+    - `npm run deploy:staging|production` (`scripts/deploy.ts`) first checks that `.firebaserc` aliases, browser config, function config, no local fakes, and App Check enforcement in production are all in place, and stops if any is missing. Then it deploys rules and indexes, functions, hosting and premium content, in that order.
+    - Verified from a fresh clone: install, build, unit tests, the readiness check, and a staging build with staging URLs. **The real deploy hasn't been run**: this environment has no Firebase or Stripe accounts.
+14. **Lighthouse (mobile), production build with the real headers:** every public page scores 100 for accessibility, best practices and SEO. Performance is 100, except `/daily/` (96) and `/projects/expense-tracker/` (97).
