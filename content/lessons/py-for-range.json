@@ -1,0 +1,171 @@
+{
+  "id": "py-for-range",
+  "moduleId": "control-flow",
+  "title": "for Loops and range()",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A `for` loop repeats a block once for each item in a sequence. A string is a sequence of characters. `range(n)` produces the numbers `0` up to `n - 1`, and `enumerate()` gives you each item **and** its position.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`range(start, stop, step)` works like slicing: `stop` is never included. `enumerate(text, start=1)` counts from 1 instead of 0.",
+      "exampleCode": "for letter in \"abc\":\n    print(letter)\nfor n in range(3):\n    print(n)\nprint(list(range(2, 10, 3)))\nfor i, ch in enumerate(\"hi\", start=1):\n    print(i, ch)",
+      "explanation": "The loop variable (`letter`, `n`) takes each value in turn."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`word` is set. Print each of its characters on its own line using a `for` loop.",
+      "starterCode": "# your loop here\n",
+      "solution": "for ch in word:\n    print(ch)",
+      "setupCode": "word = \"loop\"",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split('\\n')[:-1] == [c for c in word], 'Print one character per line, in order.'",
+          "message": "Print one character per line."
+        }
+      ],
+      "hint": "`for ch in word:` then `print(ch)` indented underneath.",
+      "explanation": "Looping over a string visits each character in order."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "for i in range(1, 4):\n    print(i * 10)",
+      "expectedOutput": "10\n20\n30",
+      "hint": "`range(1, 4)` is 1, 2, 3.",
+      "explanation": "The stop value, 4, is not included."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Add up all the whole numbers from 1 to `n` (including `n`) with a loop. Store the result in `total`.",
+      "starterCode": "total = 0\n",
+      "solution": "total = 0\nfor i in range(1, n + 1):\n    total += i",
+      "setupCode": "n = 12",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == n * (n + 1) // 2, 'total should be 1 + 2 + … + n.'",
+          "message": "total should be the sum from 1 to n."
+        }
+      ],
+      "hint": "`range(1, n + 1)` includes `n`. Add each number to `total`.",
+      "explanation": "Start the total at 0 before the loop, then add inside it."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which numbers does `range(5)` produce?",
+      "options": [
+        {
+          "id": "a",
+          "text": "1, 2, 3, 4, 5"
+        },
+        {
+          "id": "b",
+          "text": "0, 1, 2, 3, 4"
+        },
+        {
+          "id": "c",
+          "text": "0, 1, 2, 3, 4, 5"
+        },
+        {
+          "id": "d",
+          "text": "5"
+        }
+      ],
+      "answer": "b",
+      "hint": "It starts at 0 and stops before 5.",
+      "explanation": "`range(5)` gives five numbers: 0 to 4."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should count down `5 4 3 2 1`, but prints nothing. Fix the `range`.",
+      "starterCode": "for i in range(5, 0):\n    print(i)\n",
+      "solution": "for i in range(5, 0, -1):\n    print(i)\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.split() == ['5', '4', '3', '2', '1'], 'Print 5, 4, 3, 2, 1 on separate lines.'",
+          "message": "Count down from 5 to 1."
+        }
+      ],
+      "hint": "Counting down needs a negative step.",
+      "explanation": "Without a step, `range` counts up — and 5 is already past 0, so nothing happens."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Print each letter of `word` with its position, counting from 1, like `1: c`. Use `enumerate`.",
+      "starterCode": "# your loop here\n",
+      "solution": "for i, ch in enumerate(word, start=1):\n    print(f\"{i}: {ch}\")",
+      "setupCode": "word = \"cat\"",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == [f'{i}: {c}' for i, c in enumerate(word, start=1)], 'Print lines like 1: c, 2: a …'",
+          "message": "Print position: letter for each one."
+        }
+      ],
+      "hint": "`enumerate(word, start=1)` gives pairs `(1, first letter)`, `(2, second)`…",
+      "explanation": "`enumerate` saves you from keeping a separate counter."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the step so `total` adds up only the even numbers below 20.",
+      "template": "total = 0\nfor i in range(0, 20, ___):\n    total += i",
+      "blanks": [
+        "2"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 90, 'total should be 90.'",
+          "message": "total should be 90."
+        }
+      ],
+      "hint": "Start at 0 and jump by…",
+      "explanation": "A step of 2 visits 0, 2, 4 … 18, which add up to 90."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Count the vowels (`a e i o u`, upper or lower case) in `text` using a loop. Store the count in `vowels`.",
+      "starterCode": "vowels = 0\n",
+      "solution": "vowels = 0\nfor ch in text.lower():\n    if ch in \"aeiou\":\n        vowels += 1",
+      "setupCode": "text = \"Programming In Python Is FUN\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert vowels == sum(1 for c in text.lower() if c in 'aeiou'), 'vowels should count a, e, i, o and u in any case.'",
+          "message": "Check the vowel count."
+        }
+      ],
+      "hint": "Loop over the lowercase text; add 1 when the character is `in \"aeiou\"`.",
+      "explanation": "Lowercasing first means you only check five letters."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Print the times table for `n` from 1 to 10, one line each, like `7 x 1 = 7` … `7 x 10 = 70`.",
+      "starterCode": "# your loop here\n",
+      "solution": "for i in range(1, 11):\n    print(f\"{n} x {i} = {n * i}\")",
+      "setupCode": "n = 7",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == [f'{n} x {i} = {n * i}' for i in range(1, 11)], 'Print 10 lines like 7 x 1 = 7.'",
+          "message": "Print ten lines in the format n x i = result."
+        }
+      ],
+      "hint": "`range(1, 11)` gives 1 to 10. Build each line with an f-string.",
+      "explanation": "Ten lines from two lines of code — that's what loops are for."
+    }
+  ]
+}

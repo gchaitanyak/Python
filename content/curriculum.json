@@ -431,7 +431,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create strings with quotes",
             "Index characters",
@@ -467,7 +467,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Slice with start:stop:step",
             "Use negative indexes",
@@ -491,7 +491,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Clean text with strip/lower/replace",
             "Split and join",
@@ -515,7 +515,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Embed expressions in f-strings",
             "Format numbers and widths",
@@ -547,7 +547,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Process and format messy text"
           ],
@@ -570,7 +570,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Branch on conditions",
             "Nest conditions sensibly"
@@ -613,7 +613,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Match literal values",
             "Use wildcard and guards"
@@ -636,7 +636,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Loop over sequences",
             "Generate numbers with range",
@@ -676,7 +676,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Repeat until a condition changes",
             "Avoid infinite loops"
@@ -699,7 +699,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Exit loops early",
             "Skip iterations",
@@ -731,7 +731,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine branching and loops"
           ],

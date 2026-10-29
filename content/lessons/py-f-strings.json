@@ -1,0 +1,178 @@
+{
+  "id": "py-f-strings",
+  "moduleId": "strings",
+  "title": "f-strings and Formatting",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "An **f-string** has an `f` before the quotes. Anything inside `{}` is worked out and dropped into the text: `f\"Hi {name}\"`. After a colon you can add a **format spec**: `{price:.2f}` shows 2 decimal places.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Format specs control decimals (`.2f`), thousands separators (`,`) and width and alignment (`>8` right, `<8` left, `^8` centre). A **backslash** starts an escape: `\\n` is a new line, `\\t` a tab, `\\\"` a quote.",
+      "exampleCode": "name = \"Ana\"\ntotal = 1234.5\nprint(f\"{name} owes {total:.2f}\")\nprint(f\"{total:,.1f}\")\nprint(f\"|{name:>6}|{name:<6}|\")\nprint(\"Line one\\nLine two\")",
+      "explanation": "Inside `{}` you can write any expression, like `{total * 2}`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`name` and `score` are set. Store `{name} scored {score} points` in `message` using an f-string, then print it.",
+      "starterCode": "message = \n",
+      "solution": "message = f\"{name} scored {score} points\"\nprint(message)",
+      "setupCode": "name = \"Kofi\"\nscore = 92",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert message == f'{name} scored {score} points', 'message should read like: Kofi scored 92 points'",
+          "message": "Check the message."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == f'{name} scored {score} points', 'Print the message.'",
+          "message": "Print the message."
+        }
+      ],
+      "hint": "Start with `f\"`, then put each variable inside `{}`.",
+      "explanation": "f-strings handle numbers for you — no `str()` needed."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "price = 3.14159\nprint(f\"{price:.2f}\")",
+      "expectedOutput": "3.14",
+      "hint": "`.2f` means 2 decimal places.",
+      "explanation": "The value is rounded for display; `price` itself doesn't change."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`width` and `height` are set. Store `Area: ` followed by their product in `report`, calculating inside the braces.",
+      "starterCode": "report = \n",
+      "solution": "report = f\"Area: {width * height}\"",
+      "setupCode": "width = 7\nheight = 3",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert report == f'Area: {width * height}', 'report should be Area: followed by width × height.'",
+          "message": "Check the report."
+        }
+      ],
+      "hint": "Put the whole calculation inside `{}`.",
+      "explanation": "Any expression works inside the braces."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `f\"{1234567:,}\"` produce?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"1234567\"`"
+        },
+        {
+          "id": "b",
+          "text": "`\"1,234,567\"`"
+        },
+        {
+          "id": "c",
+          "text": "`\"1.234.567\"`"
+        },
+        {
+          "id": "d",
+          "text": "`\"1234,567\"`"
+        }
+      ],
+      "answer": "b",
+      "hint": "The comma in the format spec adds thousands separators.",
+      "explanation": "`:,` groups digits in threes with commas."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`greeting` should be `Hello, Iris!` but comes out with the braces showing. Fix it.",
+      "starterCode": "name = \"Iris\"\ngreeting = \"Hello, {name}!\"\n",
+      "solution": "name = \"Iris\"\ngreeting = f\"Hello, {name}!\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert greeting == 'Hello, Iris!', 'greeting should be Hello, Iris!'",
+          "message": "greeting should be Hello, Iris!"
+        }
+      ],
+      "hint": "Look at the very start of the string.",
+      "explanation": "Without the `f`, Python treats `{name}` as ordinary characters."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the format spec so `item` is **left-aligned** in a space 10 characters wide.",
+      "template": "item = \"tea\"\nline = f\"{item:___}|\"",
+      "blanks": [
+        "<10"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert line == 'tea       |', 'line should be tea followed by 7 spaces and |.'",
+          "message": "Check the alignment and width."
+        }
+      ],
+      "hint": "`<` aligns left; the number is the width.",
+      "explanation": "`{item:<10}` pads `tea` with 7 spaces on the right."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Build one row of a receipt table in `row`: `product` left-aligned in 10 characters, `qty` right-aligned in 3, and the line total (`qty * price`) right-aligned in 8 with 2 decimals. For example `Coffee      3    7.50`.",
+      "starterCode": "row = \n",
+      "solution": "row = f\"{product:<10}{qty:>3}{qty * price:>8.2f}\"",
+      "setupCode": "product = \"Coffee\"\nqty = 3\nprice = 2.5",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert row == f'{product:<10}{qty:>3}{qty * price:>8.2f}', 'Check each column: <10, >3 and >8.2f.'",
+          "message": "Check the three column formats."
+        },
+        {
+          "name": "width",
+          "code": "assert len(row) == 21, 'The row should be exactly 21 characters wide.'",
+          "message": "The row should be 21 characters wide."
+        }
+      ],
+      "hint": "Three sets of braces, each with its own spec: `<10`, `>3`, `>8.2f`.",
+      "explanation": "Fixed widths line columns up when you print several rows."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"She said \\\"hi\\\"\")",
+      "expectedOutput": "She said \"hi\"",
+      "hint": "`\\\"` is an escaped quote.",
+      "explanation": "The backslash lets a double quote sit inside a double-quoted string."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Print a summary line like `Lee: 3 items, total $47.50` using `customer`, `items` and `total` (always 2 decimals). Store it in `summary` first.",
+      "starterCode": "summary = \n",
+      "solution": "summary = f\"{customer}: {items} items, total ${total:.2f}\"\nprint(summary)",
+      "setupCode": "customer = \"Lee\"\nitems = 3\ntotal = 47.5",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert summary == f'{customer}: {items} items, total ${total:.2f}', 'Check the wording and the 2 decimal places.'",
+          "message": "Check the summary format."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == summary, 'Print the summary.'",
+          "message": "Print the summary."
+        }
+      ],
+      "hint": "The `$` is just a character before the braces; `.2f` handles the decimals.",
+      "explanation": "One f-string replaces several `+` joins and `str()` calls."
+    }
+  ]
+}

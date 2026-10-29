@@ -1,0 +1,173 @@
+{
+  "id": "py-strings-basics",
+  "moduleId": "strings",
+  "title": "String Basics",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **string** is text: a sequence of characters inside quotes. Single `'…'` and double `\"…\"` quotes both work. Each character has a position (an **index**) starting at **0**, and `len()` counts the characters.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Use square brackets to read one character; negative indexes count from the end. `+` joins strings and `*` repeats them.",
+      "exampleCode": "city = \"Porto\"\nprint(city[0], city[-1], len(city))\nprint(city + \"!\")\nprint(\"ha\" * 3)",
+      "explanation": "`city[0]` is the first character and `city[-1]` the last. Spaces and punctuation count as characters too."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`word` already holds a word. Store its first character in `first` and its last character in `last`.",
+      "starterCode": "first = \nlast = \n",
+      "solution": "first = word[0]\nlast = word[-1]",
+      "setupCode": "word = \"giraffe\"",
+      "tests": [
+        {
+          "name": "first",
+          "code": "assert first == word[0], 'first should be the character at index 0.'",
+          "message": "first should be the first character."
+        },
+        {
+          "name": "last",
+          "code": "assert last == word[-1], 'last should be the final character — try a negative index.'",
+          "message": "last should be the last character."
+        }
+      ],
+      "hint": "Indexes start at 0. `-1` means the last one.",
+      "explanation": "Negative indexes save you from working out `len(word) - 1`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"Hi\" + \"!\" * 3)",
+      "expectedOutput": "Hi!!!",
+      "hint": "`*` happens before `+`, just like in maths.",
+      "explanation": "`\"!\" * 3` is `\"!!!\"`, then it's joined onto `\"Hi\"`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`team` holds a team name. Store in `chant` the text `Go ` three times followed by the team — for example `Go Go Go Falcons`. Use `*` and `+`.",
+      "starterCode": "chant = \n",
+      "solution": "chant = \"Go \" * 3 + team",
+      "setupCode": "team = \"Comets\"",
+      "tests": [
+        {
+          "name": "chant",
+          "code": "assert chant == 'Go Go Go ' + team, 'chant should be \"Go \" three times, then the team name.'",
+          "message": "chant should be Go Go Go, then the team."
+        }
+      ],
+      "hint": "Repeat `\"Go \"` (with its space) three times, then add `team`.",
+      "explanation": "Building text from pieces with `*` and `+` keeps it correct for any team name."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `len(\"data science\")` return?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`11`"
+        },
+        {
+          "id": "b",
+          "text": "`12`"
+        },
+        {
+          "id": "c",
+          "text": "`2`"
+        },
+        {
+          "id": "d",
+          "text": "An error"
+        }
+      ],
+      "answer": "b",
+      "hint": "Count every character, including the space.",
+      "explanation": "There are 11 letters plus 1 space, so the length is 12."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should store the text `It's raining`, but Python reports a *SyntaxError*. Fix it.",
+      "starterCode": "message = 'It's raining'\n",
+      "solution": "message = \"It's raining\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert message == \"It's raining\", 'message should be: It\\'s raining'",
+          "message": "message should be: It's raining"
+        }
+      ],
+      "hint": "The apostrophe ends the string early. Use the other kind of quotes around the text.",
+      "explanation": "Inside double quotes, a single quote is just a character."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "`last` should be the final character of `word`, but this crashes with an *IndexError*. Fix it.",
+      "starterCode": "last = word[len(word)]\n",
+      "solution": "last = word[len(word) - 1]\n",
+      "setupCode": "word = \"planet\"",
+      "tests": [
+        {
+          "name": "last",
+          "code": "assert last == word[-1], 'last should be the final character of word.'",
+          "message": "last should be the final character."
+        }
+      ],
+      "hint": "If a word has 6 letters, its indexes run from 0 to 5.",
+      "explanation": "The last index is always one less than the length. `word[-1]` does the same job."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the operator so `initials` is `AL`.",
+      "template": "first = \"Ada\"\nlast = \"Lovelace\"\ninitials = first[0] ___ last[0]",
+      "blanks": [
+        "+"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert initials == 'AL', 'initials should be AL.'",
+          "message": "initials should be AL."
+        }
+      ],
+      "hint": "Which operator joins two strings?",
+      "explanation": "`first[0]` is `A` and `last[0]` is `L`; `+` joins them."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "A shop shows labels like `lamp: $24`. `item` (text) and `price` (a whole number) are set. Build `label` by joining text with `+`, then print it.",
+      "starterCode": "label = \n",
+      "solution": "label = item + \": $\" + str(price)\nprint(label)",
+      "setupCode": "item = \"desk fan\"\nprice = 39",
+      "tests": [
+        {
+          "name": "label",
+          "code": "assert label == item + ': $' + str(price), 'label should look like lamp: $24 — item, colon, space, dollar sign, price.'",
+          "message": "Check the label format."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == item + ': $' + str(price), 'Print the label.'",
+          "message": "Print the label."
+        }
+      ],
+      "hint": "Numbers must become text before joining: `str(price)`.",
+      "explanation": "`+` only joins strings, so the price is converted first."
+    },
+    {
+      "id": "q10",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(len(\"\"), len(\" \"))",
+      "expectedOutput": "0 1",
+      "hint": "Is a space a character?",
+      "explanation": "An empty string has no characters; a single space has one."
+    }
+  ]
+}
