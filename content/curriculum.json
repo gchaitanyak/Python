@@ -1350,7 +1350,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Import modules and names",
             "Explore with dir() and help()"
@@ -1381,7 +1381,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Organise a package",
             "Guard script code with if __name__ == '__main__'"
@@ -1412,7 +1412,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create a virtual environment",
             "Install and pin packages"
@@ -1443,7 +1443,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Structure a small multi-file program"
           ],

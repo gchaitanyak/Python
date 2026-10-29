@@ -110,7 +110,7 @@ describe('sanitiseMerge', () => {
         { lessonId: 'py-variables', completed: true, bestAccuracy: 140, lastPractisedAt: '2026-10-28T10:00:00Z' },
         { lessonId: 'py-variables', completed: true, bestAccuracy: 10, lastPractisedAt: '2026-10-28T10:00:00Z' },
         { lessonId: 'py-comparison-logical', completed: true, bestAccuracy: 90 },
-        { lessonId: 'py-strings-basics', completed: true, bestAccuracy: 90 },
+        { lessonId: 'py-try-except', completed: true, bestAccuracy: 90 },
         { lessonId: 'py-lists-basics', completed: false, bestAccuracy: 90 },
         { lessonId: 'py-intro-first-program', completed: true, bestAccuracy: 'x', lastPractisedAt: '2099-01-01' },
         'junk',

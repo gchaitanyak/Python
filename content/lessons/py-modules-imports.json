@@ -1,0 +1,171 @@
+{
+  "id": "py-modules-imports",
+  "moduleId": "modules-packages",
+  "title": "Modules and Imports",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **module** is a file of Python code you can reuse. Python comes with hundreds of them — the **standard library**. `import math` makes the module available as `math`. `from math import sqrt` brings in a single name. `import statistics as st` gives the module a shorter nickname.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`dir(module)` lists the names inside a module, and `help(name)` prints its documentation.",
+      "exampleCode": "import math\nprint(math.sqrt(16))\nfrom math import pi, floor\nprint(round(pi, 3), floor(2.7))\nimport statistics as stats\nprint(stats.mean([2, 4, 9]))\nprint(\"sqrt\" in dir(math))",
+      "explanation": "With `import math` you write `math.sqrt`; with `from math import sqrt` you write `sqrt`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "A ladder leans against a wall: `a` and `b` are the two short sides of a right-angled triangle. Import `math` and store the long side, `√(a² + b²)`, in `ladder`.",
+      "starterCode": "# import math, then calculate ladder\n",
+      "solution": "import math\nladder = math.sqrt(a ** 2 + b ** 2)",
+      "setupCode": "a = 2.4\nb = 7.0",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert abs(ladder - (a ** 2 + b ** 2) ** 0.5) < 1e-9, 'ladder should be the square root of a² + b².'",
+          "message": "Check the calculation."
+        }
+      ],
+      "hint": "`math.sqrt(…)` takes the square root.",
+      "explanation": "Modules give you tested tools instead of re-inventing them."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from math import ceil, floor\nprint(ceil(2.1), floor(2.9))",
+      "expectedOutput": "3 2",
+      "hint": "`ceil` rounds up, `floor` rounds down.",
+      "explanation": "They always go to the next whole number in their direction."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`readings` is a list of numbers. Import `mean` and `median` from `statistics` and store the results in `avg` and `mid`.",
+      "starterCode": "# from statistics import …\n",
+      "solution": "from statistics import mean, median\navg = mean(readings)\nmid = median(readings)",
+      "setupCode": "readings = [12, 15, 11, 30, 14, 13]",
+      "tests": [
+        {
+          "name": "mean",
+          "code": "assert abs(avg - sum(readings) / len(readings)) < 1e-9, 'avg should be the mean of readings.'",
+          "message": "Check the mean."
+        },
+        {
+          "name": "median",
+          "code": "import statistics as _s\nassert mid == _s.median(readings), 'mid should be the median of readings.'",
+          "message": "Check the median."
+        }
+      ],
+      "hint": "Separate several names with commas in one `from … import` line.",
+      "explanation": "`statistics` covers mean, median, mode and more."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "After `import math`, how do you call its square-root function?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`sqrt(9)`"
+        },
+        {
+          "id": "b",
+          "text": "`math.sqrt(9)`"
+        },
+        {
+          "id": "c",
+          "text": "`import.sqrt(9)`"
+        },
+        {
+          "id": "d",
+          "text": "`math(sqrt, 9)`"
+        }
+      ],
+      "answer": "b",
+      "hint": "The module name comes first, then a dot.",
+      "explanation": "`import math` gives you the module; its functions live behind `math.`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This crashes with a *NameError*. Fix it so `root` is 7.",
+      "starterCode": "import math\nroot = sqrt(49)\n",
+      "solution": "import math\nroot = math.sqrt(49)\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert root == 7, 'root should be 7.'",
+          "message": "root should be 7."
+        }
+      ],
+      "hint": "`import math` doesn't bring `sqrt` in by itself.",
+      "explanation": "Either write `math.sqrt` or use `from math import sqrt`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword that gives the module a nickname.",
+      "template": "import statistics ___ st\navg = st.mean([1, 2, 3])",
+      "blanks": [
+        "as"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert avg == 2, 'avg should be 2.'",
+          "message": "avg should be 2."
+        }
+      ],
+      "hint": "Two letters.",
+      "explanation": "`import … as …` is common for long module names."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Simulate a dice roll that gives the **same** result every time the program runs: import `random`, call `random.seed(42)`, then store `random.randint(1, 6)` in `roll`.",
+      "starterCode": "# your code\n",
+      "solution": "import random\nrandom.seed(42)\nroll = random.randint(1, 6)",
+      "tests": [
+        {
+          "name": "value",
+          "code": "import random as _r\n_r.seed(42)\nassert roll == _r.randint(1, 6), 'roll should be the first randint(1, 6) after seed(42).'",
+          "message": "Seed, then roll."
+        },
+        {
+          "name": "range",
+          "code": "assert 1 <= roll <= 6, 'roll should be between 1 and 6.'",
+          "message": "roll should be 1–6."
+        }
+      ],
+      "hint": "Seed first, then roll.",
+      "explanation": "A fixed seed makes random results repeatable — useful for testing."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "`floor` and `ceil` work on negative numbers too. What does this print?",
+      "code": "import math\nprint(math.floor(-2.5), math.ceil(-2.5))",
+      "expectedOutput": "-3 -2",
+      "hint": "Down means towards minus infinity.",
+      "explanation": "Floor goes down to −3; ceil goes up to −2."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Using `from datetime import date`, store how many days there are from 29 October 2026 to 25 December 2026 in `days_until`. (Subtracting two dates gives a gap with a `.days` value.)",
+      "starterCode": "# your code\n",
+      "solution": "from datetime import date\ndays_until = (date(2026, 12, 25) - date(2026, 10, 29)).days",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert days_until == 57, 'days_until should be 57.'",
+          "message": "days_until should be 57."
+        }
+      ],
+      "hint": "`date(year, month, day)`; subtract the earlier date from the later one.",
+      "explanation": "The standard library already knows about month lengths and leap years."
+    }
+  ]
+}

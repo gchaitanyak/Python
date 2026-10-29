@@ -101,7 +101,7 @@ test('locked, unwritten and unknown lessons show a message', async ({ page }) =>
   await page.goto('/practice/?lesson=py-numbers-math');
   await expect(page.getByRole('heading', { name: 'Finish “Variables” first' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Go to Variables' })).toHaveAttribute('href', '/practice/?lesson=py-variables');
-  await page.goto('/practice/?lesson=py-strings-basics');
+  await page.goto('/practice/?lesson=py-try-except');
   await expect(page.locator('[data-message]')).toContainText('isn’t ready yet');
   await page.goto('/practice/?lesson=nope');
   await expect(page.getByRole('heading', { name: 'Lesson not found' })).toBeVisible();

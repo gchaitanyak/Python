@@ -21,7 +21,7 @@ test('the dashboard lists every lesson and recommends the first one', async ({ p
   await expect(page.locator('[data-next-title]')).toHaveText('Your First Python Program');
   await expect(page.locator('[data-lesson-id="py-print-and-comments"]')).toHaveAttribute('data-access', 'finish-previous');
   await expect(page.locator('[data-lesson-id="py-comparison-logical"] [data-state-label]')).toHaveText('Locked · sign in');
-  await expect(page.locator('[data-lesson-id="py-strings-basics"]')).toHaveAttribute('data-access', 'coming-soon');
+  await expect(page.locator('[data-lesson-id="py-try-except"]')).toHaveAttribute('data-access', 'coming-soon');
 });
 
 test('the landing page links into the curriculum and the first lesson', async ({ page }) => {

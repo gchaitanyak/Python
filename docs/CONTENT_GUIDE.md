@@ -40,6 +40,10 @@ The three files in `content/lessons/` are the style reference. Match them.
 
 Base the bug on a real beginner mistake: `print` instead of `return`, off-by-one in `range`, `=` vs `==`, mutating while iterating, missing `int()` on `input()`, wrong indentation.
 
+## Validator limits
+
+`npm run validate:content` runs every starter and solution in one Pyodide process, so it can't stop an endless loop. A `starterCode` with an infinite loop would hang it. Base loop bugs on off-by-one or wrong-condition mistakes that still finish, and make recursive bugs hit Python's *RecursionError*.
+
 ## Before committing
 
 ```bash
