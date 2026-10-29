@@ -3,7 +3,7 @@ import '../../styles/player.css';
 import { escapeHtml } from '../../components/html';
 import { moduleUrl, type Visitor } from '../../lib/curriculum';
 import { loginUrl } from '../../lib/page';
-import { call, type Session } from '../../lib/session';
+import { call, loadPremiumLesson, type Session } from '../../lib/session';
 import { resolveVisitor } from '../../lib/visitor';
 import type { CompleteResult, SubmitResult } from '../../player/account-sync';
 import { buildDeck, flashcardLessonIds } from '../../player/flashcards';
@@ -44,7 +44,7 @@ void (async () => {
     });
   }
   try {
-    player!.show(await loadLesson(lessonId, visitor, { preview }));
+    player!.show(await loadLesson(lessonId, visitor, { preview, premiumLoader: session ? loadPremiumLesson : undefined }));
   } catch {
     player!.show({ status: 'not-found' });
   }
@@ -62,7 +62,7 @@ async function flashcards(session: Session | null, visitor: Visitor): Promise<vo
   if (!visitor.premium) {
     return player!.showNotice(
       'Upgrade to continue',
-      '<div class="lock"><p>Flashcard mode is part of premium. Premium plans are coming soon.</p><a class="btn btn--primary" href="/learn/">Back to Learn</a></div>',
+      `<div class="lock"><p>Flashcard mode is part of premium, along with every lesson, projects and the certificate.</p><a class="btn btn--primary" href="/pricing/?next=${encodeURIComponent(here)}">See plans</a></div>`,
     );
   }
   const curriculum = await loadCurriculum();
@@ -70,9 +70,12 @@ async function flashcards(session: Session | null, visitor: Visitor): Promise<vo
   const module = curriculum.modules.find((m) => m.id === moduleId);
   const completed = new Set(Object.keys(visitor.progress).filter((id) => visitor.progress[id]?.completed));
   const ids = flashcardLessonIds(curriculum, completed, module?.id);
-  const lessons = (
-    await Promise.all(ids.map((id) => fetch(`/data/lessons/${id}.json`).then((r) => (r.ok ? (r.json() as Promise<Lesson>) : undefined)).catch(() => undefined)))
-  ).filter((l): l is Lesson => !!l);
+  const free = new Map(curriculum.modules.flatMap((m) => m.lessons).map((l) => [l.id, l.free]));
+  const load = (id: string): Promise<Lesson | undefined> =>
+    free.get(id)
+      ? fetch(`/data/lessons/${id}.json`).then((r) => (r.ok ? (r.json() as Promise<Lesson>) : undefined))
+      : loadPremiumLesson(id);
+  const lessons = (await Promise.all(ids.map((id) => load(id).catch(() => undefined)))).filter((l): l is Lesson => !!l);
   const name = module ? module.title : 'All modules';
   if (buildDeck(lessons).length === 0) {
     return player!.showNotice(

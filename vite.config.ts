@@ -1,6 +1,6 @@
 import { copyFileSync, createReadStream, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import {
   curriculumStats,
   renderCurriculumOverview,
@@ -10,6 +10,7 @@ import {
 import { renderFooter } from './src/components/footer';
 import { renderHeader } from './src/components/header';
 import { boardCard } from './src/components/leaderboard-html';
+import { renderPlans, renderPremiumFeatures } from './src/components/pricing-html';
 import { fillPlayerShell } from './src/components/player-shell';
 import {
   PYODIDE_FILES,
@@ -59,6 +60,8 @@ function fillCurriculum(html: string, c: Curriculum): string {
     .replace('<!-- @board:points -->', boardCard('points', 'Today’s top points'))
     .replace('<!-- @board:streak -->', boardCard('streak', 'Today’s top streaks'))
     .replace('<!-- @board:challenge -->', boardCard('challenge', 'Today’s challenge leaderboard'))
+    .replace('<!-- @plans -->', renderPlans(loadEnv(process.env.NODE_ENV === 'production' ? 'production' : 'development', __dirname, 'VITE_PRICE_')))
+    .replace('<!-- @premium-features -->', renderPremiumFeatures())
     .replace('<!-- @next-title -->', first?.title ?? '')
     .replace('<!-- @next-href -->', first ? lessonUrl(first.id) : '/learn/');
 }

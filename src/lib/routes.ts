@@ -15,6 +15,7 @@ export const routes: Route[] = [
   { path: '/learn/', dir: 'learn', title: 'Learn' },
   { path: '/practice/', dir: 'practice', title: 'Practice', sitemap: false },
   { path: '/daily/', dir: 'daily', title: 'Daily challenge' },
+  { path: '/pricing/', dir: 'pricing', title: 'Pricing' },
   { path: '/login/', dir: 'login', title: 'Log in' },
   { path: '/register/', dir: 'register', title: 'Create account' },
   { path: '/account/', dir: 'account', title: 'Account', sitemap: false },

@@ -45,8 +45,12 @@
 
         <section class="card account-section" aria-labelledby="plan-title">
           <h2 id="plan-title">Subscription</h2>
-          <p>Premium plans arrive soon. Managing your subscription will happen here.</p>
-          <button class="btn btn--ghost" type="button" disabled>Manage subscription</button>
+          <p data-plan-detail aria-live="polite">Free plan.</p>
+          <p class="alert alert--error" data-payment-issue hidden>Your last payment didn’t go through. Update your card in <strong>Manage subscription</strong> to keep premium.</p>
+          <div class="form__actions">
+            <button class="btn btn--primary" type="button" data-manage hidden>Manage subscription</button>
+            <a class="btn btn--primary" href="/pricing/" data-upgrade>See premium plans</a>
+          </div>
         </section>
 
         <section class="card account-section" aria-labelledby="session-title">

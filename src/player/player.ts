@@ -827,7 +827,8 @@ export class Player {
       const prev = result.access.previous;
       body = `<div class="lock"><h2>Finish “${escapeHtml(prev.title)}” first</h2><p>Lessons in a module open one after another. Complete the previous lesson to unlock this one.</p><a class="btn btn--primary" href="${lessonUrl(prev.id)}">Go to ${escapeHtml(prev.title)}</a></div>`;
     } else if (result.access.kind === 'upgrade') {
-      body = `<div class="lock"><h2>Upgrade to continue</h2><p>This lesson is part of the full course. Premium plans are coming soon.</p>${back}</div>`;
+      const next = encodeURIComponent(`/practice/?lesson=${lesson.id}`);
+      body = `<div class="lock"><h2>Upgrade to continue</h2><p>This lesson is part of the full course. Premium unlocks every lesson, flashcards, projects and the certificate.</p><div class="summary__actions summary__actions--start"><a class="btn btn--primary" href="/pricing/?next=${next}">See plans</a>${back.replace('btn--primary', 'btn--ghost')}</div></div>`;
     } else {
       const next = encodeURIComponent(`/practice/?lesson=${lesson.id}`);
       body = `<div class="lock"><h2>Sign in required</h2><p>This lesson is part of the full course. Log in or create a free account to continue.</p><div class="summary__actions summary__actions--start"><a class="btn btn--primary" href="/login/?next=${next}">Log in</a><a class="btn btn--ghost" href="/register/?next=${next}">Create a free account</a></div></div>`;

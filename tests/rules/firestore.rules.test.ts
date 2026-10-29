@@ -79,6 +79,9 @@ describe('users/{uid}', () => {
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { totalPoints: 9999 }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { streak: { count: 99, lastDay: '2026-10-29' } }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { username: 'admin' }));
+    await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { entitlementSource: 'lifetime' }));
+    await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { stripeCustomerId: 'cus_someone_else' }));
+    await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { cancelAtPeriodEnd: false, subscriptionStatus: 'active' }));
     await assertFails(updateDoc(doc(db('pat'), 'users/alice'), { firstName: 'Hacked' }));
     await assertFails(deleteDoc(doc(db('alice'), 'users/alice')));
   });
@@ -206,6 +209,8 @@ describe('everything else', () => {
     await assertFails(getDoc(doc(db('alice'), 'rateLimits/alice_submitAnswer')));
     await assertFails(setDoc(doc(db('alice'), 'rateLimits/alice_submitAnswer'), { count: 0 }));
     await assertFails(setDoc(doc(db('alice'), 'anything/else'), { a: 1 }));
+    await assertFails(getDoc(doc(db('alice'), 'stripeEvents/evt_1')));
+    await assertFails(setDoc(doc(db('alice'), 'stripeEvents/evt_1'), { type: 'checkout.session.completed' }));
     // The emulator-only test clock must never be client-writable (it would move the server's "today").
     await assertFails(setDoc(doc(db('alice'), '_test/clock'), { nowMs: 0 }));
     await assertFails(getDoc(doc(db(), '_test/clock')));

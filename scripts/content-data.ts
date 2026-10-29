@@ -28,6 +28,14 @@ export function freeLessonIds(): string[] {
     .map((l) => l.id);
 }
 
+/** Ids of premium lessons that have a lesson file — uploaded to Firestore, never served statically. */
+export function premiumLessonIds(): string[] {
+  return readCurriculum()
+    .modules.flatMap((m) => m.lessons)
+    .filter((l) => !l.free && existsSync(lessonPath(l.id)))
+    .map((l) => l.id);
+}
+
 export const lessonPath = (id: string): string => resolve(contentDir, 'lessons', `${id}.json`);
 
 /** Files from the pyodide npm package needed to run Python (no extra packages yet). */

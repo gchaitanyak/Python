@@ -1,14 +1,22 @@
+import { logger } from 'firebase-functions/v2';
 import { onCall } from 'firebase-functions/v2/https';
 import { auth, db, requireUid, userRef } from './lib/admin';
+import { stripe, STRIPE_SECRET_KEY } from './lib/stripe';
 
 /**
  * Deletes the caller's account (SPEC §8): profile, progress and attempts are
  * removed, the username is released, and leaderboard rows are anonymised.
+ * Any active subscription is cancelled so a deleted account is never billed again.
  * A callable rather than an auth trigger so the client can wait for it.
  */
-export const deleteAccount = onCall(async (request) => {
+export const deleteAccount = onCall({ secrets: [STRIPE_SECRET_KEY] }, async (request) => {
   const uid = requireUid(request);
   const user = (await userRef(uid).get()).data();
+  if (typeof user?.stripeSubscriptionId === 'string' && user.subscriptionStatus !== 'canceled') {
+    await stripe()
+      .subscriptions.cancel(user.stripeSubscriptionId)
+      .catch((err: Error) => logger.error('Could not cancel subscription on account deletion', { uid, error: err.message }));
+  }
   const batch = db.batch();
   for (const day of (user?.scoreDays as string[] | undefined) ?? []) {
     batch.set(db.doc(`dailyScores/${day}/users/${uid}`), { username: 'former learner' }, { merge: true });

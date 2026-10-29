@@ -47,6 +47,23 @@ describe('loadLesson', () => {
     expect(requested).toContain('/data/preview/lessons/py-p.json');
   });
 
+  it('reads premium lessons through the premium loader for premium accounts', async () => {
+    const premium = { signedIn: true, premium: true, progress: { 'py-a': done, 'py-b': done } };
+    const loaded: string[] = [];
+    const r = await loadLesson('py-p', premium, {
+      fetcher: fakeFetch,
+      premiumLoader: async (id) => {
+        loaded.push(id);
+        return { id, questions: [] } as never;
+      },
+    });
+    expect(r.status).toBe('ok');
+    expect(loaded).toEqual(['py-p']);
+    // A denied read (e.g. the rules refuse) shows as unavailable rather than crashing.
+    const denied = await loadLesson('py-p', premium, { fetcher: fakeFetch, premiumLoader: () => Promise.reject(new Error('permission-denied')) });
+    expect(denied.status).toBe('unavailable');
+  });
+
   it('reports lessons that are not written yet', async () => {
     expect((await loadLesson('py-c', anonymous(), { fetcher: fakeFetch })).status).toBe('unavailable');
   });

@@ -16,6 +16,12 @@ export interface Profile {
   totalPoints?: number;
   streak?: { count: number; lastDay: string | null };
   mergedAnonymous?: boolean;
+  entitlementSource?: string;
+  plan?: string;
+  hasStripeCustomer?: boolean;
+  subscriptionStatus?: string;
+  cancelAtPeriodEnd?: boolean;
+  paymentIssue?: boolean;
 }
 
 export interface Session {
@@ -63,6 +69,12 @@ export async function loadProfile(uid: string): Promise<Profile | undefined> {
     totalPoints: data.totalPoints ?? 0,
     streak: data.streak,
     mergedAnonymous: !!data.mergedAnonymousAt,
+    entitlementSource: data.entitlementSource,
+    plan: data.plan ?? undefined,
+    hasStripeCustomer: typeof data.stripeCustomerId === 'string',
+    subscriptionStatus: data.subscriptionStatus,
+    cancelAtPeriodEnd: !!data.cancelAtPeriodEnd,
+    paymentIssue: !!data.paymentIssue,
   };
 }
 
@@ -82,6 +94,23 @@ export async function accountVisitor(session: Session): Promise<Visitor> {
     progress[d.id] = { completed: true, bestAccuracy: typeof data.bestAccuracy === 'number' ? data.bestAccuracy : 0, lastPractisedAt: at };
   }
   return { signedIn: true, premium: isPremium(session.profile), progress };
+}
+
+/** A premium lesson from lessonContent/{id}. Fails with permission-denied unless the user is premium. */
+export async function loadPremiumLesson(lessonId: string): Promise<import('../player/types').Lesson | undefined> {
+  const { firebase } = await sdk();
+  const { doc, getDoc } = await import('firebase/firestore');
+  const snap = await getDoc(doc(firebase().db, 'lessonContent', lessonId));
+  return snap.exists() ? (snap.data() as import('../player/types').Lesson) : undefined;
+}
+
+/** Live updates of the signed-in user's profile (used to see a payment land). Returns an unsubscribe function. */
+export async function watchProfile(uid: string, cb: (profile: Profile | undefined) => void): Promise<() => void> {
+  const { firebase } = await sdk();
+  const { doc, onSnapshot } = await import('firebase/firestore');
+  return onSnapshot(doc(firebase().db, 'users', uid), () => {
+    void loadProfile(uid).then(cb);
+  });
 }
 
 /** Typed callable wrapper. */

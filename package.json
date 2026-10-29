@@ -10,7 +10,7 @@
     "postinstall": "npm --prefix functions install --no-audit --no-fund",
     "dev": "concurrently -k -n web,fb -c cyan,yellow \"npm:dev:web\" \"npm:dev:emulators\"",
     "dev:web": "vite",
-    "dev:emulators": "npm --prefix functions run build && firebase emulators:start --project demo-python-exercises",
+    "dev:emulators": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --ui --project demo-python-exercises \"tsx scripts/dev-services.ts\"",
     "build": "npm run validate:content && tsc --noEmit && vite build && tsx scripts/build-content.ts --emit-free && tsx scripts/generate-sitemap.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && npm --prefix functions run typecheck",
@@ -18,8 +18,8 @@
     "test:e2e": "playwright test",
     "test:rules": "firebase emulators:exec --only firestore --project demo-python-exercises \"vitest run --config vitest.rules.config.ts\"",
     "validate:content": "tsx scripts/validate-content.ts",
-    "deploy": "npm run build && firebase deploy --only hosting,functions,firestore:rules,firestore:indexes",
-    "test:functions": "npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises \"vitest run --config vitest.functions.config.ts\""
+    "deploy": "npm run build && firebase deploy --only hosting,functions,firestore:rules,firestore:indexes && tsx scripts/build-content.ts --upload-premium",
+    "test:functions": "node scripts/emulator-env.mjs && npm --prefix functions run build && firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises \"vitest run --config vitest.functions.config.ts\""
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
@@ -28,7 +28,9 @@
     "@types/node": "^26.6.6",
     "ajv": "^8.20.0",
     "concurrently": "^10.0.6",
+    "firebase-admin": "^14.5.0",
     "firebase-tools": "^15.34.1",
+    "stripe": "^23.0.1",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",

@@ -14,13 +14,13 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 740 } } },
   ],
-  // Firebase emulators (Auth, Firestore, Functions) + the Vite dev server, which talks to them.
+  // Firebase emulators (Auth, Firestore, Functions) with premium content and the fake Stripe, + the Vite dev server.
   webServer: [
     {
       command:
-        'npm --prefix functions run build && npx firebase emulators:start --only auth,firestore,functions --project demo-python-exercises',
-      // Ready once the functions have loaded, not just when the emulator hub is up.
-      url: 'http://127.0.0.1:5001/demo-python-exercises/us-central1/health',
+        'node scripts/emulator-env.mjs && npm --prefix functions run build && npx firebase emulators:exec --only auth,firestore,functions --project demo-python-exercises "tsx scripts/dev-services.ts"',
+      // Ready once premium content is uploaded and the fake Stripe is listening (both after the emulators are up).
+      url: 'http://127.0.0.1:12111/health',
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
       // SIGTERM lets the Firebase CLI stop its Java emulators; a hard kill leaves them holding the ports.
