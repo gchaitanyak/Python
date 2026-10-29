@@ -6,7 +6,7 @@ import { stripe, STRIPE_SECRET_KEY } from './lib/stripe';
 
 /**
  * Deletes the caller's account (SPEC §8): profile, progress and attempts are
- * removed, the username is released, and leaderboard rows are anonymised.
+ * removed (with AI hint logs), the username is released, and leaderboard rows are anonymised.
  * Any active subscription is cancelled so a deleted account is never billed again.
  * A certificate stays verifiable only if the learner asks (`keepCertificate`);
  * it is then detached from the account, otherwise it is deleted.
@@ -38,6 +38,9 @@ export const deleteAccount = onCall({ secrets: [STRIPE_SECRET_KEY] }, async (req
   await db.recursiveDelete(userRef(uid));
   await db.collection('rateLimits').where('__name__', '>=', `${uid}_`).where('__name__', '<', `${uid}_`).get()
     .then((snap) => Promise.all(snap.docs.map((d) => d.ref.delete())));
+  for (const name of ['hintLogs', 'hintQuota']) {
+    await db.collection(name).where('uid', '==', uid).get().then((snap) => Promise.all(snap.docs.map((doc) => doc.ref.delete())));
+  }
   await auth.deleteUser(uid);
   return { deleted: true };
 });

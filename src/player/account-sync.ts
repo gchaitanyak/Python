@@ -21,9 +21,18 @@ export interface CompleteResult {
   nextLessonId: string | null;
 }
 
+export interface HintResult {
+  hint: string;
+  hintId: string;
+  remaining: number;
+}
+
 export interface AccountSync {
   submitAnswer(payload: SubmitPayload): Promise<SubmitResult>;
   completeLesson(lessonId: string, accuracy: number): Promise<CompleteResult>;
   /** +100 once per user for sharing a finished lesson (SPEC §5.2). */
   claimShareBonus(): Promise<{ awarded: number; totalPoints: number }>;
+  /** AI tutor hint (SPEC §5.6) and its 👍/👎. */
+  getHint(payload: { lessonId: string; questionId: string; code: string; failMessage: string }): Promise<HintResult>;
+  rateHint(hintId: string, helpful: boolean): Promise<void>;
 }

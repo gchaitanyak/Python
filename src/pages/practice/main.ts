@@ -3,9 +3,9 @@ import '../../styles/player.css';
 import { escapeHtml } from '../../components/html';
 import { moduleUrl, type Visitor } from '../../lib/curriculum';
 import { loginUrl } from '../../lib/page';
-import { call, loadPremiumLesson, type Session } from '../../lib/session';
+import { call, loadPremiumLesson, rateHint, type Session } from '../../lib/session';
 import { resolveVisitor } from '../../lib/visitor';
-import type { CompleteResult, SubmitResult } from '../../player/account-sync';
+import type { CompleteResult, HintResult, SubmitResult } from '../../player/account-sync';
 import { buildDeck, flashcardLessonIds } from '../../player/flashcards';
 import { loadCurriculum, loadLesson } from '../../player/lesson-loader';
 import { formatSeconds, Player } from '../../player/player';
@@ -41,6 +41,8 @@ void (async () => {
       submitAnswer: (payload) => call<SubmitResult>('submitAnswer', payload),
       completeLesson: (id, accuracy) => call<CompleteResult>('completeLesson', { lessonId: id, accuracy }),
       claimShareBonus: () => call('claimShareBonus'),
+      getHint: (payload) => call<HintResult>('getHint', payload),
+      rateHint: (hintId, helpful) => rateHint(hintId, helpful),
     });
   }
   try {

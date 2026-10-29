@@ -7,6 +7,7 @@ export { claimUsername } from './claimUsername';
 export { buildDailyChallenge, getDailyChallenge, submitChallenge } from './dailyChallenge';
 export { completeLesson } from './completeLesson';
 export { deleteAccount } from './deleteAccount';
+export { getHint } from './getHint';
 export { mergeAnonymousProgress } from './mergeAnonymousProgress';
 export { createCheckoutSession, createPortalSession, stripeWebhook } from './payments';
 export { submitAnswer } from './submitAnswer';

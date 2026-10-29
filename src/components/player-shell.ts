@@ -30,6 +30,7 @@ export function playerShell(): { open: string; body: string; close: string } {
           <div class="prose" data-prompt></div>
           <div data-answer></div>
           <div class="hint" data-hint id="question-hint" hidden></div>
+          <div class="ai-hint" data-ai-hint id="question-ai-hint" aria-live="polite" hidden></div>
           <div class="feedback" data-feedback role="status" aria-live="polite"></div>
         </section>
 
@@ -49,6 +50,7 @@ export function playerShell(): { open: string; body: string; close: string } {
           </div>
           <div class="actions__group">
             <button type="button" class="btn btn--ghost" data-action="hint" aria-controls="question-hint">Hint</button>
+            <button type="button" class="btn btn--ghost" data-action="ai-hint" aria-controls="question-ai-hint" hidden>Ask the AI tutor</button>
             <button type="button" class="btn btn--ghost" data-action="solution">Show solution</button>
             <button type="button" class="btn btn--ghost" data-action="reset">Reset code</button>
           </div>

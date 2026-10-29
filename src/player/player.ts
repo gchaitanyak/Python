@@ -29,6 +29,9 @@ interface Work {
   /** Lines typed into the Input box, fed to input() on Run. */
   stdin?: string;
   hintShown?: boolean;
+  /** Message from the last failed check, sent with an AI hint request. */
+  failMessage?: string;
+  aiHint?: { text: string; id?: string; rated?: boolean; error?: boolean };
   feedback?: { kind: 'pass' | 'fail' | 'info'; html: string };
 }
 
@@ -107,6 +110,7 @@ export class Player {
       prompt: $(root, '[data-prompt]'),
       answer: $(root, '[data-answer]'),
       hint: $(root, '[data-hint]'),
+      aiHint: $(root, '[data-ai-hint]'),
       feedback: $(root, '[data-feedback]'),
       work: $(root, '[data-work]'),
       workArea: $(root, '[data-work-area]'),
@@ -116,6 +120,7 @@ export class Player {
       btnPrev: $<HTMLButtonElement>(root, '[data-action="prev"]'),
       btnSkip: $<HTMLButtonElement>(root, '[data-action="skip"]'),
       btnHint: $<HTMLButtonElement>(root, '[data-action="hint"]'),
+      btnAiHint: $<HTMLButtonElement>(root, '[data-action="ai-hint"]'),
       btnSolution: $<HTMLButtonElement>(root, '[data-action="solution"]'),
       btnReset: $<HTMLButtonElement>(root, '[data-action="reset"]'),
       btnRun: $<HTMLButtonElement>(root, '[data-action="run"]'),
@@ -219,6 +224,11 @@ export class Player {
     this.el.btnPrev.addEventListener('click', () => this.go(this.index - 1));
     this.el.btnSkip.addEventListener('click', () => this.next());
     this.el.btnHint.addEventListener('click', () => this.toggleHint());
+    this.el.btnAiHint.addEventListener('click', () => void this.askTutor());
+    this.el.aiHint.addEventListener('click', (e) => {
+      const button = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-rate]');
+      if (button) void this.rateTutor(button.dataset.rate === 'up');
+    });
     this.el.btnSolution.addEventListener('click', () => this.requestSolution());
     this.el.btnReset.addEventListener('click', () => this.reset());
     this.el.btnRun.addEventListener('click', () => void this.run());
@@ -349,6 +359,7 @@ export class Player {
     }
 
     this.renderHint();
+    this.renderAiHint();
     this.renderFeedback();
     this.renderActions();
     this.el.announce.textContent = `${unit} ${this.index + 1} of ${n}: ${TYPE_LABEL[q.type]}`;
@@ -410,6 +421,8 @@ export class Player {
     this.el.btnSkip.hidden = !gradable || done || challenge;
     this.el.btnHint.hidden = !gradable || !q.hint || challenge;
     this.el.btnHint.setAttribute('aria-expanded', String(!!this.current.hintShown));
+    // After 2 failed checks (SPEC §5.6); one AI hint per question visit.
+    this.el.btnAiHint.hidden = this.mode !== 'lesson' || !gradable || this.state.correct || this.state.tries < 2 || !!this.current.aiHint?.id;
     this.el.btnSolution.hidden = !gradable || this.state.correct || challenge;
     this.el.btnReset.hidden =
       done || !(q.type === 'write_code' || q.type === 'fix_code' || q.type === 'fill_blank' || (q.type === 'explain' && q.exampleCode));
@@ -426,6 +439,57 @@ export class Player {
     const q = this.question;
     this.el.hint.hidden = !this.current.hintShown || !q.hint;
     this.el.hint.innerHTML = q.hint ? `<strong>Hint:</strong> ${inline(q.hint)}` : '';
+  }
+
+  private renderAiHint(): void {
+    const h = this.current.aiHint;
+    this.el.aiHint.hidden = !h;
+    if (!h) return void (this.el.aiHint.innerHTML = '');
+    const rate = h.id
+      ? h.rated
+        ? '<p class="ai-hint__thanks">Thanks for the feedback!</p>'
+        : '<div class="ai-hint__rate"><span>Was this helpful?</span><button type="button" class="btn btn--ghost btn--sm" data-rate="up" aria-label="Helpful">👍</button><button type="button" class="btn btn--ghost btn--sm" data-rate="down" aria-label="Not helpful">👎</button></div>'
+      : '';
+    this.el.aiHint.className = `ai-hint${h.error ? ' ai-hint--error' : ''}`;
+    this.el.aiHint.innerHTML = `<p><strong>${h.error ? 'AI tutor' : 'AI tutor says:'}</strong> ${h.error ? h.text : inline(h.text)}</p>${rate}`;
+  }
+
+  private async askTutor(): Promise<void> {
+    const q = this.question;
+    if (!this.account) {
+      const next = encodeURIComponent(location.pathname + location.search);
+      this.current.aiHint = { text: `<a href="/login/?next=${next}">Log in</a> or <a href="/register/?next=${next}">create a free account</a> to ask the AI tutor — 5 hints a day free.`, error: true };
+      return this.renderAiHint();
+    }
+    const a = this.answer();
+    const code = a.kind === 'code' ? a.code : a.kind === 'text' ? a.text : a.kind === 'blanks' ? a.values.join('\n') : (a.optionId ?? '');
+    this.el.btnAiHint.disabled = true;
+    this.el.btnAiHint.setAttribute('aria-busy', 'true');
+    this.current.aiHint = { text: 'Thinking…' };
+    this.renderAiHint();
+    const work = this.current;
+    try {
+      const r = await this.account.getHint({ lessonId: this.lesson.id, questionId: q.id, code, failMessage: work.failMessage ?? '' });
+      work.aiHint = { text: `${r.hint}`, id: r.hintId };
+      this.el.announce.textContent = `AI tutor hint. ${r.remaining} left today.`;
+    } catch (err) {
+      work.aiHint = { text: escapeHtml(err instanceof Error && err.message ? err.message : 'The AI tutor isn’t available right now.'), error: true };
+    } finally {
+      this.el.btnAiHint.disabled = false;
+      this.el.btnAiHint.removeAttribute('aria-busy');
+    }
+    if (work === this.current) {
+      this.renderAiHint();
+      this.renderActions();
+    }
+  }
+
+  private async rateTutor(helpful: boolean): Promise<void> {
+    const h = this.current.aiHint;
+    if (!h?.id || h.rated || !this.account) return;
+    h.rated = true;
+    this.renderAiHint();
+    await this.account.rateHint(h.id, helpful).catch(() => undefined);
   }
 
   private renderFeedback(): void {
@@ -560,7 +624,8 @@ export class Player {
         this.setFeedback('pass', `<p class="feedback__title">Correct! +${s.points} pts</p>${explanation}`);
         this.updatePoints();
       } else {
-        const more = s.tries >= 2 && !s.viewedSolution ? '<p class="feedback__more">Stuck? You can now view the solution.</p>' : '';
+        this.current.failMessage = verdict.message;
+        const more = s.tries >= 2 && !s.viewedSolution ? `<p class="feedback__more">Stuck? You can now ${this.mode === 'lesson' ? 'ask the AI tutor or ' : ''}view the solution.</p>` : '';
         this.setFeedback('fail', `<p class="feedback__title">Not quite</p><p>${inline(verdict.message)}</p>${more}`);
       }
       this.sync(q, answer, verdict.passed);

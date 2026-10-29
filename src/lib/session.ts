@@ -140,6 +140,13 @@ export async function loadCertificate(id: string): Promise<Certificate | undefin
   }
 }
 
+/** 👍/👎 on an AI tutor hint: the owner may set `helpful` on their hint log (rules). */
+export async function rateHint(hintId: string, helpful: boolean): Promise<void> {
+  const { firebase } = await sdk();
+  const { doc, updateDoc } = await import('firebase/firestore');
+  await updateDoc(doc(firebase().db, 'hintLogs', hintId), { helpful });
+}
+
 /** Typed callable wrapper. */
 export async function call<T>(name: string, data: unknown = {}): Promise<T> {
   const { firebase } = await sdk();

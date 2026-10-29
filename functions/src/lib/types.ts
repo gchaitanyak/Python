@@ -2,6 +2,9 @@
 export interface Question {
   id: string;
   type: 'explain' | 'write_code' | 'fix_code' | 'predict_output' | 'multiple_choice' | 'fill_blank';
+  prompt?: string;
+  hint?: string;
+  solution?: string;
   points?: number;
   answer?: string;
   options?: { id: string; text: string }[];
