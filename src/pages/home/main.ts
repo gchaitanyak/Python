@@ -1,2 +1,2 @@
-import '../../styles/main.css';
+import '../../lib/page';
 import '../../styles/curriculum.css';

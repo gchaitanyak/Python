@@ -51,6 +51,7 @@ npm run build          # type-check, build static site, generate sitemap
 npm run test           # Vitest
 npm run test:e2e       # Playwright against emulators
 npm run test:rules     # Firestore security rules tests
+npm run test:functions # Cloud Functions integration tests (Auth + Firestore + Functions emulators)
 npm run validate:content   # validate content/**/*.json against lesson.schema.json and run every lesson's reference solutions through its tests
 npm run deploy         # firebase deploy (hosting, functions, rules)
 ```

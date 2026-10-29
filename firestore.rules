@@ -1,32 +1,56 @@
 rules_version = '2';
-// Outline from docs/ARCHITECTURE.md §5.1. Phase 4 completes these with full tests.
-// Anything not matched below is denied.
+// Security rules (ARCHITECTURE §5.1). Anything not matched is denied.
+// Scores, entitlements, usernames and progress are written only by Cloud Functions (admin SDK bypasses rules).
 service cloud.firestore {
   match /databases/{db}/documents {
     function signedIn() { return request.auth != null; }
     function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
-    function user() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function userPath() { return /databases/$(db)/documents/users/$(request.auth.uid); }
     function isPremium() {
-      return signedIn() && exists(/databases/$(db)/documents/users/$(request.auth.uid))
-        && user().get('entitlement', 'free') == 'premium'
-        && (user().get('premiumUntil', null) == null || user().premiumUntil > request.time);
+      let user = get(userPath()).data;
+      return signedIn() && exists(userPath())
+        && user.get('entitlement', 'free') == 'premium'
+        && (user.get('premiumUntil', null) == null || user.premiumUntil > request.time);
+    }
+    function validProfile(d) {
+      return d.firstName is string && d.firstName.size() <= 50
+        && d.tz is string && d.tz.size() <= 64;
     }
 
     match /users/{uid} {
       allow read: if isSelf(uid);
-      allow create: if isSelf(uid) && request.resource.data.keys().hasOnly(['firstName', 'tz', 'createdAt']);
-      allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName', 'tz']);
+      // Profile fields only. entitlement, points, streak and username are server-written.
+      allow create: if isSelf(uid)
+        && request.resource.data.keys().hasOnly(['firstName', 'tz', 'createdAt'])
+        && request.resource.data.keys().hasAll(['firstName', 'tz', 'createdAt'])
+        && validProfile(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName', 'tz'])
+        && validProfile(request.resource.data);
+      allow delete: if false;
 
       match /progress/{lessonId} {
         allow read: if isSelf(uid);
-        allow update: if isSelf(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['questionState']);
+        // Clients may only keep question drafts; completion, accuracy and scoring are server-written.
+        allow update: if isSelf(uid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['questionState'])
+          && request.resource.data.questionState is map;
+        allow create, delete: if false;
       }
+
       match /attempts/{id} {
         allow read: if isSelf(uid);
         allow write: if false;
       }
     }
 
+    match /usernames/{name} {
+      allow read: if true; // availability check while registering
+      allow write: if false;
+    }
+
+    // Premium lesson content: the paywall lives here, not only in the UI.
     match /lessonContent/{lessonId} {
       allow read: if isPremium();
       allow write: if false;
@@ -62,18 +86,24 @@ service cloud.firestore {
     }
 
     match /feedback/{id} {
-      allow create: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'lessonId', 'rating', 'text', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.lessonId is string && request.resource.data.lessonId.size() <= 80
+        && request.resource.data.rating in ['up', 'down']
+        && (!('text' in request.resource.data) || (request.resource.data.text is string && request.resource.data.text.size() <= 2000))
+        && request.resource.data.createdAt == request.time;
       allow read, update, delete: if false;
     }
 
     match /hintLogs/{id} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
       allow update: if signedIn() && resource.data.uid == request.auth.uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpful']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpful'])
+        && request.resource.data.helpful is bool;
+      allow create, delete: if false;
     }
 
-    match /usernames/{u} {
-      allow read: if true;
-      allow write: if false;
-    }
+    // Function-only bookkeeping (rate limits etc.) falls through to the default deny.
   }
 }

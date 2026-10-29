@@ -12,7 +12,7 @@
     <main id="main" tabindex="-1">
       <section class="page-head container">
         <h1>Your learning dashboard</h1>
-        <p class="lead">Work through the modules in order, or jump to any topic. Progress is saved on this device.</p>
+        <p class="lead" data-dash-lead>Work through the modules in order, or jump to any topic. Progress is saved on this device — <a href="/register/">create a free account</a> to keep it.</p>
       </section>
 
       <section class="container dash" aria-label="Your progress">
@@ -25,12 +25,20 @@
         <div class="card dash__stat">
           <h2 class="dash__label">Points</h2>
           <p class="dash__value" data-points>0</p>
-          <p class="help-text">Best score from each lesson</p>
+          <p class="help-text" data-points-help>Best score from each lesson</p>
         </div>
         <div class="card dash__stat">
           <h2 class="dash__label">Streak</h2>
           <p class="dash__value" data-streak>0 days</p>
           <p class="help-text">Days in a row with a finished lesson</p>
+        </div>
+      </section>
+
+      <section class="container leaderboard-section" aria-labelledby="board-title">
+        <div class="card leaderboard">
+          <h2 id="board-title" class="dash__label">Today’s top points</h2>
+          <ol class="leaderboard__list" data-leaderboard aria-live="polite"><li class="help-text">Loading…</li></ol>
+          <p class="help-text" data-leaderboard-me></p>
         </div>
       </section>
 

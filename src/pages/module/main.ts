@@ -1,16 +1,14 @@
-import '../../styles/main.css';
+import '../../lib/page';
 import '../../styles/curriculum.css';
-import { anonymous, lessonAccess, lessonUrl, moduleProgress, moduleUrl, sortedLessons, unfinishedEarlierModule } from '../../lib/curriculum';
+import { lessonAccess, lessonUrl, moduleProgress, moduleUrl, sortedLessons, unfinishedEarlierModule } from '../../lib/curriculum';
 import { decorateLessons } from '../../lib/progress-view';
 import { loadCurriculum } from '../../player/lesson-loader';
-import { loadProgress } from '../../player/progress';
+import { resolveVisitor } from '../../lib/visitor';
 import { escapeHtml } from '../../components/html';
 
 const main = document.querySelector<HTMLElement>('[data-module-page]')!;
 const moduleId = main.dataset.modulePage!;
-const visitor = anonymous(loadProgress().lessons);
-
-void loadCurriculum().then((curriculum) => {
+void Promise.all([resolveVisitor(), loadCurriculum()]).then(([{ visitor }, curriculum]) => {
   const module = curriculum.modules.find((m) => m.id === moduleId);
   if (!module) return;
   decorateLessons(main, curriculum, visitor);

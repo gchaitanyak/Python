@@ -446,3 +446,13 @@
 .stdin .work__label {
   display: block;
 }
+
+.signup-prompt {
+  max-width: 36rem;
+  margin: var(--space-6) auto 0;
+  text-align: left;
+}
+
+.summary__actions--start {
+  justify-content: flex-start;
+}

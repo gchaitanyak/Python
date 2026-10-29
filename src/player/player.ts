@@ -1,11 +1,12 @@
 import { escapeHtml } from '../components/html';
 import { lessonUrl, moduleUrl } from '../lib/curriculum';
+import type { AccountSync, SubmitPayload } from './account-sync';
 import type { RunResult } from '../worker/protocol';
 import { createEditor, type CodeEditor } from './editor';
 import { blankCount, fillTemplate, gradeAnswer, type Answer } from './grading';
 import type { LoadResult } from './lesson-loader';
 import { inline, renderMarkdown } from './markdown';
-import { currentStreak, localPoints, loadDraft, recordCompletion, saveDraft } from './progress';
+import { currentStreak, loadDraft, loadProgress, localPoints, recordCompletion, saveDraft } from './progress';
 import type { PythonClient, PythonStatus } from './python-client';
 import { accuracy, emptyState, maxPoints, pointsFor, totalPoints, type QuestionState } from './scoring';
 import { isGradable, type Lesson, type Question } from './types';
@@ -46,6 +47,11 @@ export class Player {
   private editor: CodeEditor | undefined;
   private busy = false;
   private pythonStatus: PythonStatus = 'loading';
+  /** Set when signed in: answers and completion are saved by Cloud Functions. */
+  private account: AccountSync | undefined;
+  /** Submissions run one after another so the server counts tries in order. */
+  private syncQueue: Promise<unknown> = Promise.resolve();
+  private syncFailed = false;
 
   private readonly el;
 
@@ -90,6 +96,10 @@ export class Player {
   }
 
   /* ---------- lifecycle ---------- */
+
+  setAccount(account: AccountSync | undefined): void {
+    this.account = account;
+  }
 
   show(result: LoadResult): void {
     if (result.status !== 'ok') return this.showMessage(result);
@@ -467,9 +477,48 @@ export class Player {
         const more = s.tries >= 2 && !s.viewedSolution ? '<p class="feedback__more">Stuck? You can now view the solution.</p>' : '';
         this.setFeedback('fail', `<p class="feedback__title">Not quite</p><p>${inline(verdict.message)}</p>${more}`);
       }
+      this.sync(q, answer, verdict.passed);
     });
     this.renderActions();
     if (this.state.correct) this.el.btnPrimary.focus();
+  }
+
+  /**
+   * Sends the Check to the server, which recomputes the points (SPEC §4.3).
+   * The local result is shown straight away and corrected if the server differs,
+   * for example when the question was already awarded today.
+   */
+  private sync(q: Question, answer: Answer, passed: boolean): void {
+    const account = this.account;
+    if (!account) return;
+    const state = this.state;
+    const payload: SubmitPayload = {
+      lessonId: this.lesson.id,
+      questionId: q.id,
+      correct: passed,
+      viewedSolution: state.viewedSolution,
+      answer:
+        answer.kind === 'choice'
+          ? { optionId: answer.optionId ?? '' }
+          : answer.kind === 'text'
+            ? { text: answer.text }
+            : answer.kind === 'blanks' && q.type === 'fill_blank' && q.matchMode === 'exact'
+              ? { blanks: answer.values }
+              : undefined,
+    };
+    const qid = q.id;
+    this.syncQueue = this.syncQueue
+      .then(() => account.submitAnswer(payload))
+      .then((result) => {
+        if (!result.correct || result.points === state.points) return;
+        state.points = result.points;
+        this.updatePoints();
+        const title = this.question.id === qid ? this.el.feedback.querySelector('.feedback__title') : null;
+        if (title) title.textContent = `Correct! +${result.points} pts${result.alreadyAwarded ? ' (already earned today)' : ''}`;
+      })
+      .catch(() => {
+        this.syncFailed = true;
+      });
   }
 
   private next(): void {
@@ -561,12 +610,26 @@ export class Player {
   private finish(): void {
     const acc = accuracy(this.lesson, this.states);
     const points = totalPoints(this.states);
-    const { progress, isNewBest } = recordCompletion(this.lesson.id, { accuracy: acc, points, questionState: this.states });
     for (const q of this.lesson.questions) saveDraft(this.lesson.id, q.id, null);
     const skipped = this.lesson.questions.filter((q) => isGradable(q) && !this.states[q.id]?.correct).length;
-    const streak = currentStreak(progress.streak, new Date());
     const next = this.result.next;
     const shareUrl = `${location.origin}/practice/?lesson=${encodeURIComponent(this.lesson.id)}`;
+    const here = `/practice/?lesson=${encodeURIComponent(this.lesson.id)}`;
+
+    let streakText = '…';
+    let note = skipped ? `You skipped ${skipped} ${skipped === 1 ? 'question' : 'questions'} — practise again to complete ${skipped === 1 ? 'it' : 'them'}. ` : '';
+    let signUp = '';
+    if (!this.account) {
+      const { progress, isNewBest } = recordCompletion(this.lesson.id, { accuracy: acc, points, questionState: this.states });
+      const streak = currentStreak(progress.streak, new Date());
+      streakText = `${streak} ${streak === 1 ? 'day' : 'days'}`;
+      note += `${isNewBest ? 'New best score for this lesson. ' : ''}Total points on this device: ${localPoints(progress)}.`;
+      const done = Object.values(loadProgress().lessons).filter((l) => l.completed).length;
+      signUp =
+        done >= 2
+          ? `<div class="card signup-prompt"><h3>Save your progress</h3><p>You’ve finished ${done} lessons. Create a free account to keep your progress, build a streak and appear on the daily leaderboards.</p><a class="btn btn--primary" href="/register/?next=${encodeURIComponent(here)}">Create a free account</a> <a class="btn btn--ghost" href="/login/?next=${encodeURIComponent(here)}">Log in</a></div>`
+          : `<p class="help-text"><a href="/register/?next=${encodeURIComponent(here)}">Create a free account</a> to save your progress and join the leaderboards.</p>`;
+    }
 
     this.el.form.hidden = true;
     this.el.intro.hidden = true;
@@ -576,23 +639,39 @@ export class Player {
       <p class="summary__lead">${escapeHtml(this.lesson.title)}</p>
       <dl class="stats">
         <div class="stat"><dt>Accuracy</dt><dd>${acc}%</dd></div>
-        <div class="stat"><dt>Points earned</dt><dd>${points}</dd></div>
-        <div class="stat"><dt>Streak</dt><dd>${streak} ${streak === 1 ? 'day' : 'days'}</dd></div>
+        <div class="stat"><dt>Points earned</dt><dd data-summary-points>${points}</dd></div>
+        <div class="stat"><dt>Streak</dt><dd data-summary-streak>${streakText}</dd></div>
       </dl>
-      <p class="summary__note">${skipped ? `You skipped ${skipped} ${skipped === 1 ? 'question' : 'questions'} — practise again to complete ${skipped === 1 ? 'it' : 'them'}. ` : ''}${
-        isNewBest ? 'New best score for this lesson.' : ''
-      } Total points on this device: ${localPoints(progress)}. Sign-up (coming soon) will save your progress to your account.</p>
+      <p class="summary__note" data-summary-note>${note}</p>
       <div class="summary__actions">
         ${next ? `<a class="btn btn--primary" href="${lessonUrl(next.id)}">Next: ${escapeHtml(next.title)} →</a>` : ''}
         <button type="button" class="btn btn--ghost" data-summary-action="again">Practise again</button>
         <button type="button" class="btn btn--ghost" data-summary-action="share">Share</button>
         <a class="btn btn--ghost" href="/learn/">Back to Learn</a>
       </div>
-      <p class="help-text" data-share-status role="status"></p>`;
+      <p class="help-text" data-share-status role="status"></p>
+      ${signUp}`;
     $(this.el.summary, '[data-summary-action="again"]').addEventListener('click', () => this.show(this.result));
     $(this.el.summary, '[data-summary-action="share"]').addEventListener('click', () => void share(shareUrl, this.lesson.title, $(this.el.summary, '[data-share-status]')));
     this.el.announce.textContent = `Lesson complete. Accuracy ${acc} percent, ${points} points.`;
     $(this.el.summary, '.summary__title').focus();
+    if (this.account) void this.finishOnServer(this.account, acc, note);
+  }
+
+  /** Waits for pending answers, then records completion and shows the server's points and streak. */
+  private async finishOnServer(account: AccountSync, acc: number, note: string): Promise<void> {
+    const streakEl = $(this.el.summary, '[data-summary-streak]');
+    const noteEl = $(this.el.summary, '[data-summary-note]');
+    try {
+      await this.syncQueue;
+      const result = await account.completeLesson(this.lesson.id, acc);
+      streakEl.textContent = `${result.streak} ${result.streak === 1 ? 'day' : 'days'}`;
+      $(this.el.summary, '[data-summary-points]').textContent = String(totalPoints(this.states));
+      noteEl.textContent = `${note}${this.syncFailed ? 'Some answers couldn’t be saved, so their points may be missing. ' : ''}Saved to your account.`;
+    } catch {
+      streakEl.textContent = '—';
+      noteEl.textContent = `${note}We couldn’t save this lesson to your account. Check your connection and finish it again.`;
+    }
   }
 
   private showMessage(result: Exclude<LoadResult, { status: 'ok' }>): void {
@@ -618,7 +697,8 @@ export class Player {
     } else if (result.access.kind === 'upgrade') {
       body = `<div class="lock"><h2>Upgrade to continue</h2><p>This lesson is part of the full course. Premium plans are coming soon.</p>${back}</div>`;
     } else {
-      body = `<div class="lock"><h2>Sign in required</h2><p>This lesson is part of the full course. Accounts and subscriptions are coming soon — the free lessons are open to everyone now.</p>${back}</div>`;
+      const next = encodeURIComponent(`/practice/?lesson=${lesson.id}`);
+      body = `<div class="lock"><h2>Sign in required</h2><p>This lesson is part of the full course. Log in or create a free account to continue.</p><div class="summary__actions summary__actions--start"><a class="btn btn--primary" href="/login/?next=${next}">Log in</a><a class="btn btn--ghost" href="/register/?next=${next}">Create a free account</a></div></div>`;
     }
     this.el.message.innerHTML = head + body;
     document.title = `${lesson.title} — Python Exercises`;

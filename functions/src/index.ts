@@ -1,11 +1,13 @@
-import { initializeApp } from 'firebase-admin/app';
-import { setGlobalOptions } from 'firebase-functions/v2';
 import { onRequest } from 'firebase-functions/v2/https';
+import './lib/admin';
 
-initializeApp();
-setGlobalOptions({ region: 'us-central1', maxInstances: 10 });
+export { claimUsername } from './claimUsername';
+export { completeLesson } from './completeLesson';
+export { deleteAccount } from './deleteAccount';
+export { mergeAnonymousProgress } from './mergeAnonymousProgress';
+export { submitAnswer } from './submitAnswer';
 
-/** Liveness check for the emulator and deploys. Real callables arrive in later phases. */
+/** Liveness check for the emulator and deploys. */
 export const health = onRequest((_req, res) => {
   res.json({ ok: true });
 });

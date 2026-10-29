@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create a free account — Python Exercises</title>
+    <meta name="description" content="Create a free account to save your Python progress, keep a streak and appear on the daily leaderboards." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1" class="container auth">
+      <h1>Create a free account</h1>
+      <p class="auth__lead">Save your progress, keep your streak and join the daily leaderboards. Already have an account? <a href="/login/" data-login-link>Log in</a>.</p>
+
+      <div class="alert" data-status role="status" aria-live="polite" hidden></div>
+
+      <form class="form card" data-register-form novalidate>
+        <div class="field">
+          <label for="reg-first">First name</label>
+          <input id="reg-first" name="firstName" type="text" autocomplete="given-name" maxlength="50" required aria-describedby="reg-first-error" />
+          <p class="field__error" id="reg-first-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="reg-username">Username</label>
+          <input id="reg-username" name="username" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="20" required aria-describedby="reg-username-help reg-username-error" />
+          <p class="help-text" id="reg-username-help">Shown on leaderboards. 3–20 characters: letters, numbers and _.</p>
+          <p class="field__error" id="reg-username-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="reg-email">Email</label>
+          <input id="reg-email" name="email" type="email" autocomplete="email" required aria-describedby="reg-email-error" />
+          <p class="field__error" id="reg-email-error" hidden></p>
+        </div>
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <input id="reg-password" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="reg-password-help reg-password-error" />
+          <p class="help-text" id="reg-password-help">At least 8 characters.</p>
+          <p class="field__error" id="reg-password-error" hidden></p>
+        </div>
+        <button class="btn btn--primary" type="submit">Create account</button>
+        <p class="help-text">Progress you made on this device without an account is added to your new account.</p>
+      </form>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

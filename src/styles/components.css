@@ -265,3 +265,86 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
+
+.btn--danger {
+  background: var(--color-danger);
+  color: var(--color-on-primary);
+}
+
+.btn--danger:hover {
+  background: #8f1c13;
+  color: var(--color-on-primary);
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  justify-self: start;
+}
+
+/* Header account menu */
+.account-menu {
+  position: relative;
+}
+
+.account-menu__button {
+  gap: var(--space-2);
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 700;
+}
+
+.account-menu__name {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-menu__list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-1));
+  z-index: 20;
+  min-width: 11rem;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.account-menu__list a,
+.account-menu__list button {
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-menu__list a:hover,
+.account-menu__list button:hover {
+  background: var(--color-surface);
+}

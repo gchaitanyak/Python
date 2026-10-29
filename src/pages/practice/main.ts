@@ -1,8 +1,9 @@
-import '../../styles/main.css';
+import '../../lib/page';
 import '../../styles/player.css';
-import { anonymous } from '../../lib/curriculum';
+import { call } from '../../lib/session';
+import { resolveVisitor } from '../../lib/visitor';
+import type { CompleteResult, SubmitResult } from '../../player/account-sync';
 import { loadLesson } from '../../player/lesson-loader';
-import { loadProgress } from '../../player/progress';
 import { Player } from '../../player/player';
 import { PythonClient } from '../../player/python-client';
 
@@ -24,10 +25,19 @@ const python = new PythonClient(
 player = new Player(root, python);
 player.setPythonStatus(...pending);
 
-const progress = loadProgress();
-const visitor = anonymous(progress.lessons);
 const preview = import.meta.env.DEV && new URLSearchParams(location.search).has('preview');
 
-loadLesson(lessonId, visitor, { preview })
-  .then((result) => player!.show(result))
-  .catch(() => player!.show({ status: 'not-found' }));
+void (async () => {
+  const { visitor, session } = await resolveVisitor();
+  if (session) {
+    player!.setAccount({
+      submitAnswer: (payload) => call<SubmitResult>('submitAnswer', payload),
+      completeLesson: (id, accuracy) => call<CompleteResult>('completeLesson', { lessonId: id, accuracy }),
+    });
+  }
+  try {
+    player!.show(await loadLesson(lessonId, visitor, { preview }));
+  } catch {
+    player!.show({ status: 'not-found' });
+  }
+})();
