@@ -60,9 +60,9 @@ describe('gradeAnswer', () => {
   });
 
   it('runs tests on the filled template', async () => {
-    const q: Question = { id: 'q04', type: 'fill_blank', prompt: '', hint: '', template: 'x = ___', blanks: ['0'], tests: [] };
+    const q: Question = { id: 'q04', type: 'fill_blank', prompt: '', hint: '', template: 'x = ___', blanks: ['0'], tests: [], setupCode: 'y = 1' };
     const py = python(true);
     await gradeAnswer(q, { kind: 'blanks', values: ['0'] }, py);
-    expect(py.grade).toHaveBeenCalledWith('x = 0', []);
+    expect(py.grade).toHaveBeenCalledWith('x = 0', [], 'y = 1');
   });
 });

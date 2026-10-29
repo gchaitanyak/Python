@@ -42,7 +42,7 @@ def _call(name, payload):
     if name == "grade":
         r = harness.grade(p["code"], p["tests"], p.get("setup") or "")
     elif name == "run":
-        r = harness.run_public(p["code"])
+        r = harness.run_public(p["code"], p.get("setup") or "")
     elif name == "predict":
         out = harness.run_public(p["code"])
         r = {"error": out["error"], "stdout": out["stdout"], "ok": harness.check_predict(out["stdout"], p["expected"])}
@@ -83,7 +83,7 @@ function checkQuestion(q: Question, index: number): string[] {
       }
       if ((q.matchMode ?? 'tests') === 'tests') {
         if (!q.tests?.length) errs.push(`${tag}: needs tests unless matchMode is exact`);
-        else if (!call<Graded>('grade', { code, tests: q.tests }).passed) errs.push(`${tag}: filled template fails its tests`);
+        else if (!call<Graded>('grade', { code, tests: q.tests, setup: q.setupCode }).passed) errs.push(`${tag}: filled template fails its tests`);
       }
       break;
     }
@@ -99,7 +99,7 @@ function checkQuestion(q: Question, index: number): string[] {
       break;
     case 'explain':
       if (q.exampleCode) {
-        const r = call<{ error: Graded['error'] }>('run', { code: q.exampleCode });
+        const r = call<{ error: Graded['error'] }>('run', { code: q.exampleCode, setup: q.setupCode });
         if (r.error) errs.push(`${tag}: exampleCode raises ${r.error.type}: ${r.error.message}`);
       }
       break;

@@ -61,7 +61,7 @@ export async function gradeAnswer(question: Question, answer: Answer, python: Py
         return ok ? pass() : fail('At least one blank isn’t right yet.');
       }
       const code = fillTemplate(question.template, answer.values);
-      return fromGrade(await python.grade(code, question.tests ?? []));
+      return fromGrade(await python.grade(code, question.tests ?? [], question.setupCode));
     }
     case 'write_code':
     case 'fix_code': {

@@ -1,0 +1,179 @@
+{
+  "id": "py-logging-testing",
+  "moduleId": "standard-library",
+  "title": "Logging and Unit Tests",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "`print` is fine while you explore, but real programs **log**: each message has a level (`DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`) and you choose which levels to show without editing the code. **Unit tests** are small functions that check your code automatically, so you find out at once when a change breaks something. Python ships with both: `logging` and `unittest`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Get a named logger with `logging.getLogger(name)`. By default only `WARNING` and above are shown; `setLevel` changes that. Use `%s` placeholders — the message is only built if it's actually shown.",
+      "exampleCode": "import logging\n\nlogging.basicConfig(format=\"%(levelname)s %(name)s: %(message)s\")\nlog = logging.getLogger(\"orders\")\n\nlog.debug(\"hidden: below WARNING\")\nlog.warning(\"Stock low for %s\", \"tea\")\nlog.setLevel(logging.DEBUG)\nlog.debug(\"now shown\")",
+      "explanation": "Log messages go to the error stream, so they appear in the console separately from `print` output."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Using the logger `logging.getLogger(\"shop\")`, write `restock(item, qty)` that logs a **warning** `Low stock: <item> (<qty>)` when `qty` is below 5, and returns `qty`.",
+      "starterCode": "import logging\n\nlog = logging.getLogger(\"shop\")\n\ndef restock(item, qty):\n    print(\"Low stock\", item)\n    return qty\n",
+      "solution": "import logging\n\nlog = logging.getLogger(\"shop\")\n\ndef restock(item, qty):\n    if qty < 5:\n        log.warning(\"Low stock: %s (%s)\", item, qty)\n    return qty",
+      "setupCode": "import logging as _lg\n_lg.getLogger('shop').setLevel(_lg.NOTSET)\n_lg.getLogger('shop').handlers.clear()\ndef _captured(name, action):\n    \"\"\"Run action() and return (level, message) for each record the named logger lets through.\"\"\"\n    import logging\n    records = []\n    class _Keep(logging.Handler):\n        def emit(self, record):\n            records.append((record.levelname, record.getMessage()))\n    handler = _Keep()\n    logger = logging.getLogger(name)\n    logger.addHandler(handler)\n    try:\n        action()\n    finally:\n        logger.removeHandler(handler)\n    return records\n",
+      "tests": [
+        {
+          "name": "warning",
+          "code": "assert _captured('shop', lambda: restock('tea', 3)) == [('WARNING', 'Low stock: tea (3)')], 'Log a WARNING \"Low stock: tea (3)\" for low stock.'",
+          "message": "Warn about low stock."
+        },
+        {
+          "name": "quiet",
+          "code": "assert _captured('shop', lambda: restock('milk', 12)) == [], 'Log nothing when stock is fine.'",
+          "message": "Stay quiet otherwise."
+        },
+        {
+          "name": "returns",
+          "code": "assert restock('jam', 7) == 7, 'restock should return qty.'",
+          "message": "Return qty."
+        }
+      ],
+      "hint": "`log.warning(\"Low stock: %s (%s)\", item, qty)` inside an `if`.",
+      "explanation": "Unlike `print`, a warning can be filtered, sent to a file or shown with a timestamp — all without changing this function."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "Levels are numbers underneath. What does this print?",
+      "code": "import logging\n\nprint(logging.getLevelName(logging.ERROR), logging.ERROR > logging.WARNING)",
+      "expectedOutput": "ERROR True",
+      "hint": "`ERROR` is 40 and `WARNING` is 30.",
+      "explanation": "Because levels are numbers, a logger can compare each message's level with its own."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`finish_job()` should log `INFO` `Job done`, but nothing appears. Set the `jobs` logger's level so `INFO` messages get through.",
+      "starterCode": "import logging\n\nlog = logging.getLogger(\"jobs\")\n\ndef finish_job():\n    log.info(\"Job done\")\n",
+      "solution": "import logging\n\nlog = logging.getLogger(\"jobs\")\nlog.setLevel(logging.INFO)\n\ndef finish_job():\n    log.info(\"Job done\")\n",
+      "setupCode": "import logging as _lg\n_lg.getLogger('jobs').setLevel(_lg.NOTSET)\n_lg.getLogger('jobs').handlers.clear()\ndef _captured(name, action):\n    \"\"\"Run action() and return (level, message) for each record the named logger lets through.\"\"\"\n    import logging\n    records = []\n    class _Keep(logging.Handler):\n        def emit(self, record):\n            records.append((record.levelname, record.getMessage()))\n    handler = _Keep()\n    logger = logging.getLogger(name)\n    logger.addHandler(handler)\n    try:\n        action()\n    finally:\n        logger.removeHandler(handler)\n    return records\n",
+      "tests": [
+        {
+          "name": "info",
+          "code": "assert _captured('jobs', finish_job) == [('INFO', 'Job done')], 'The INFO message should get through.'",
+          "message": "Let INFO through."
+        }
+      ],
+      "hint": "The default level is `WARNING`.",
+      "explanation": "`log.setLevel(logging.INFO)` lets `INFO` and above through for this logger."
+    },
+    {
+      "id": "q05",
+      "type": "explain",
+      "prompt": "A test case is a class that inherits from `unittest.TestCase`. Each method whose name starts with `test` is one test. `assertEqual`, `assertTrue` and `assertRaises` check results.",
+      "exampleCode": "import unittest\n\ndef initials(name):\n    return \"\".join(part[0].upper() for part in name.split())\n\nclass TestInitials(unittest.TestCase):\n    def test_two_words(self):\n        self.assertEqual(initials(\"ada lovelace\"), \"AL\")\n\n    def test_empty(self):\n        self.assertEqual(initials(\"\"), \"\")\n\nunittest.main(argv=[\"ignored\"], exit=False)",
+      "explanation": "`argv` and `exit=False` let `unittest.main` run inside an editor like this one; in a script file you'd just call `unittest.main()`."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "`apply_discount(price, percent)` is already defined: it returns the price after the discount, rounded to 2 places, and raises `ValueError` if `percent` isn't between 0 and 100. Write `TestDiscount`, a `unittest.TestCase` with **at least two** tests: one checking a result, one checking the `ValueError`.",
+      "starterCode": "import unittest\n\nclass TestDiscount(unittest.TestCase):\n    pass\n",
+      "solution": "import unittest\n\nclass TestDiscount(unittest.TestCase):\n    def test_twenty_percent(self):\n        self.assertEqual(apply_discount(50, 20), 40)\n\n    def test_rounding(self):\n        self.assertEqual(apply_discount(9.99, 15), 8.49)\n\n    def test_bad_percent(self):\n        with self.assertRaises(ValueError):\n            apply_discount(10, 120)",
+      "setupCode": "def apply_discount(price, percent):\n    if not 0 <= percent <= 100:\n        raise ValueError(\"percent must be between 0 and 100\")\n    return round(price * (1 - percent / 100), 2)\ndef _run_case(case):\n    import io, unittest\n    suite = unittest.defaultTestLoader.loadTestsFromTestCase(case)\n    return unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)\n",
+      "tests": [
+        {
+          "name": "passes",
+          "code": "r = _run_case(TestDiscount)\nassert r.testsRun >= 2, 'Write at least two test methods (names starting with test).'\nassert r.wasSuccessful(), 'Your tests should pass for the correct apply_discount.'",
+          "message": "Tests pass on the correct code."
+        },
+        {
+          "name": "catches wrong maths",
+          "code": "_good = apply_discount\ntry:\n    apply_discount = lambda price, percent: round(price * percent / 100, 2)\n    assert not _run_case(TestDiscount).wasSuccessful(), 'Your tests should fail if the discount is calculated wrongly.'\nfinally:\n    apply_discount = _good",
+          "message": "Catch a wrong calculation."
+        },
+        {
+          "name": "catches missing check",
+          "code": "_good = apply_discount\ntry:\n    apply_discount = lambda price, percent: round(price * (1 - percent / 100), 2)\n    assert not _run_case(TestDiscount).wasSuccessful(), 'Your tests should fail if a percent over 100 is accepted.'\nfinally:\n    apply_discount = _good",
+          "message": "Catch the missing ValueError."
+        }
+      ],
+      "hint": "One method uses `self.assertEqual(apply_discount(50, 20), 40)`; another uses `with self.assertRaises(ValueError):`.",
+      "explanation": "Good tests fail when the code is wrong. That's checked here by running your tests against two broken versions."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the assertion that checks a block of code raises an exception.",
+      "template": "import unittest\n\nclass TestParse(unittest.TestCase):\n    def test_bad_number(self):\n        with self.___(ValueError):\n            int(\"twelve\")",
+      "blanks": [
+        "assertRaises"
+      ],
+      "matchMode": "exact",
+      "hint": "assert + Raises.",
+      "explanation": "The test passes only if the code inside the `with` block raises that exception."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`is_leap(year)` is already defined. Write `TestLeap`, a `unittest.TestCase` whose tests cover all the leap-year rules: every 4th year is a leap year, except whole centuries, except every 400th year (so 2024 and 2000 are leap years; 2023 and 1900 aren't).",
+      "starterCode": "import unittest\n\nclass TestLeap(unittest.TestCase):\n    def test_2024(self):\n        self.assertTrue(is_leap(2024))\n",
+      "solution": "import unittest\n\nclass TestLeap(unittest.TestCase):\n    def test_every_fourth_year(self):\n        self.assertTrue(is_leap(2024))\n        self.assertFalse(is_leap(2023))\n\n    def test_centuries(self):\n        self.assertFalse(is_leap(1900))\n\n    def test_every_400_years(self):\n        self.assertTrue(is_leap(2000))",
+      "setupCode": "def is_leap(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\ndef _run_case(case):\n    import io, unittest\n    suite = unittest.defaultTestLoader.loadTestsFromTestCase(case)\n    return unittest.TextTestRunner(stream=io.StringIO(), verbosity=0).run(suite)\n",
+      "tests": [
+        {
+          "name": "passes",
+          "code": "assert _run_case(TestLeap).wasSuccessful(), 'Your tests should pass for the correct is_leap.'",
+          "message": "Tests pass on the correct code."
+        },
+        {
+          "name": "catches no century rule",
+          "code": "_good = is_leap\ntry:\n    is_leap = lambda y: y % 4 == 0\n    assert not _run_case(TestLeap).wasSuccessful(), 'Add a test that a century like 1900 is not a leap year.'\nfinally:\n    is_leap = _good",
+          "message": "Test a century year."
+        },
+        {
+          "name": "catches no 400 rule",
+          "code": "_good = is_leap\ntry:\n    is_leap = lambda y: y % 4 == 0 and y % 100 != 0\n    assert not _run_case(TestLeap).wasSuccessful(), 'Add a test that 2000 is a leap year.'\nfinally:\n    is_leap = _good",
+          "message": "Test a 400th year."
+        },
+        {
+          "name": "catches always true",
+          "code": "_good = is_leap\ntry:\n    is_leap = lambda y: True\n    assert not _run_case(TestLeap).wasSuccessful(), 'Add a test that an ordinary year like 2023 is not a leap year.'\nfinally:\n    is_leap = _good",
+          "message": "Test an ordinary year."
+        }
+      ],
+      "hint": "One test per rule: an ordinary year, a leap year, a century, a 400th year. Use `assertTrue` and `assertFalse`.",
+      "explanation": "Edge cases — like centuries — are where bugs hide, so they're what tests should cover."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import io, unittest\n\nclass T(unittest.TestCase):\n    def test_a(self):\n        self.assertEqual(2 + 2, 4)\n    def test_b(self):\n        self.assertEqual(\"a\".upper(), \"a\")\n    def test_c(self):\n        self.assertTrue([])\n\nsuite = unittest.defaultTestLoader.loadTestsFromTestCase(T)\nr = unittest.TextTestRunner(stream=io.StringIO()).run(suite)\nprint(r.testsRun, len(r.failures), r.wasSuccessful())",
+      "expectedOutput": "3 2 False",
+      "hint": "An empty list counts as false.",
+      "explanation": "`test_b` fails (`\"A\"` isn't `\"a\"`) and `test_c` fails (`[]` is falsy), so two of three fail."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `parse_amount(text)` that turns text like `\"12.50\"` or `\" 3 \"` into a float. For text that isn't a number, log a **warning** `Bad amount: '<text>'` on the logger `logging.getLogger(\"billing\")` and return `None`.",
+      "starterCode": "import logging\n\nlog = logging.getLogger(\"billing\")\n\ndef parse_amount(text):\n    return float(text)\n",
+      "solution": "import logging\n\nlog = logging.getLogger(\"billing\")\n\ndef parse_amount(text):\n    try:\n        return float(text)\n    except ValueError:\n        log.warning(\"Bad amount: %r\", text)\n        return None",
+      "setupCode": "import logging as _lg\n_lg.getLogger('billing').setLevel(_lg.NOTSET)\n_lg.getLogger('billing').handlers.clear()\ndef _captured(name, action):\n    \"\"\"Run action() and return (level, message) for each record the named logger lets through.\"\"\"\n    import logging\n    records = []\n    class _Keep(logging.Handler):\n        def emit(self, record):\n            records.append((record.levelname, record.getMessage()))\n    handler = _Keep()\n    logger = logging.getLogger(name)\n    logger.addHandler(handler)\n    try:\n        action()\n    finally:\n        logger.removeHandler(handler)\n    return records\n",
+      "tests": [
+        {
+          "name": "numbers",
+          "code": "assert parse_amount('12.50') == 12.5 and parse_amount(' 3 ') == 3.0, 'Turn number text into a float.'",
+          "message": "Parse numbers."
+        },
+        {
+          "name": "bad",
+          "code": "out = []\nassert _captured('billing', lambda: out.append(parse_amount('twelve'))) == [('WARNING', \"Bad amount: 'twelve'\")], \"Log the warning Bad amount: 'twelve'.\"\nassert out == [None], 'Return None for bad text.'",
+          "message": "Warn and return None."
+        }
+      ],
+      "hint": "Catch `ValueError` from `float(...)`. `%r` puts quotes around the text.",
+      "explanation": "Logging the bad input (instead of crashing or staying silent) makes problems easy to trace later."
+    }
+  ]
+}

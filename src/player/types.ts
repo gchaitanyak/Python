@@ -16,6 +16,7 @@ interface QuestionBase {
 export interface ExplainQuestion extends QuestionBase {
   type: 'explain';
   exampleCode?: string;
+  setupCode?: string;
 }
 
 export interface CodeQuestion extends QuestionBase {
@@ -46,6 +47,7 @@ export interface FillBlankQuestion extends QuestionBase {
   template: string;
   blanks: string[];
   matchMode?: 'tests' | 'exact';
+  setupCode?: string;
   tests?: Test[];
   hint: string;
 }

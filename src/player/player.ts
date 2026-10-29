@@ -499,7 +499,7 @@ export class Player {
     await this.withBusy(async () => {
       this.el.consoleWrap.hidden = false;
       if (this.pythonStatus === 'loading') this.el.console.textContent = 'Loading Python…';
-      const setup = q.type === 'write_code' || q.type === 'fix_code' ? q.setupCode : undefined;
+      const setup = 'setupCode' in q ? q.setupCode : undefined;
       const stdin = this.current.stdin?.trim() ? this.current.stdin : undefined;
       this.showConsole(await this.python.run(code, setup, stdin));
     });

@@ -1,0 +1,220 @@
+{
+  "id": "py-math-random",
+  "moduleId": "standard-library",
+  "title": "math, random and statistics",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Three small modules cover most everyday number work. `math` has rounding helpers, square roots, π and safe float comparison. `random` picks, shuffles and generates values — and with a **seed** it repeats the same values every time, which makes programs testable. `statistics` gives mean, median, mode and spread.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`random.Random(seed)` makes your own generator. Two generators with the same seed produce the same sequence.",
+      "exampleCode": "import math, random, statistics\n\nprint(math.sqrt(81), math.ceil(2.1), math.floor(2.9))   # 9.0 3 2\nprint(math.isclose(0.1 + 0.2, 0.3))                    # True\n\nrng = random.Random(7)\nprint(rng.randint(1, 6), rng.choice([\"red\", \"green\"]))\n\nprint(statistics.mean([3, 5, 10]), statistics.median([3, 5, 10]))  # 6 5",
+      "explanation": "Run the example twice: the random values stay the same, because of the seed."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import math\n\nprint(math.ceil(4.1), math.floor(-4.1), round(2.5))",
+      "expectedOutput": "5 -5 2",
+      "hint": "`floor` always goes *down*; `round` sends halves to the even number.",
+      "explanation": "`ceil` rounds up, `floor` rounds down (so −4.1 becomes −5), and `round(2.5)` is 2 because Python rounds halves to the nearest even number."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `boxes_needed(items, per_box)` that returns how many boxes you need to pack every item. A part-full box still counts.",
+      "starterCode": "def boxes_needed(items, per_box):\n    return items // per_box\n",
+      "solution": "import math\n\ndef boxes_needed(items, per_box):\n    return math.ceil(items / per_box)",
+      "tests": [
+        {
+          "name": "exact",
+          "code": "assert boxes_needed(12, 6) == 2, '12 items, 6 per box: 2 boxes.'",
+          "message": "Exact fit."
+        },
+        {
+          "name": "partial",
+          "code": "assert boxes_needed(13, 6) == 3 and boxes_needed(1, 6) == 1, 'Leftover items need one more box.'",
+          "message": "Partly full boxes count."
+        },
+        {
+          "name": "none",
+          "code": "assert boxes_needed(0, 6) == 0, 'No items need no boxes.'",
+          "message": "Zero items."
+        }
+      ],
+      "hint": "`//` rounds down. You need to round up.",
+      "explanation": "`math.ceil(items / per_box)` rounds up, so leftovers get a box of their own."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `distance(p, q)` that returns the straight-line distance between two points given as `(x, y)` tuples.",
+      "starterCode": "def distance(p, q):\n    pass\n",
+      "solution": "import math\n\ndef distance(p, q):\n    return math.hypot(q[0] - p[0], q[1] - p[1])",
+      "tests": [
+        {
+          "name": "3-4-5",
+          "code": "assert distance((0, 0), (3, 4)) == 5, 'From (0, 0) to (3, 4) is 5.'",
+          "message": "Classic 3-4-5 triangle."
+        },
+        {
+          "name": "float",
+          "code": "import math as _m\nassert _m.isclose(distance((1, 1), (2, 2)), 1.41421356, rel_tol=1e-6), 'From (1, 1) to (2, 2) is about 1.414.'",
+          "message": "Diagonal distance."
+        },
+        {
+          "name": "negative",
+          "code": "assert distance((-1, -1), (2, 3)) == 5, 'It should work with negative coordinates.'",
+          "message": "Negative coordinates."
+        }
+      ],
+      "hint": "Pythagoras: √(dx² + dy²). `math.hypot(dx, dy)` does it in one call.",
+      "explanation": "`math.hypot` is clearer and more accurate than squaring and adding by hand."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "`0.1 + 0.2 == 0.3` is `False`. What's the right way to compare floats?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Convert both to strings"
+        },
+        {
+          "id": "b",
+          "text": "`math.isclose(a, b)`"
+        },
+        {
+          "id": "c",
+          "text": "`round(a) == round(b)`"
+        },
+        {
+          "id": "d",
+          "text": "`int(a) == int(b)`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Floats are stored in binary and carry tiny errors.",
+      "explanation": "`math.isclose` allows a tiny tolerance. Rounding to whole numbers or comparing strings throws away real differences."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`roll_dice(n, seed)` should give the **same** rolls every time it gets the same seed, so tests can rely on it. It ignores the seed. Fix it.",
+      "starterCode": "import random\n\ndef roll_dice(n, seed):\n    return [random.randint(1, 6) for _ in range(n)]\n",
+      "solution": "import random\n\ndef roll_dice(n, seed):\n    rng = random.Random(seed)\n    return [rng.randint(1, 6) for _ in range(n)]\n",
+      "tests": [
+        {
+          "name": "shape",
+          "code": "r = roll_dice(20, 1)\nassert len(r) == 20 and all(1 <= x <= 6 for x in r), 'It should return n rolls from 1 to 6.'",
+          "message": "Return n dice rolls."
+        },
+        {
+          "name": "repeatable",
+          "code": "assert roll_dice(15, 42) == roll_dice(15, 42), 'The same seed should give the same rolls.'",
+          "message": "Same seed, same rolls."
+        },
+        {
+          "name": "seed matters",
+          "code": "assert roll_dice(15, 1) != roll_dice(15, 2), 'Different seeds should give different rolls.'",
+          "message": "Different seeds differ."
+        }
+      ],
+      "hint": "Make a generator from the seed: `random.Random(seed)`.",
+      "explanation": "A local `random.Random(seed)` is repeatable and doesn't disturb the shared generator other code uses."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "For `scores = [72, 85, 91, 85, 64, 99, 78]`, use `statistics` to set `avg` (the mean), `mid` (the median) and `most_common` (the mode).",
+      "starterCode": "import statistics\n\nscores = [72, 85, 91, 85, 64, 99, 78]\n",
+      "solution": "import statistics\n\nscores = [72, 85, 91, 85, 64, 99, 78]\navg = statistics.mean(scores)\nmid = statistics.median(scores)\nmost_common = statistics.mode(scores)",
+      "tests": [
+        {
+          "name": "mean",
+          "code": "assert avg == 82, 'avg should be the mean, 82.'",
+          "message": "avg is the mean."
+        },
+        {
+          "name": "median",
+          "code": "assert mid == 85, 'mid should be the median, 85.'",
+          "message": "mid is the median."
+        },
+        {
+          "name": "mode",
+          "code": "assert most_common == 85, 'most_common should be the mode, 85.'",
+          "message": "most_common is the mode."
+        }
+      ],
+      "hint": "`statistics.mean`, `statistics.median`, `statistics.mode`.",
+      "explanation": "The median is the middle value once sorted — less affected by one unusually high or low score than the mean."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the function that mixes a list into a random order, in place.",
+      "template": "import random\n\ndeck = list(range(1, 11))\nrandom.___(deck)",
+      "blanks": [
+        "shuffle"
+      ],
+      "matchMode": "exact",
+      "hint": "Like shuffling a deck of cards.",
+      "explanation": "`random.shuffle` changes the list itself and returns `None`, so don't write `deck = random.shuffle(deck)`."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Write `pick_winners(names, k, seed)` that returns `k` **different** names chosen at random, repeatable for the same seed. Don't change `names`.",
+      "starterCode": "def pick_winners(names, k, seed):\n    pass\n",
+      "solution": "import random\n\ndef pick_winners(names, k, seed):\n    return random.Random(seed).sample(names, k)",
+      "tests": [
+        {
+          "name": "winners",
+          "code": "people = ['Ana', 'Ben', 'Caro', 'Dev', 'Eli', 'Fay']\nw = pick_winners(people, 3, 5)\nassert len(w) == 3 and len(set(w)) == 3 and set(w) <= set(people), 'Pick 3 different names from the list.'",
+          "message": "Pick k different names."
+        },
+        {
+          "name": "repeatable",
+          "code": "people = ['Ana', 'Ben', 'Caro', 'Dev', 'Eli', 'Fay']\nassert pick_winners(people, 2, 9) == pick_winners(people, 2, 9), 'The same seed should pick the same winners.'",
+          "message": "Same seed, same winners."
+        },
+        {
+          "name": "unchanged",
+          "code": "people = ['Ana', 'Ben', 'Caro', 'Dev']\npick_winners(people, 2, 1)\nassert people == ['Ana', 'Ben', 'Caro', 'Dev'], 'names should not be changed.'",
+          "message": "Leave names alone."
+        }
+      ],
+      "hint": "`sample(list, k)` picks k different items without changing the list.",
+      "explanation": "`sample` never picks the same item twice; `choice` in a loop could."
+    },
+    {
+      "id": "q10",
+      "type": "multiple_choice",
+      "prompt": "You need to generate a password-reset code. Which module should you use?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`random`"
+        },
+        {
+          "id": "b",
+          "text": "`secrets`"
+        },
+        {
+          "id": "c",
+          "text": "`math`"
+        },
+        {
+          "id": "d",
+          "text": "`statistics`"
+        }
+      ],
+      "answer": "b",
+      "hint": "`random` is predictable by design.",
+      "explanation": "`random` is fine for games and simulations, but someone could predict its output. `secrets` is made for security tokens."
+    }
+  ]
+}

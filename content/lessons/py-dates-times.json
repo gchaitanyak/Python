@@ -1,0 +1,184 @@
+{
+  "id": "py-dates-times",
+  "moduleId": "standard-library",
+  "title": "Dates and Times",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "The `datetime` module has `date` (a calendar day), `datetime` (a day plus a time) and `timedelta` (a length of time). Subtract two dates to get a `timedelta`; add a `timedelta` to move forward or back. `strftime` turns a date into text and `datetime.strptime` reads text back into a date. These exercises use fixed dates, because `datetime.now()` changes every time you run it.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Format codes start with `%`: `%Y` year, `%m` month number, `%d` day, `%H:%M` hours and minutes, `%A` weekday name, `%b` short month name.",
+      "exampleCode": "from datetime import date, datetime, timedelta\n\nrelease = date(2025, 9, 1)\nprint(release.strftime(\"%A %d %b %Y\"))   # Monday 01 Sep 2025\nprint(release + timedelta(weeks=2))       # 2025-09-15\n\nkickoff = datetime.strptime(\"2025-09-01 14:30\", \"%Y-%m-%d %H:%M\")\nprint(kickoff.hour, kickoff.minute)       # 14 30",
+      "explanation": "`strftime` = string **f**rom time; `strptime` = string **p**arsed to time."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create `launch` as the date 14 March 2025, and set `weekday_name` to its weekday name (like `\"Monday\"`) using `strftime`.",
+      "starterCode": "from datetime import date\n",
+      "solution": "from datetime import date\n\nlaunch = date(2025, 3, 14)\nweekday_name = launch.strftime(\"%A\")",
+      "tests": [
+        {
+          "name": "date",
+          "code": "from datetime import date as _d\nassert launch == _d(2025, 3, 14), 'launch should be date(2025, 3, 14).'",
+          "message": "launch should be 14 March 2025."
+        },
+        {
+          "name": "weekday",
+          "code": "assert weekday_name == 'Friday', 'weekday_name should be the full weekday name of launch.'",
+          "message": "Use %A for the weekday name."
+        }
+      ],
+      "hint": "`date(year, month, day)`, then `.strftime(\"%A\")`.",
+      "explanation": "`%A` gives the full weekday name; `%a` gives the short one, like `Fri`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "2024 is a leap year. What does this print?",
+      "code": "from datetime import date, timedelta\n\nprint(date(2024, 2, 28) + timedelta(days=2))",
+      "expectedOutput": "2024-03-01",
+      "hint": "February 2024 has 29 days.",
+      "explanation": "28 Feb + 2 days skips over 29 Feb and lands on 1 March. `timedelta` handles month lengths and leap years for you."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `days_until(deadline, today)` that returns how many days are left until `deadline`, as a whole number (negative if it has passed).",
+      "starterCode": "def days_until(deadline, today):\n    pass\n",
+      "solution": "def days_until(deadline, today):\n    return (deadline - today).days",
+      "tests": [
+        {
+          "name": "future",
+          "code": "from datetime import date as _d\nassert days_until(_d(2025, 12, 25), _d(2025, 12, 1)) == 24, 'From 1 to 25 December is 24 days.'",
+          "message": "Count days ahead."
+        },
+        {
+          "name": "past",
+          "code": "from datetime import date as _d\nassert days_until(_d(2025, 1, 1), _d(2025, 1, 11)) == -10, 'A passed deadline gives a negative number.'",
+          "message": "Passed deadlines are negative."
+        },
+        {
+          "name": "across years",
+          "code": "from datetime import date as _d\nassert days_until(_d(2026, 1, 2), _d(2025, 12, 30)) == 3, 'It should work across a new year.'",
+          "message": "Work across years."
+        }
+      ],
+      "hint": "Subtracting two dates gives a `timedelta`; it has a `.days` attribute.",
+      "explanation": "`deadline - today` is a `timedelta`, and `.days` is its length in whole days."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which format string turns `datetime(2025, 7, 4, 9, 5)` into `04/07/2025 09:05`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "\"%m/%d/%Y %H:%M\""
+        },
+        {
+          "id": "b",
+          "text": "\"%d/%m/%Y %H:%M\""
+        },
+        {
+          "id": "c",
+          "text": "\"%d/%m/%y %h:%m\""
+        },
+        {
+          "id": "d",
+          "text": "\"%D/%M/%Y %H:%M\""
+        }
+      ],
+      "answer": "b",
+      "hint": "Day comes first here, and the year has four digits.",
+      "explanation": "`%d/%m/%Y` is day/month/four-digit year. `%M` (capital) is *minutes*, not months, and `%y` is a two-digit year."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "The meeting is on **3 November 2025 at 18:30**, but `meeting` comes out as 11 March. Fix the format string.",
+      "starterCode": "from datetime import datetime\n\nmeeting = datetime.strptime(\"2025-11-03 18:30\", \"%Y-%d-%m %H:%M\")\n",
+      "solution": "from datetime import datetime\n\nmeeting = datetime.strptime(\"2025-11-03 18:30\", \"%Y-%m-%d %H:%M\")\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from datetime import datetime as _dt\nassert meeting == _dt(2025, 11, 3, 18, 30), 'meeting should be 3 November 2025, 18:30.'",
+          "message": "meeting should be 3 November 2025 at 18:30."
+        }
+      ],
+      "hint": "Look at the order of the parts in the text: year, then month, then day.",
+      "explanation": "The format string must follow the text's order exactly. Swapping `%d` and `%m` reads the day as the month."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method that turns a `timedelta` into a number of seconds, so `minutes` is the length of the workshop.",
+      "template": "from datetime import datetime\n\nstart = datetime(2025, 5, 1, 9, 15)\nend = datetime(2025, 5, 1, 11, 45)\nminutes = (end - start).___() / 60",
+      "blanks": [
+        "total_seconds"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert minutes == 150, 'The workshop lasts 150 minutes.'",
+          "message": "minutes should be 150."
+        }
+      ],
+      "hint": "It's the **total** number of **seconds**.",
+      "explanation": "`total_seconds()` counts the whole duration. (`.seconds` alone ignores whole days — a common trap.)"
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `age(birthday, on)` that returns how old someone born on `birthday` is on the date `on`, in whole years.",
+      "starterCode": "def age(birthday, on):\n    pass\n",
+      "solution": "def age(birthday, on):\n    had_birthday = (on.month, on.day) >= (birthday.month, birthday.day)\n    return on.year - birthday.year - (0 if had_birthday else 1)",
+      "tests": [
+        {
+          "name": "before birthday",
+          "code": "from datetime import date as _d\nassert age(_d(2000, 6, 15), _d(2025, 6, 14)) == 24, 'The day before the birthday they are still 24.'",
+          "message": "Before the birthday."
+        },
+        {
+          "name": "on birthday",
+          "code": "from datetime import date as _d\nassert age(_d(2000, 6, 15), _d(2025, 6, 15)) == 25, 'On the birthday they turn 25.'",
+          "message": "On the birthday."
+        },
+        {
+          "name": "leap day",
+          "code": "from datetime import date as _d\nassert age(_d(2004, 2, 29), _d(2025, 2, 28)) == 20 and age(_d(2004, 2, 29), _d(2025, 3, 1)) == 21, 'Someone born on 29 February turns 21 on 1 March 2025.'",
+          "message": "Handle a 29 February birthday."
+        }
+      ],
+      "hint": "Subtract the years, then take one away if this year's birthday hasn't happened yet. Comparing `(month, day)` tuples does that check.",
+      "explanation": "Dividing the days by 365 goes wrong around leap years; comparing month and day is exact."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "A datetime can carry a time zone. What does this print?",
+      "code": "from datetime import datetime, timezone, timedelta\n\nutc = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)\nprint(utc.astimezone(timezone(timedelta(hours=-5))).isoformat())",
+      "expectedOutput": "2025-01-01T07:00:00-05:00",
+      "hint": "Five hours behind UTC.",
+      "explanation": "`astimezone` shows the same moment in another zone. `isoformat()` writes the offset at the end, so the text can't be misread."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A course meets every 7 days starting on Monday 6 January 2025. Build `sessions`, a list of the first four dates formatted like `Mon 06 Jan`.",
+      "starterCode": "from datetime import date, timedelta\n\nsessions = []\n",
+      "solution": "from datetime import date, timedelta\n\nfirst = date(2025, 1, 6)\nsessions = [(first + timedelta(days=7 * i)).strftime(\"%a %d %b\") for i in range(4)]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert sessions == ['Mon 06 Jan', 'Mon 13 Jan', 'Mon 20 Jan', 'Mon 27 Jan'], 'sessions should be four weekly dates like Mon 06 Jan.'",
+          "message": "Four weekly dates."
+        }
+      ],
+      "hint": "Add `timedelta(days=7 * i)` for `i` in `range(4)` and format with `%a %d %b`.",
+      "explanation": "Building dates by adding `timedelta`s avoids working out month ends yourself."
+    }
+  ]
+}

@@ -1940,7 +1940,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create and format datetimes",
             "Do date arithmetic"
@@ -1971,7 +1971,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use math functions",
             "Generate random values reproducibly"
@@ -2002,7 +2002,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Search and extract with re",
             "Use groups"
@@ -2037,7 +2037,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Call an HTTP API",
             "Parse a JSON response"
@@ -2064,7 +2064,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Log instead of print",
             "Write unit tests"
@@ -2087,7 +2087,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine dates, regex and files"
           ],

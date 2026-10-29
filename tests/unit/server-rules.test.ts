@@ -105,6 +105,9 @@ describe('usernames', () => {
 describe('sanitiseMerge', () => {
   const now = Date.parse('2026-10-29T12:00:00Z');
   it('keeps completed free lessons only, once each, with clamped values', () => {
+    // py-try-except stands in for a free lesson that isn't written yet.
+    const draft = structuredClone(curriculum);
+    for (const m of draft.modules) for (const l of m.lessons) if (l.id === 'py-try-except') l.status = 'to-write';
     const out = sanitiseMerge(
       [
         { lessonId: 'py-variables', completed: true, bestAccuracy: 140, lastPractisedAt: '2026-10-28T10:00:00Z' },
@@ -115,7 +118,7 @@ describe('sanitiseMerge', () => {
         { lessonId: 'py-intro-first-program', completed: true, bestAccuracy: 'x', lastPractisedAt: '2099-01-01' },
         'junk',
       ],
-      curriculum,
+      draft,
       now,
     );
     expect(out).toEqual([

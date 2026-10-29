@@ -39,6 +39,10 @@ All questions have `id`, `type`, `prompt` (markdown), optional `points` (overrid
 - Messages are public: describe *what* is wrong, never reveal hidden inputs or the full answer.
 - Every gradable question needs at least one test that the `starterCode` fails and the `solution` passes (checked by `content/tools/validate.py`).
 
+## Setup code
+
+`write_code`, `fix_code`, `fill_blank` and `explain` questions may have `setupCode`: Python that runs, unseen, before the learner's code on both **Run** and **Check** (and before `exampleCode`). Use it to create files, define helpers that tests call, or install a stand-in module — `py-http-requests` installs a practice `requests` that answers for `https://api.example.com`, because code in the browser can't reach the internet. Name helpers with a leading underscore so they don't clash with learner names.
+
 ## Questions that read input
 
 `input()` reads lines from a string. For **Check**, a question's `setupCode` sets `__input__` to the lines the tests type, one per `input()` call:
