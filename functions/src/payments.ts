@@ -82,12 +82,14 @@ async function applySubscription(subscriptionId: string, hintUid?: string): Prom
     // Deleted accounts stay deleted; lifetime access is never downgraded.
     if (!snap.exists || keepsLifetime(snap.data())) return;
     const user = snap.data();
+    // A group seat (SPEC §5.7) keeps premium once the learner's own subscription ends.
+    const seat = update.entitlement === 'free' && typeof user?.groupPremium === 'string';
     tx.set(
       userRef(uid),
       {
-        entitlement: update.entitlement,
-        entitlementSource: 'stripe',
-        premiumUntil: update.premiumUntilMs == null ? null : Timestamp.fromMillis(update.premiumUntilMs),
+        entitlement: seat ? 'premium' : update.entitlement,
+        entitlementSource: seat ? 'group' : 'stripe',
+        premiumUntil: seat || update.premiumUntilMs == null ? null : Timestamp.fromMillis(update.premiumUntilMs),
         stripeCustomerId: customerId(sub.customer),
         stripeSubscriptionId: sub.id,
         subscriptionStatus: update.subscriptionStatus,

@@ -23,6 +23,8 @@ export interface Profile {
   cancelAtPeriodEnd?: boolean;
   paymentIssue?: boolean;
   certificateId?: string;
+  /** Groups the user belongs to or runs (SPEC §5.7). */
+  groups: Record<string, { name: string; role: 'admin' | 'member' }>;
 }
 
 export interface Session {
@@ -77,6 +79,7 @@ export async function loadProfile(uid: string): Promise<Profile | undefined> {
     cancelAtPeriodEnd: !!data.cancelAtPeriodEnd,
     paymentIssue: !!data.paymentIssue,
     certificateId: typeof data.certificateId === 'string' ? data.certificateId : undefined,
+    groups: data.groups && typeof data.groups === 'object' ? data.groups : {},
   };
 }
 

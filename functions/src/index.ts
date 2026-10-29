@@ -8,6 +8,7 @@ export { buildDailyChallenge, getDailyChallenge, submitChallenge } from './daily
 export { completeLesson } from './completeLesson';
 export { deleteAccount } from './deleteAccount';
 export { getHint } from './getHint';
+export { addGroupAdmin, createGroup, exportGroupCsv, groupForInvite, groupReport, joinGroup, leaveGroup, regenerateInvite, removeMember } from './groups';
 export { mergeAnonymousProgress } from './mergeAnonymousProgress';
 export { createCheckoutSession, createPortalSession, stripeWebhook } from './payments';
 export { submitAnswer } from './submitAnswer';

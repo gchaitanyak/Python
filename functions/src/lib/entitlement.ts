@@ -68,3 +68,26 @@ export const keepsLifetime = (user: { entitlementSource?: string } | undefined):
 export function safeOrigin(origin: unknown, allowed: string[]): string {
   return typeof origin === 'string' && allowed.includes(origin) ? origin : allowed[0]!;
 }
+
+/* ---------- group seats (SPEC §5.7, §6) ---------- */
+
+export interface GroupUser {
+  entitlement?: string;
+  entitlementSource?: string;
+  premiumUntilMs?: number | null;
+  groupPremium?: string | null;
+}
+
+/** Profile changes when a member takes a premium seat in group `gid`. Someone already premium keeps their source. */
+export function grantGroupSeat(user: GroupUser, gid: string, nowMs: number): Record<string, unknown> {
+  const premium = user.entitlement === 'premium' && (user.premiumUntilMs == null || user.premiumUntilMs > nowMs);
+  if (premium && user.entitlementSource !== 'group') return { groupPremium: gid };
+  return { groupPremium: gid, entitlement: 'premium', entitlementSource: 'group', premiumUntilMs: null };
+}
+
+/** Profile changes when a member loses group `gid`'s seat (left, removed, or seats reduced). */
+export function revokeGroupSeat(user: GroupUser, gid: string, nowMs: number): Record<string, unknown> | null {
+  if (user.groupPremium !== gid) return null;
+  if (user.entitlementSource !== 'group') return { groupPremium: null };
+  return { groupPremium: null, entitlement: 'free', entitlementSource: null, premiumUntilMs: nowMs };
+}

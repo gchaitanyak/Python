@@ -1,3 +1,4 @@
+import { escapeHtml } from '../../components/html';
 import { loginUrl } from '../../lib/page';
 import '../../styles/forms.css';
 import {
@@ -57,6 +58,7 @@ function fill(session: Session): void {
   $('[data-email]').textContent = session.user.email ?? '';
   fillPlan(p);
   $('[data-keep-cert]').hidden = !p?.certificateId;
+  fillGroups(p);
   $('[data-points]').textContent = String(p?.totalPoints ?? 0);
   $('[data-verify]').hidden = session.user.emailVerified;
   $<HTMLInputElement>('#acc-first').value = p?.firstName ?? '';
@@ -138,3 +140,29 @@ void (async () => {
     });
   });
 })();
+
+/** Groups the learner belongs to (SPEC §5.7), each with Leave; admins get a link to the portal. */
+function fillGroups(p: Profile | undefined): void {
+  const groups = Object.entries(p?.groups ?? {});
+  $('[data-groups-section]').hidden = groups.length === 0;
+  $('[data-groups]').innerHTML = groups
+    .map(([id, g]) =>
+      g.role === 'admin'
+        ? `<li><strong>${escapeHtml(g.name)}</strong> — you’re an admin. <a href="/admin/">Open the admin portal</a></li>`
+        : `<li><strong>${escapeHtml(g.name)}</strong> <button class="btn btn--ghost btn--sm" type="button" data-leave="${id}">Leave</button></li>`,
+    )
+    .join('');
+}
+
+document.addEventListener('click', (e) => {
+  const button = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-leave]');
+  if (!button || !confirm('Leave this group? Its admins will no longer see your progress.')) return;
+  button.disabled = true;
+  void call('leaveGroup', { groupId: button.dataset.leave }).then(
+    () => location.reload(),
+    (err) => {
+      button.disabled = false;
+      show('error', errorMessage(err));
+    },
+  );
+});

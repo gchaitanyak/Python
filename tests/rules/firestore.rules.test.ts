@@ -83,6 +83,7 @@ describe('users/{uid}', () => {
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { entitlementSource: 'lifetime' }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { stripeCustomerId: 'cus_someone_else' }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { certificateId: 'ABCDEFGHJK' }));
+    await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { groupPremium: 'g1', groups: { g1: { name: 'x', role: 'admin' } } }));
     await assertFails(updateDoc(doc(db('alice'), 'users/alice'), { cancelAtPeriodEnd: false, subscriptionStatus: 'active' }));
     await assertFails(updateDoc(doc(db('pat'), 'users/alice'), { firstName: 'Hacked' }));
     await assertFails(deleteDoc(doc(db('alice'), 'users/alice')));
@@ -227,6 +228,13 @@ describe('hintLogs', () => {
     await assertFails(updateDoc(doc(db('alice'), 'hintLogs/h1'), { lessonId: 'other' }));
     await assertFails(updateDoc(doc(db('pat'), 'hintLogs/h1'), { helpful: false }));
     await assertFails(setDoc(doc(db('alice'), 'hintLogs/h2'), { uid: 'alice' }));
+  });
+});
+
+describe('inviteCodes', () => {
+  it('is never readable or writable by clients', async () => {
+    await assertFails(getDoc(doc(db('alice'), 'inviteCodes/ABCDEFGH')));
+    await assertFails(setDoc(doc(db('alice'), 'inviteCodes/ABCDEFGH'), { groupId: 'g1' }));
   });
 });
 

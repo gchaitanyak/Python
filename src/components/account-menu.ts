@@ -24,7 +24,9 @@ function render(slot: HTMLElement, session: Session): void {
   </button>
   <ul class="account-menu__list" id="account-menu-list" hidden>
     <li><a href="/learn/">Dashboard</a></li>
-    <li><a href="/account/">Account</a></li>
+    <li><a href="/account/">Account</a></li>${
+      Object.values(session.profile?.groups ?? {}).some((g) => g.role === 'admin') ? '\n    <li><a href="/admin/">Admin</a></li>' : ''
+    }
     <li><button type="button" data-signout>Log out</button></li>
   </ul>
 </div>`;

@@ -1,12 +1,14 @@
 import { logger } from 'firebase-functions/v2';
 import { onCall } from 'firebase-functions/v2/https';
 import { FieldPath } from 'firebase-admin/firestore';
+import { removeUserFromGroups } from './groups';
 import { auth, db, requireUid, userRef } from './lib/admin';
 import { stripe, STRIPE_SECRET_KEY } from './lib/stripe';
 
 /**
  * Deletes the caller's account (SPEC §8): profile, progress and attempts are
- * removed (with AI hint logs), the username is released, and leaderboard rows are anonymised.
+ * removed (with AI hint logs), the username is released, leaderboard rows are anonymised,
+ * and the learner leaves their groups (a group left with no admin is closed).
  * Any active subscription is cancelled so a deleted account is never billed again.
  * A certificate stays verifiable only if the learner asks (`keepCertificate`);
  * it is then detached from the account, otherwise it is deleted.
@@ -21,6 +23,7 @@ export const deleteAccount = onCall({ secrets: [STRIPE_SECRET_KEY] }, async (req
       .subscriptions.cancel(user.stripeSubscriptionId)
       .catch((err: Error) => logger.error('Could not cancel subscription on account deletion', { uid, error: err.message }));
   }
+  await removeUserFromGroups(uid, user?.groups as Record<string, unknown> | undefined, Date.now());
   const batch = db.batch();
   for (const day of (user?.scoreDays as string[] | undefined) ?? []) {
     batch.set(db.doc(`dailyScores/${day}/users/${uid}`), { username: 'former learner' }, { merge: true });
