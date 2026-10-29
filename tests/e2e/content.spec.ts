@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { sortedLessons, sortedModules } from '../../src/lib/curriculum';
 import { openLesson, playLesson, readCurriculum, readLesson } from './helpers';
 
-// Every written lesson in modules 4–8 is played through the real player UI with its
+// Every written lesson in modules 4–12 is played through the real player UI with its
 // reference answers (the validator checks the harness; this checks the browser).
 const curriculum = readCurriculum();
 
@@ -11,7 +11,7 @@ test.beforeEach(({}, info) => {
   test.skip(info.project.name !== 'desktop', 'played once, on desktop');
 });
 
-for (const module of sortedModules(curriculum).slice(3, 8)) {
+for (const module of sortedModules(curriculum).slice(3, 12)) {
   const lessons = sortedLessons(module).filter((l) => l.status === 'written');
   lessons.forEach((entry, i) => {
     test(`module ${module.order}: ${entry.id} plays with full marks`, async ({ page }) => {

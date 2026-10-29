@@ -82,3 +82,29 @@ Choices made where the spec was open. Newest last.
 10. **Streak activity is shared** (`recordActivity`) by `completeLesson` and `submitChallenge`. `awardPoints` is shared by `submitAnswer` and `claimShareBonus`.
 11. **Content:** 31 lessons for modules 4–8 (47 written in total). They follow curriculum order — strings before control flow, data structures before functions, so module 6 works on data in variables. The `collections` lesson introduces `from … import` itself. The pip/venv lesson teaches the commands conceptually (Pyodide can't run pip) and practises parsing requirement lines and comparing versions in code. `tests/e2e/content.spec.ts` plays every module 4–8 lesson in the real player.
 12. **The player's markup is a shared component** (`src/components/player-shell.ts`), inserted at build time, so `/practice/` and `/daily/` share one player.
+
+## Phase 6 — Payments and premium
+
+1. **A local fake Stripe stands in for Stripe in dev and tests.** This build environment can't reach `api.stripe.com` or run the Stripe CLI, so `scripts/fake-stripe.ts` serves the few API calls we use (customers, Checkout and portal sessions, retrieving and cancelling subscriptions) plus simple Checkout and portal pages. It sends webhooks signed with the real `Stripe.webhooks` signing scheme, so `stripeWebhook` checks signatures exactly as it will in production. The Functions only talk to it when the `STRIPE_API_BASE` param is set. `scripts/emulator-env.mjs` writes it, with fake keys, into `functions/.env.local` and `functions/.secret.local` (both git-ignored). Checking against real Stripe test mode with the Stripe CLI is still to do — see `docs/STRIPE.md`.
+2. **Entitlement rules** (`functions/src/lib/entitlement.ts`, unit-tested):
+   - `active`, `trialing` and `past_due` subscriptions are premium.
+   - A renewing subscription runs to the end of its period plus 3 days' grace, so a late renewal webhook doesn't lock anyone out.
+   - Cancel-at-period-end stays premium until exactly the period end.
+   - Any other status is free, from now.
+   - The period end is read from the subscription item (where API version 2026-09-30 puts it).
+3. **Lifetime is a one-off Checkout payment** (`mode: payment`). It sets `entitlementSource: lifetime` and `premiumUntil: null`, and later subscription events never downgrade it.
+4. **The webhook is idempotent and trusts Stripe, not the event body.**
+   - Each event id is recorded once in `stripeEvents/{id}`; on failure the marker is removed so Stripe's retry runs again.
+   - Subscription events re-fetch the subscription, so events arriving out of order can't apply stale state.
+   - Events for deleted users are ignored, so they can't recreate the user's document.
+5. **Payment problems are shown, not enforced early.** `invoice.payment_failed` sets `paymentIssue: true` (the account page shows a banner linking to the portal); `invoice.paid` clears it. Access follows the subscription status.
+6. **Premium lesson bodies live only in Firestore** (`lessonContent/{id}`, readable only while `premiumUntil` is null for lifetime or in the future). The static build emits free lessons only (`build-content.ts --emit-free`). `--upload-premium` writes the rest with the Admin SDK: `npm run deploy` runs it after deploying, and `scripts/dev-services.ts` runs it against the emulator.
+7. **Prices shown on /pricing/ are config** (`VITE_PRICE_*_LABEL`, defaults $12 / $79 / $199), filled in at build time. The amount charged comes from the Stripe Price ids in the Functions params, so labels and prices must be kept in step (STRIPE.md checklist).
+8. **Deleting an account cancels its subscription first**, so nobody is billed for an account that no longer exists.
+9. **Signed-out visitors who pick a plan are sent to register**, with `next=/pricing/`. Pricing buttons work even when clicked before the session has loaded.
+10. **`setupCode` is allowed on `explain` and `fill_blank` questions too.** `py-http-requests` needs it: browser code can't reach the internet, so a practice `requests` module (installed into `sys.modules` by `setupCode`) answers for `https://api.example.com`. It records each call so tests can check that a timeout was passed.
+11. **Content:** modules 9–12 add 22 lessons, for 69 in total.
+    - File lessons clean up their files in `setupCode`, because the in-browser filesystem keeps files between runs.
+    - Logging questions check log records with a temporary handler.
+    - Unit-test questions run the learner's `TestCase` against the correct function and against broken versions, so tests that would pass anything don't count.
+    - `tests/e2e/content.spec.ts` now plays every lesson in modules 4–12.
