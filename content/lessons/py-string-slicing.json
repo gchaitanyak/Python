@@ -1,0 +1,188 @@
+{
+  "id": "py-string-slicing",
+  "moduleId": "strings",
+  "title": "Slicing Strings",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **slice** takes a piece of a string: `text[start:stop]` gives the characters from `start` up to, but **not including**, `stop`. Leave out `start` to begin at the start, or `stop` to run to the end. A third number, `step`, skips characters.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Slices never crash, even if the numbers run past the end. A step of `-1` walks backwards, which reverses the text.",
+      "exampleCode": "code = \"PY-2026-XL\"\nprint(code[0:2])\nprint(code[3:7])\nprint(code[-2:])\nprint(code[::2])\nprint(code[::-1])",
+      "explanation": "`code[3:7]` is indexes 3, 4, 5 and 6 — four characters. `stop` is never included."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`date_text` holds a date like `2026-10-29`. Slice it into `year` (first 4 characters), `month` (the 2 after the first dash) and `day` (the last 2).",
+      "starterCode": "year = \nmonth = \nday = \n",
+      "solution": "year = date_text[0:4]\nmonth = date_text[5:7]\nday = date_text[-2:]",
+      "setupCode": "date_text = \"2031-04-07\"",
+      "tests": [
+        {
+          "name": "year",
+          "code": "assert year == date_text[:4], 'year should be the first 4 characters.'",
+          "message": "Check year."
+        },
+        {
+          "name": "month",
+          "code": "assert month == date_text[5:7], 'month should be the 2 characters after the first dash (indexes 5 and 6).'",
+          "message": "Check month."
+        },
+        {
+          "name": "day",
+          "code": "assert day == date_text[-2:], 'day should be the last 2 characters.'",
+          "message": "Check day."
+        }
+      ],
+      "hint": "Count the positions: the first dash is at index 4.",
+      "explanation": "Fixed-format text like dates and codes is a perfect fit for slicing."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "word = \"notebook\"\nprint(word[4:])",
+      "expectedOutput": "book",
+      "hint": "Start at index 4 and run to the end.",
+      "explanation": "Indexes 0–3 are `note`; from 4 onwards is `book`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`word` holds a word. Store it reversed in `backwards`.",
+      "starterCode": "backwards = \n",
+      "solution": "backwards = word[::-1]",
+      "setupCode": "word = \"stressed\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert backwards == word[::-1], 'backwards should be word reversed.'",
+          "message": "backwards should be the word reversed."
+        }
+      ],
+      "hint": "A step of `-1` walks from the end to the start.",
+      "explanation": "`[::-1]` is the usual way to reverse a string in Python."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is `\"python\"[1:4]`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"pyt\"`"
+        },
+        {
+          "id": "b",
+          "text": "`\"yth\"`"
+        },
+        {
+          "id": "c",
+          "text": "`\"ytho\"`"
+        },
+        {
+          "id": "d",
+          "text": "`\"ython\"`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Start at index 1, stop *before* index 4.",
+      "explanation": "Indexes 1, 2 and 3 are `y`, `t` and `h`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`area_code` should be the first 3 digits of `phone` (`020`), but it comes out as `207`. Fix the slice.",
+      "starterCode": "phone = \"02079460000\"\narea_code = phone[1:4]\n",
+      "solution": "phone = \"02079460000\"\narea_code = phone[0:3]\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert area_code == '020', 'area_code should be the first 3 characters: 020.'",
+          "message": "area_code should be 020."
+        }
+      ],
+      "hint": "The first character is at index 0.",
+      "explanation": "Off-by-one mistakes are common with slices. `phone[:3]` also works."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "The message is hidden in every other letter of `secret`. Fill in the slice so `message` is `python`.",
+      "template": "secret = \"pzyqtrhsoun\"\nmessage = secret[___]",
+      "blanks": [
+        "::2"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert message == 'python', 'message should be python.'",
+          "message": "message should be python."
+        }
+      ],
+      "hint": "Take every second character, starting from the first.",
+      "explanation": "A step of 2 keeps indexes 0, 2, 4…"
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`card` holds a card number as text. Store its last 4 digits in `last_four`, and in `masked` a string of `*` for every other digit followed by those 4 — so a 16-digit card becomes `************4444`.",
+      "starterCode": "last_four = \nmasked = \n",
+      "solution": "last_four = card[-4:]\nmasked = \"*\" * (len(card) - 4) + last_four",
+      "setupCode": "card = \"378282246310005\"",
+      "tests": [
+        {
+          "name": "last",
+          "code": "assert last_four == card[-4:], 'last_four should be the last 4 characters.'",
+          "message": "Check last_four."
+        },
+        {
+          "name": "masked",
+          "code": "assert masked == '*' * (len(card) - 4) + card[-4:], 'masked should hide every digit except the last 4 with *.'",
+          "message": "Check masked."
+        },
+        {
+          "name": "length",
+          "code": "assert len(masked) == len(card), 'masked should be as long as card.'",
+          "message": "masked should be as long as card."
+        }
+      ],
+      "hint": "How many stars? The length minus 4.",
+      "explanation": "Using `len(card)` makes it work for cards of any length."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "Slices don't crash when they run past the end. What does this print?",
+      "code": "print(\"abc\"[5:9] == \"\")",
+      "expectedOutput": "True",
+      "hint": "What's left when you start after the last character?",
+      "explanation": "The slice is simply empty — no *IndexError*, unlike `\"abc\"[5]`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A **palindrome** reads the same backwards, like `level`. Store in `is_palindrome` whether `word` is one — a single comparison is enough.",
+      "starterCode": "is_palindrome = \n",
+      "solution": "is_palindrome = word == word[::-1]",
+      "setupCode": "word = \"router\"",
+      "tests": [
+        {
+          "name": "bool",
+          "code": "assert isinstance(is_palindrome, bool), 'Store the comparison itself (True or False).'",
+          "message": "is_palindrome should be a boolean."
+        },
+        {
+          "name": "value",
+          "code": "assert is_palindrome == (word == word[::-1]), 'Compare word with itself reversed.'",
+          "message": "Check the comparison."
+        }
+      ],
+      "hint": "Compare the word with its reverse using `==`.",
+      "explanation": "A slice plus a comparison answers the question in one line."
+    }
+  ]
+}

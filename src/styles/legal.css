@@ -1,0 +1,13 @@
+.legal {
+  max-width: 46rem;
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.legal h2 {
+  margin-top: var(--space-8);
+}
+
+.legal li,
+.legal p {
+  line-height: 1.65;
+}

@@ -1,0 +1,172 @@
+{
+  "id": "py-paths-folders",
+  "moduleId": "files-data",
+  "title": "Paths and Folders",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "The `pathlib` module treats paths as objects. `Path(\"data\") / \"sales.csv\"` joins parts with the right separator. A path knows its `.name`, `.stem` (name without extension), `.suffix` (extension) and `.parent` folder. Paths can also make folders, list files and read or write text.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`mkdir(parents=True, exist_ok=True)` creates every missing folder and doesn't complain if it exists. `glob(\"*.csv\")` finds matching files.",
+      "exampleCode": "from pathlib import Path\np = Path(\"reports\") / \"2026\" / \"march.csv\"\nprint(p, p.name, p.stem, p.suffix, p.parent)\nfolder = Path(\"demo_dir\")\nfolder.mkdir(exist_ok=True)\n(folder / \"a.txt\").write_text(\"hi\")\nprint(sorted(f.name for f in folder.iterdir()))",
+      "explanation": "`write_text` and `read_text` open and close the file for you."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Build `path` for `data/sales/q1.csv` with `Path` and `/`. Store its file name in `name` and its extension in `ext`.",
+      "starterCode": "from pathlib import Path\n",
+      "solution": "from pathlib import Path\npath = Path(\"data\") / \"sales\" / \"q1.csv\"\nname = path.name\next = path.suffix",
+      "tests": [
+        {
+          "name": "path",
+          "code": "from pathlib import Path as _P\nassert path == _P('data/sales/q1.csv'), 'path should be data/sales/q1.csv.'",
+          "message": "Build the path with /."
+        },
+        {
+          "name": "parts",
+          "code": "assert (name, ext) == ('q1.csv', '.csv'), 'name should be q1.csv and ext .csv.'",
+          "message": "Check name and ext."
+        }
+      ],
+      "hint": "Start with `Path(\"data\")`, then `/` each part.",
+      "explanation": "Using `/` avoids getting separators wrong on Windows or Mac."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from pathlib import Path\nprint(Path(\"photos/cat.jpeg\").stem)",
+      "expectedOutput": "cat",
+      "hint": "`stem` is the name without its extension.",
+      "explanation": "`.name` would be `cat.jpeg`; `.suffix` would be `.jpeg`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Create the folder `projects/alpha` (including `projects`), and inside it a file `README.md` containing `# Alpha`.",
+      "starterCode": "from pathlib import Path\n",
+      "solution": "from pathlib import Path\nfolder = Path(\"projects\") / \"alpha\"\nfolder.mkdir(parents=True, exist_ok=True)\n(folder / \"README.md\").write_text(\"# Alpha\")",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['projects']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\n",
+      "tests": [
+        {
+          "name": "file",
+          "code": "from pathlib import Path as _P\nassert _P('projects/alpha/README.md').read_text().strip() == '# Alpha', 'projects/alpha/README.md should contain # Alpha.'",
+          "message": "Create the folder and file."
+        }
+      ],
+      "hint": "`mkdir(parents=True, exist_ok=True)`, then `write_text`.",
+      "explanation": "`parents=True` creates `projects` too."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `folder.glob(\"*.csv\")` give you?",
+      "options": [
+        {
+          "id": "a",
+          "text": "The text of every CSV file"
+        },
+        {
+          "id": "b",
+          "text": "Paths of the files in `folder` ending in `.csv`"
+        },
+        {
+          "id": "c",
+          "text": "A new CSV file"
+        },
+        {
+          "id": "d",
+          "text": "The number of CSV files"
+        }
+      ],
+      "answer": "b",
+      "hint": "`*` matches any characters.",
+      "explanation": "`glob` yields matching paths; wrap it in `sorted()` or `list()` to see them."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`path` should be `exports/report.txt`, but comes out as `exportsreport.txt`. Fix it with `pathlib`.",
+      "starterCode": "folder = \"exports\"\npath = folder + \"report.txt\"\n",
+      "solution": "from pathlib import Path\nfolder = \"exports\"\npath = Path(folder) / \"report.txt\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from pathlib import Path as _P\nassert _P(path) == _P('exports/report.txt'), 'path should be exports/report.txt.'",
+          "message": "Join with a separator."
+        }
+      ],
+      "hint": "Gluing strings forgets the `/`.",
+      "explanation": "`Path(folder) / \"report.txt\"` always puts the separator in."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the pattern so `csv_files` lists only the CSV files.",
+      "template": "from pathlib import Path\nfolder = Path(\"glob_demo\")\nfolder.mkdir(exist_ok=True)\nfor n in [\"a.csv\", \"b.txt\", \"c.csv\"]:\n    (folder / n).write_text(\"x\")\ncsv_files = sorted(p.name for p in folder.glob(___))",
+      "blanks": [
+        "\"*.csv\""
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert csv_files == ['a.csv', 'c.csv'], 'csv_files should be [\"a.csv\", \"c.csv\"].'",
+          "message": "Match only .csv files."
+        }
+      ],
+      "hint": "`*` stands for any name.",
+      "explanation": "`\"*.csv\"` matches every name ending in `.csv`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "The folder `inbox` holds several files. Build `sizes`, a dictionary mapping the **name** of each `.txt` file to its size in characters.",
+      "starterCode": "from pathlib import Path\nsizes = {}\n",
+      "solution": "from pathlib import Path\nsizes = {}\nfor p in Path(\"inbox\").glob(\"*.txt\"):\n    sizes[p.name] = len(p.read_text())",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['inbox']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nfrom pathlib import Path as _P\n_P('inbox').mkdir()\n_P('inbox/a.txt').write_text('hello')\n_P('inbox/notes.txt').write_text('buy oat milk')\n_P('inbox/photo.jpg').write_text('jpegdata')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert sizes == {'a.txt': 5, 'notes.txt': 12}, 'sizes should map each .txt name to its length.'",
+          "message": "Check sizes."
+        }
+      ],
+      "hint": "Loop over `glob(\"*.txt\")`; `len(p.read_text())` is the size.",
+      "explanation": "Paths carry their own name, so building a report is easy."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from pathlib import Path\nprint(Path(\"a/b/c.txt\").parent.name)",
+      "expectedOutput": "b",
+      "hint": "The parent of `a/b/c.txt` is `a/b`.",
+      "explanation": "`.parent` gives the folder; `.name` is its last part."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Tidy the `downloads` folder: move every file into a sub-folder named after its extension without the dot — `report.pdf` goes to `downloads/pdf/report.pdf`. Count the files moved in `moved`.",
+      "starterCode": "from pathlib import Path\nmoved = 0\n",
+      "solution": "from pathlib import Path\nmoved = 0\nroot = Path(\"downloads\")\nfor p in list(root.iterdir()):\n    if p.is_file():\n        target = root / p.suffix.lstrip(\".\")\n        target.mkdir(exist_ok=True)\n        p.rename(target / p.name)\n        moved += 1",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['downloads']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nfrom pathlib import Path as _P\n_P('downloads').mkdir()\nfor _n in ['report.pdf', 'invoice.pdf', 'chart.png', 'data.csv']:\n    (_P('downloads') / _n).write_text('x')\n",
+      "tests": [
+        {
+          "name": "moved",
+          "code": "assert moved == 4, 'moved should be 4.'",
+          "message": "Count the moved files."
+        },
+        {
+          "name": "layout",
+          "code": "from pathlib import Path as _P\nfound = sorted(str(p.relative_to('downloads')) for p in _P('downloads').rglob('*') if p.is_file())\nassert found == ['csv/data.csv', 'pdf/invoice.pdf', 'pdf/report.pdf', 'png/chart.png'], 'Each file should be in a folder named after its extension.'",
+          "message": "Sort files into folders by extension."
+        }
+      ],
+      "hint": "`p.suffix.lstrip(\".\")` gives `pdf`. `rename` moves a file. Take a `list()` of the folder first, since you're changing it.",
+      "explanation": "Listing first avoids changing a folder while looping over it."
+    }
+  ]
+}

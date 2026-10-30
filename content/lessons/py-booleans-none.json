@@ -1,0 +1,177 @@
+{
+  "id": "py-booleans-none",
+  "moduleId": "variables-types",
+  "title": "Booleans and None",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **boolean** is either `True` or `False` — note the capital letters. `None` is Python's way of saying *no value yet*. Every value also counts as true or false when Python needs a yes/no answer; this is called **truthiness**.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`bool()` shows whether a value counts as true. Zero, empty text `\"\"` and `None` count as false. Almost everything else counts as true.",
+      "exampleCode": "print(bool(0), bool(5))\nprint(bool(\"\"), bool(\"hi\"))\nprint(bool(None))\nresult = None\nprint(result)",
+      "explanation": "Empty or zero means false; anything with content means true."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create `is_raining` holding `True` and `has_umbrella` holding `False`.",
+      "starterCode": "is_raining = \nhas_umbrella = \n",
+      "solution": "is_raining = True\nhas_umbrella = False",
+      "tests": [
+        {
+          "name": "raining",
+          "code": "assert is_raining is True, 'is_raining should be True (capital T, no quotes).'",
+          "message": "is_raining should be True."
+        },
+        {
+          "name": "umbrella",
+          "code": "assert has_umbrella is False, 'has_umbrella should be False (capital F, no quotes).'",
+          "message": "has_umbrella should be False."
+        }
+      ],
+      "hint": "Write `True` and `False` with capitals and without quotes.",
+      "explanation": "`\"True\"` in quotes would be text, not a boolean."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(bool(\"False\"))",
+      "expectedOutput": "True",
+      "hint": "It's text, and the text isn't empty.",
+      "explanation": "Any non-empty text is truthy — even the word False."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "Which value counts as **false**?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"0\"`"
+        },
+        {
+          "id": "b",
+          "text": "`\" \"`"
+        },
+        {
+          "id": "c",
+          "text": "`0`"
+        },
+        {
+          "id": "d",
+          "text": "`\"None\"`"
+        }
+      ],
+      "answer": "c",
+      "hint": "Three of these are non-empty text.",
+      "explanation": "The number 0 is falsy. `\"0\"`, `\" \"` and `\"None\"` are all non-empty text, so they're truthy."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "`nickname` holds whatever a user typed in a form, possibly nothing. Store in `has_nickname` whether it contains any text, using `bool()`.",
+      "starterCode": "has_nickname = \n",
+      "solution": "has_nickname = bool(nickname)",
+      "setupCode": "nickname = \"\"",
+      "tests": [
+        {
+          "name": "bool",
+          "code": "assert isinstance(has_nickname, bool), 'has_nickname should be True or False — use bool().'",
+          "message": "has_nickname should be a boolean."
+        },
+        {
+          "name": "value",
+          "code": "assert has_nickname == bool(nickname), 'has_nickname should be True only if nickname has text.'",
+          "message": "has_nickname should match whether nickname has text."
+        }
+      ],
+      "hint": "`bool()` turns any value into `True` or `False`.",
+      "explanation": "Empty text is falsy, so `bool(\"\")` is `False`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`winner` should hold *no value yet*, but Python says the name isn't defined. Fix it.",
+      "starterCode": "winner = none\n",
+      "solution": "winner = None\n",
+      "tests": [
+        {
+          "name": "none",
+          "code": "assert winner is None, 'winner should be None.'",
+          "message": "winner should be None."
+        }
+      ],
+      "hint": "Python's special empty value starts with a capital letter.",
+      "explanation": "`None`, `True` and `False` are the three capitalised keywords."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "`middle_name` comes from a sign-up form and may be `None`. Store in `missing` whether it is `None`, using `is None`.",
+      "starterCode": "missing = \n",
+      "solution": "missing = middle_name is None",
+      "setupCode": "middle_name = None",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert missing is (middle_name is None), 'missing should be True when middle_name is None.'",
+          "message": "missing should say whether middle_name is None."
+        }
+      ],
+      "hint": "`x is None` gives `True` or `False`.",
+      "explanation": "`is None` is the standard way to check for None — it can't be fooled by other falsy values like 0."
+    },
+    {
+      "id": "q08",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "score = None\nprint(score is None, bool(score))",
+      "expectedOutput": "True False",
+      "hint": "First check identity with None, then truthiness.",
+      "explanation": "`score is None` is True, and None counts as false."
+    },
+    {
+      "id": "q09",
+      "type": "fill_blank",
+      "prompt": "Nothing has been found yet. Give `found` the special *no value* value.",
+      "template": "found = ___",
+      "blanks": [
+        "None"
+      ],
+      "tests": [
+        {
+          "name": "none",
+          "code": "assert found is None, 'found should be None.'",
+          "message": "found should be None."
+        }
+      ],
+      "hint": "It's capitalised and has no quotes.",
+      "explanation": "`None` is a placeholder for a value you don't have yet."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`email` holds what a user typed into the email field (it might be empty). Store `email_given` as `True` or `False` depending on whether there's any text, then print it like `Email given: True`.",
+      "starterCode": "email_given = \n",
+      "solution": "email_given = bool(email)\nprint(\"Email given:\", email_given)",
+      "setupCode": "email = \"maya@example.org\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert email_given is bool(email), 'email_given should be True when email has text.'",
+          "message": "email_given should match whether email has text."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Email given: ' + str(bool(email)), 'Print Email given: followed by True or False.'",
+          "message": "Print Email given: followed by the boolean."
+        }
+      ],
+      "hint": "Use `bool()`, then `print()` with two values.",
+      "explanation": "Booleans print as `True` and `False`."
+    }
+  ]
+}

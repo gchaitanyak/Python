@@ -1,0 +1,170 @@
+{
+  "id": "py-if-elif-else",
+  "moduleId": "control-flow",
+  "title": "if, elif and else",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "`if` runs a block of code only when a condition is true. The block is the **indented** lines under the colon. `elif` (else if) checks another condition, and `else` catches everything left over. Python checks them top to bottom and runs only the **first** block that matches.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Indent the lines that belong to each branch by 4 spaces. Change `temp` and press Run to see different branches.",
+      "exampleCode": "temp = 18\nif temp > 25:\n    print(\"Hot\")\nelif temp > 15:\n    print(\"Mild\")\nelse:\n    print(\"Cold\")\nprint(\"Done\")",
+      "explanation": "`print(\"Done\")` isn't indented, so it runs whatever the temperature."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`age` is set. Using `if` and `else`, store `\"adult\"` in `ticket` when age is 18 or more, otherwise `\"child\"`.",
+      "starterCode": "# your if/else here\n",
+      "solution": "if age >= 18:\n    ticket = \"adult\"\nelse:\n    ticket = \"child\"",
+      "setupCode": "age = 15",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert ticket == ('adult' if age >= 18 else 'child'), 'ticket should be adult from 18, otherwise child.'",
+          "message": "Check the 18+ rule."
+        }
+      ],
+      "hint": "End the `if` line with a colon and indent the line below.",
+      "explanation": "Exactly one of the two branches runs, so `ticket` is always set."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "x = 7\nif x % 2 == 0:\n    print(\"even\")\nelse:\n    print(\"odd\")",
+      "expectedOutput": "odd",
+      "hint": "What is 7 % 2?",
+      "explanation": "7 % 2 is 1, so the condition is False and the `else` runs."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`score` is set. Store a letter in `grade`: `A` from 90, `B` from 80, `C` from 70, otherwise `F`.",
+      "starterCode": "# your if/elif/else here\n",
+      "solution": "if score >= 90:\n    grade = \"A\"\nelif score >= 80:\n    grade = \"B\"\nelif score >= 70:\n    grade = \"C\"\nelse:\n    grade = \"F\"",
+      "setupCode": "score = 73",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = 'A' if score >= 90 else 'B' if score >= 80 else 'C' if score >= 70 else 'F'\nassert grade == expected, 'Check the grade boundaries: A 90+, B 80+, C 70+, else F.'",
+          "message": "Check the grade boundaries."
+        }
+      ],
+      "hint": "Start with the highest boundary — the first true branch wins.",
+      "explanation": "Because only the first match runs, you don't need `score < 90` in the `B` branch."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "In an `if`/`elif` chain, what happens when **two** conditions are true?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Both blocks run"
+        },
+        {
+          "id": "b",
+          "text": "Only the first true block runs"
+        },
+        {
+          "id": "c",
+          "text": "Only the last true block runs"
+        },
+        {
+          "id": "d",
+          "text": "Python raises an error"
+        }
+      ],
+      "answer": "b",
+      "hint": "Python stops checking once something matches.",
+      "explanation": "Order matters: put the most specific conditions first."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "Python reports an *IndentationError*. Fix the program so it prints `Welcome back`.",
+      "starterCode": "is_member = True\nif is_member:\nprint(\"Welcome back\")\n",
+      "solution": "is_member = True\nif is_member:\n    print(\"Welcome back\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Welcome back', 'The program should print Welcome back.'",
+          "message": "Print Welcome back."
+        }
+      ],
+      "hint": "The line under an `if` must be indented.",
+      "explanation": "Indentation is how Python knows which lines belong to the `if`."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "This should print `Correct!` but it's a *SyntaxError*. Fix it.",
+      "starterCode": "guess = 7\nif guess = 7:\n    print(\"Correct!\")\n",
+      "solution": "guess = 7\nif guess == 7:\n    print(\"Correct!\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Correct!', 'The program should print Correct!'",
+          "message": "Print Correct!"
+        }
+      ],
+      "hint": "One `=` stores a value; conditions need two.",
+      "explanation": "`==` compares. Python refuses `=` inside a condition to catch exactly this mistake."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword so the second condition is only checked when the first is false.",
+      "template": "temp = 25\nif temp > 20:\n    label = \"warm\"\n___ temp > 10:\n    label = \"cool\"\nelse:\n    label = \"cold\"",
+      "blanks": [
+        "elif"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert label == 'warm', 'label should be warm for 25.'",
+          "message": "label should be warm."
+        }
+      ],
+      "hint": "It's short for *else if*.",
+      "explanation": "With `elif`, 25 stops at the first branch. A second plain `if` would overwrite `warm` with `cool`."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Shipping is free for orders of 50 or more. Otherwise it's 4.99 in the `\"UK\"` and 12.99 anywhere else. Using `total` and `country`, store the cost in `shipping`.",
+      "starterCode": "# your code\n",
+      "solution": "if total >= 50:\n    shipping = 0\nelif country == \"UK\":\n    shipping = 4.99\nelse:\n    shipping = 12.99",
+      "setupCode": "total = 42.0\ncountry = \"UK\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = 0 if total >= 50 else (4.99 if country == 'UK' else 12.99)\nassert shipping == expected, 'Free from 50; otherwise 4.99 for UK and 12.99 elsewhere.'",
+          "message": "Check the shipping rules."
+        }
+      ],
+      "hint": "Check the free-shipping rule first, then the country.",
+      "explanation": "A flat `if`/`elif`/`else` is easier to read than nesting one `if` inside another."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A year is a **leap year** if it divides by 4, except years that divide by 100 — unless they also divide by 400. Using `year`, print `2024 is a leap year` or `2023 is not a leap year`.",
+      "starterCode": "# your code\n",
+      "solution": "if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):\n    print(f\"{year} is a leap year\")\nelse:\n    print(f\"{year} is not a leap year\")",
+      "setupCode": "year = 2100",
+      "tests": [
+        {
+          "name": "output",
+          "code": "leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\nexpected = f'{year} is a leap year' if leap else f'{year} is not a leap year'\nassert __output__.strip() == expected, 'Check the rule: divisible by 4, but not by 100 unless also by 400.'",
+          "message": "Check the leap-year rule."
+        }
+      ],
+      "hint": "Combine the three rules with `and`, `or` and brackets.",
+      "explanation": "Years like 1900 and 2100 aren't leap years; 2000 was."
+    }
+  ]
+}

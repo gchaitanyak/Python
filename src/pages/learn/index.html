@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Python — modules and lessons — Python Exercises</title>
+    <meta name="description" content="Every module and lesson in the Python Exercises course, in learning order, with your progress and next recommended lesson." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1">
+      <section class="page-head container">
+        <h1>Your learning dashboard</h1>
+        <p class="lead" data-dash-lead>Work through the modules in order, or jump to any topic. Progress is saved on this device — <a href="/register/">create a free account</a> to keep it.</p>
+      </section>
+
+      <section class="container dash" aria-label="Your progress">
+        <div class="card dash__next">
+          <h2 class="dash__label">Next recommended lesson</h2>
+          <p class="dash__lesson" data-next-title><!-- @next-title --></p>
+          <p class="help-text" data-next-module></p>
+          <a class="btn btn--primary" data-next-link href="<!-- @next-href -->">Start lesson</a>
+        </div>
+        <div class="card dash__stat">
+          <h2 class="dash__label">Points</h2>
+          <p class="dash__value" data-points>0</p>
+          <p class="help-text" data-points-help>Best score from each lesson</p>
+        </div>
+        <div class="card dash__stat">
+          <h2 class="dash__label">Streak</h2>
+          <p class="dash__value" data-streak>0 days</p>
+          <p class="help-text">Days in a row with a finished lesson</p>
+        </div>
+      </section>
+
+      <section class="container dash-grid" aria-label="Today">
+        <div class="card daily-card" data-daily-card>
+          <h2 class="dash__label">Daily challenge</h2>
+          <p class="dash__lesson" data-daily-status>5 questions, new every day</p>
+          <p class="help-text" data-daily-detail>The same questions for everyone. One scored attempt.</p>
+          <a class="btn btn--primary" href="/daily/" data-daily-link>Take today’s challenge</a>
+          <div class="trend" data-trend hidden>
+            <h3 class="trend__title">Your last 7 days</h3>
+            <ol class="trend__bars" data-trend-bars></ol>
+          </div>
+        </div>
+        <!-- @board:points -->
+        <!-- @board:streak -->
+      </section>
+
+      <section class="container section" aria-labelledby="projects-title">
+        <div class="section-head">
+          <h2 id="projects-title">Projects</h2>
+          <a href="/projects/">All projects</a>
+        </div>
+        <!-- @projects -->
+      </section>
+
+      <section class="container dash-grid" aria-label="Certificate">
+        <div class="card" data-cert-card>
+          <h2 class="dash__label">Certificate</h2>
+          <p class="dash__lesson" data-cert-status>Finish modules 1–12 to earn it</p>
+          <p class="help-text" data-cert-detail>A certificate with your name and a public link anyone can verify.</p>
+          <a class="btn btn--secondary" href="/certificate/" data-cert-link>About the certificate</a>
+        </div>
+      </section>
+
+      <section class="container" aria-labelledby="modules-title">
+        <div class="section-head">
+          <h2 id="modules-title">Modules</h2>
+          <ul class="legend" aria-label="Status key">
+            <li><span class="status-dot" data-status="not-started" aria-hidden="true"></span> Not started</li>
+            <li><span class="status-dot" data-status="strong" aria-hidden="true"></span> Strong</li>
+            <li><span class="status-dot" data-status="review-due" aria-hidden="true"></span> Review due</li>
+            <li><span class="status-dot" data-status="needs-attention" aria-hidden="true"></span> Needs attention</li>
+          </ul>
+        </div>
+        <!-- @modules -->
+      </section>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

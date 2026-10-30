@@ -1,0 +1,175 @@
+{
+  "id": "py-polymorphism",
+  "moduleId": "oop",
+  "title": "Polymorphism",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "**Polymorphism** means different types can be used through the same interface. If several classes each have a `speak()` method, a loop can call `speak()` on any of them without checking which class it is. Python cares about what an object can **do**, not what it **is** — this is called **duck typing**.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Built-ins work the same way: `len()` works on anything that defines `__len__`.",
+      "exampleCode": "class Cat:\n    def speak(self):\n        return \"Meow\"\n\nclass Cow:\n    def speak(self):\n        return \"Moo\"\n\nfor animal in [Cat(), Cow(), Cat()]:\n    print(animal.speak())",
+      "explanation": "Neither class inherits from the other — they just share a method name."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write classes `Duck` and `Robot`, each with a `speak()` method returning `\"Quack\"` and `\"Beep\"`. Then store `[x.speak() for x in things]` in `sounds`, where `things` is `[Duck(), Robot(), Duck()]`.",
+      "starterCode": "# your classes here\n",
+      "solution": "class Duck:\n    def speak(self):\n        return \"Quack\"\n\nclass Robot:\n    def speak(self):\n        return \"Beep\"\n\nthings = [Duck(), Robot(), Duck()]\nsounds = [x.speak() for x in things]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert sounds == ['Quack', 'Beep', 'Quack'], 'sounds should be [\"Quack\", \"Beep\", \"Quack\"].'",
+          "message": "Collect the sounds."
+        },
+        {
+          "name": "classes",
+          "code": "assert Duck().speak() == 'Quack' and Robot().speak() == 'Beep', 'Each class should speak its own sound.'",
+          "message": "Define both classes."
+        }
+      ],
+      "hint": "Same method name, different behaviour.",
+      "explanation": "The list comprehension never asks what type each thing is."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(len(\"abc\"), len([1, 2]), len({\"a\": 1}))",
+      "expectedOutput": "3 2 1",
+      "hint": "`len` works on any sized object.",
+      "explanation": "One function, three types — built-in polymorphism."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `total_area(shapes)` that returns the sum of `shape.area()` for any objects that have an `area()` method, rounded to 2 decimals.",
+      "starterCode": "def total_area(shapes):\n    pass\n",
+      "solution": "def total_area(shapes):\n    return round(sum(s.area() for s in shapes), 2)",
+      "setupCode": "class Circle:\n    def __init__(self, r):\n        self.r = r\n    def area(self):\n        return 3.14159 * self.r ** 2\n\nclass Square:\n    def __init__(self, s):\n        self.s = s\n    def area(self):\n        return self.s ** 2\n",
+      "tests": [
+        {
+          "name": "given",
+          "code": "assert total_area([Circle(1), Square(3)]) == 12.14, 'total_area should add up the areas.'",
+          "message": "Add up the areas."
+        },
+        {
+          "name": "duck",
+          "code": "class Triangle:\n    def area(self):\n        return 4.5\nassert total_area([Triangle(), Square(1)]) == 5.5, 'Any object with an area() method should work.'",
+          "message": "Work with any shape."
+        }
+      ],
+      "hint": "Don't check types — just call `area()`.",
+      "explanation": "Duck typing: a new shape class works without changing `total_area`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does **polymorphism** let you do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Make classes run faster"
+        },
+        {
+          "id": "b",
+          "text": "Use different types through the same method names"
+        },
+        {
+          "id": "c",
+          "text": "Stop classes inheriting"
+        },
+        {
+          "id": "d",
+          "text": "Hide attributes"
+        }
+      ],
+      "answer": "b",
+      "hint": "*Poly* = many, *morph* = forms.",
+      "explanation": "Code that calls `area()` works with every shape that provides it."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "The loop crashes with *AttributeError* on the third shape. Fix the class so it fits the same interface as the others.",
+      "starterCode": "class Circle:\n    def area(self):\n        return 3.0\n\nclass Square:\n    def area(self):\n        return 4.0\n\nclass Strip:\n    def get_area(self):\n        return 0.5\n\ntotal = sum(s.area() for s in [Circle(), Square(), Strip()])\n",
+      "solution": "class Circle:\n    def area(self):\n        return 3.0\n\nclass Square:\n    def area(self):\n        return 4.0\n\nclass Strip:\n    def area(self):\n        return 0.5\n\ntotal = sum(s.area() for s in [Circle(), Square(), Strip()])\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert total == 7.5, 'total should be 7.5.'",
+          "message": "total should be 7.5."
+        }
+      ],
+      "hint": "All shapes must use the same method name.",
+      "explanation": "Polymorphism only works when everyone shares the interface."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the special method name so `len(playlist)` works.",
+      "template": "class Playlist:\n    def __init__(self, songs):\n        self.songs = songs\n\n    def ___(self):\n        return len(self.songs)\n\nn = len(Playlist([\"a\", \"b\", \"c\"]))",
+      "blanks": [
+        "__len__"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert n == 3, 'n should be 3.'",
+          "message": "n should be 3."
+        }
+      ],
+      "hint": "`len()` calls a method with double underscores.",
+      "explanation": "Defining `__len__` lets your object work with `len()`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write payment classes `Card`, `PayPal` and `Voucher`, each with `pay(amount)` returning `\"Paid 12.50 by card\"`, `\"… by PayPal\"`, `\"… by voucher\"` (2 decimals). Then write `checkout(method, amount)` that calls `method.pay(amount)` and returns its result.",
+      "starterCode": "# your classes and checkout()\n",
+      "solution": "class Card:\n    def pay(self, amount):\n        return f\"Paid {amount:.2f} by card\"\n\nclass PayPal:\n    def pay(self, amount):\n        return f\"Paid {amount:.2f} by PayPal\"\n\nclass Voucher:\n    def pay(self, amount):\n        return f\"Paid {amount:.2f} by voucher\"\n\ndef checkout(method, amount):\n    return method.pay(amount)",
+      "tests": [
+        {
+          "name": "each",
+          "code": "assert [checkout(m, 12.5) for m in (Card(), PayPal(), Voucher())] == ['Paid 12.50 by card', 'Paid 12.50 by PayPal', 'Paid 12.50 by voucher'], 'Each payment method should describe itself.'",
+          "message": "Check each payment method."
+        },
+        {
+          "name": "new method",
+          "code": "class Crypto:\n    def pay(self, amount):\n        return 'ok'\nassert checkout(Crypto(), 1) == 'ok', 'checkout should work with any object that has pay().'",
+          "message": "Stay open to new methods."
+        }
+      ],
+      "hint": "`checkout` just calls `pay` — no `if` on the type.",
+      "explanation": "Adding a payment method later means writing a class, not editing `checkout`."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(str(5) + str([1]) + str(None))",
+      "expectedOutput": "5[1]None",
+      "hint": "`str()` asks each object how to show itself.",
+      "explanation": "Every type knows how to turn itself into text."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `CsvExporter` and `JsonExporter`, each with a `name` attribute (`\"csv\"`, `\"json\"`) and `export(rows)` for a list of dictionaries. CSV: header line, then values joined by commas, lines joined by `\\n`. JSON: `json.dumps(rows)`. Then `export_all(rows, exporters)` returns a dictionary name → exported text.",
+      "starterCode": "import json\n",
+      "solution": "import json\n\nclass CsvExporter:\n    name = \"csv\"\n\n    def export(self, rows):\n        if not rows:\n            return \"\"\n        header = list(rows[0].keys())\n        lines = [\",\".join(header)]\n        for r in rows:\n            lines.append(\",\".join(str(r[k]) for k in header))\n        return \"\\n\".join(lines)\n\nclass JsonExporter:\n    name = \"json\"\n\n    def export(self, rows):\n        return json.dumps(rows)\n\ndef export_all(rows, exporters):\n    return {e.name: e.export(rows) for e in exporters}",
+      "tests": [
+        {
+          "name": "value",
+          "code": "rows = [{'id': 1, 'city': 'Lima'}, {'id': 2, 'city': 'Oslo'}]\nout = export_all(rows, [CsvExporter(), JsonExporter()])\nassert out == {'csv': 'id,city\\n1,Lima\\n2,Oslo', 'json': '[{\"id\": 1, \"city\": \"Lima\"}, {\"id\": 2, \"city\": \"Oslo\"}]'}, 'Check both export formats.'",
+          "message": "Export both formats."
+        }
+      ],
+      "hint": "Each exporter has the same two parts: `name` and `export`.",
+      "explanation": "A common interface lets new formats plug in without changing `export_all`."
+    }
+  ]
+}

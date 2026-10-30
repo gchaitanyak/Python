@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log in — Python Exercises</title>
+    <meta name="description" content="Log in to save your Python progress, keep your streak and join the daily leaderboards." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1" class="container auth">
+      <h1>Log in</h1>
+      <p class="auth__lead">New here? <a href="/register/" data-register-link>Create a free account</a>.</p>
+
+      <div class="alert" data-status role="status" aria-live="polite" hidden></div>
+
+      <form class="form card" data-confirm-form hidden novalidate>
+        <h2>Finish signing in</h2>
+        <p>Enter the email address the sign-in link was sent to.</p>
+        <div class="field">
+          <label for="confirm-email">Email the link was sent to</label>
+          <input id="confirm-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <button class="btn btn--primary" type="submit">Sign in</button>
+      </form>
+
+      <form class="form card" data-login-form novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" />
+          <p class="help-text">Leave empty to get a sign-in link by email instead.</p>
+        </div>
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit">Log in</button>
+          <button class="btn btn--ghost" type="button" data-send-link>Email me a sign-in link</button>
+        </div>
+        <button class="link-button" type="button" data-reset>Forgot your password?</button>
+      </form>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

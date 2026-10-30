@@ -1,0 +1,179 @@
+{
+  "id": "py-pip-venv",
+  "moduleId": "modules-packages",
+  "title": "pip and Virtual Environments",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "Packages that aren't in the standard library — like `requests` or `pandas` — are installed with **pip**. A **virtual environment** (venv) is a private folder of packages for one project, so projects don't clash. In a terminal:\n\n```\npython -m venv .venv\nsource .venv/bin/activate      # Windows: .venv\\Scripts\\activate\npip install requests==2.32.3\npip freeze > requirements.txt\npip install -r requirements.txt\n```\n\nThese commands run in a terminal, not in Python code, so the questions below practise the ideas and the files they produce.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Inside an active venv, `sys.prefix` differs from `sys.base_prefix`. A **pinned** requirement like `requests==2.32.3` installs exactly that version, so everyone gets the same setup.",
+      "exampleCode": "import sys\nprint(sys.version_info.major)\nprint(\"In a virtual environment:\", sys.prefix != sys.base_prefix)\nline = \"requests==2.32.3\"\nprint(line.split(\"==\"))",
+      "explanation": "`requirements.txt` is just a text file with one requirement per line."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`line` is a pinned requirement like `requests==2.32.3`. Split it into `name` and `version`.",
+      "starterCode": "name, version = \n",
+      "solution": "name, version = line.split(\"==\")",
+      "setupCode": "line = \"flask==3.0.3\"",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert (name, version) == tuple(line.split('==')), 'name and version should be the two parts around ==.'",
+          "message": "Split at ==."
+        }
+      ],
+      "hint": "`split(\"==\")` gives two parts; unpack them.",
+      "explanation": "Requirement files are plain text, so string methods are all you need."
+    },
+    {
+      "id": "q03",
+      "type": "multiple_choice",
+      "prompt": "What does `python -m venv .venv` do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Installs every package"
+        },
+        {
+          "id": "b",
+          "text": "Creates a virtual environment in a folder called `.venv`"
+        },
+        {
+          "id": "c",
+          "text": "Updates Python"
+        },
+        {
+          "id": "d",
+          "text": "Deletes old packages"
+        }
+      ],
+      "answer": "b",
+      "hint": "`-m venv` runs the `venv` module.",
+      "explanation": "It creates an empty, private environment; activate it before installing packages."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`text` holds a requirements file. Build `packages`, a dictionary mapping each package name to its pinned version. Skip blank lines and lines starting with `#`, and ignore lines without `==`.",
+      "starterCode": "packages = {}\n",
+      "solution": "packages = {}\nfor raw in text.splitlines():\n    line = raw.strip()\n    if not line or line.startswith(\"#\") or \"==\" not in line:\n        continue\n    name, version = line.split(\"==\")\n    packages[name] = version",
+      "setupCode": "text = \"\"\"# web\nrequests==2.32.3\n\nflask==3.0.3\npytest\n# maths\nnumpy==1.26.4\n\"\"\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert packages == {'requests': '2.32.3', 'flask': '3.0.3', 'numpy': '1.26.4'}, 'packages should map each pinned name to its version, skipping comments, blanks and unpinned lines.'",
+          "message": "Check the parsed packages."
+        }
+      ],
+      "hint": "Loop over `splitlines()`, `strip()` each line, `continue` past the ones to skip.",
+      "explanation": "Parsing config files line by line is a very common task."
+    },
+    {
+      "id": "q05",
+      "type": "fill_blank",
+      "prompt": "Fill in the pip command that installs everything listed in a requirements file.",
+      "template": "pip ___ -r requirements.txt",
+      "blanks": [
+        "install"
+      ],
+      "matchMode": "exact",
+      "hint": "The same word you use to install one package.",
+      "explanation": "`-r` tells `pip install` to read names from a file."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`newer` should be True because version 2.10.0 is newer than 2.9.1, but comparing the text gives False. Fix it by comparing tuples of numbers.",
+      "starterCode": "a = \"2.10.0\"\nb = \"2.9.1\"\nnewer = a > b\n",
+      "solution": "a = \"2.10.0\"\nb = \"2.9.1\"\nnewer = tuple(int(p) for p in a.split(\".\")) > tuple(int(p) for p in b.split(\".\"))\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert newer is True, 'newer should be True: 2.10.0 is newer than 2.9.1.'",
+          "message": "newer should be True."
+        }
+      ],
+      "hint": "As text, `\"1\"` < `\"9\"`, so `\"2.10\"` < `\"2.9\"`. Compare numbers instead.",
+      "explanation": "Tuples compare item by item, which matches how version numbers work."
+    },
+    {
+      "id": "q07",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"numpy>=1.26\".split(\">=\"))",
+      "expectedOutput": "['numpy', '1.26']",
+      "hint": "`>=` means *this version or newer*.",
+      "explanation": "The same splitting trick works for any operator."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `version_tuple(v)` that turns `\"1.2.10\"` into `(1, 2, 10)`. Then store the newest version in `versions` in `latest`.",
+      "starterCode": "def version_tuple(v):\n    pass\n",
+      "solution": "def version_tuple(v):\n    return tuple(int(p) for p in v.split(\".\"))\n\nlatest = max(versions, key=version_tuple)",
+      "setupCode": "versions = [\"1.9.0\", \"1.10.2\", \"1.2.11\", \"0.99.9\"]",
+      "tests": [
+        {
+          "name": "tuple",
+          "code": "assert version_tuple('1.2.10') == (1, 2, 10) and version_tuple('3') == (3,), 'version_tuple(\"1.2.10\") should be (1, 2, 10).'",
+          "message": "Convert to a tuple of ints."
+        },
+        {
+          "name": "latest",
+          "code": "assert latest == '1.10.2', 'latest should be the newest version: 1.10.2.'",
+          "message": "Find the newest version."
+        }
+      ],
+      "hint": "`max` with `key=version_tuple` compares versions as numbers.",
+      "explanation": "Passing your own function as a key is the same idea as `key=len`."
+    },
+    {
+      "id": "q09",
+      "type": "multiple_choice",
+      "prompt": "Why use a separate virtual environment for each project?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It makes Python run faster"
+        },
+        {
+          "id": "b",
+          "text": "So each project keeps its own package versions without clashing"
+        },
+        {
+          "id": "c",
+          "text": "pip only works inside one"
+        },
+        {
+          "id": "d",
+          "text": "It's required to run any script"
+        }
+      ],
+      "answer": "b",
+      "hint": "Two projects might need different versions of the same package.",
+      "explanation": "A venv keeps each project's packages separate and reproducible."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`installed` maps package names to versions. Build `requirements_txt`: one `name==version` line per package, sorted by name ignoring case, joined with new lines.",
+      "starterCode": "requirements_txt = \n",
+      "solution": "lines = [f\"{name}=={version}\" for name, version in sorted(installed.items(), key=lambda item: item[0].lower())]\nrequirements_txt = \"\\n\".join(lines)",
+      "setupCode": "installed = {\"requests\": \"2.32.3\", \"Flask\": \"3.0.3\", \"numpy\": \"1.26.4\"}",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert requirements_txt == 'Flask==3.0.3\\nnumpy==1.26.4\\nrequests==2.32.3', 'Expected one name==version line per package, sorted by name ignoring case.'",
+          "message": "Check the lines and their order."
+        }
+      ],
+      "hint": "Sort the items by lowercase name, format each, then `\"\\n\".join(…)`.",
+      "explanation": "This is what `pip freeze` produces for you."
+    }
+  ]
+}

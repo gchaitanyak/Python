@@ -1,0 +1,176 @@
+{
+  "id": "py-string-methods",
+  "moduleId": "strings",
+  "title": "String Methods",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **method** is a function that belongs to a value. You call it with a dot: `name.upper()`. String methods never change the original string — they return a **new** one, so store the result.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`strip()` removes spaces at both ends, `lower()` and `upper()` change case, and `replace(old, new)` swaps text. `split()` breaks text into a **list** of pieces (lists come in module 6) and `join()` glues pieces back together.",
+      "exampleCode": "raw = \"  Hello World  \"\nprint(raw.strip())\nprint(raw.lower())\nprint(raw.replace(\"World\", \"Python\"))\nprint(\"a,b,c\".split(\",\"))\nprint(\"-\".join([\"x\", \"y\", \"z\"]))",
+      "explanation": "Chain methods to do several steps at once: `raw.strip().lower()`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`email` was typed with stray spaces and mixed case. Store a cleaned version in `clean`: no spaces at the ends, all lowercase.",
+      "starterCode": "clean = \n",
+      "solution": "clean = email.strip().lower()",
+      "setupCode": "email = \"  Maya.Lin@Example.COM \"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert clean == email.strip().lower(), 'clean should have no outer spaces and be all lowercase.'",
+          "message": "Check the cleaning."
+        }
+      ],
+      "hint": "Chain `strip()` and `lower()`.",
+      "explanation": "Normalising text before comparing it avoids duplicates like `Ana@x.com` and `ana@x.com`."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"banana\".count(\"a\"), \"banana\".find(\"n\"))",
+      "expectedOutput": "3 2",
+      "hint": "`find` gives the index of the first match.",
+      "explanation": "There are three `a`s, and the first `n` is at index 2."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`title` holds a book title in lowercase. Store it with each word capitalised in `nice`.",
+      "starterCode": "nice = \n",
+      "solution": "nice = title.title()",
+      "setupCode": "title = \"the old man and the sea\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert nice == title.title(), 'nice should have a capital letter at the start of every word.'",
+          "message": "Capitalise every word."
+        }
+      ],
+      "hint": "There's a method named after what you want.",
+      "explanation": "`title()` capitalises the first letter of every word."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `\"report.csv\".endswith(\".csv\")` return?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`True`"
+        },
+        {
+          "id": "b",
+          "text": "`False`"
+        },
+        {
+          "id": "c",
+          "text": "`\".csv\"`"
+        },
+        {
+          "id": "d",
+          "text": "`6`"
+        }
+      ],
+      "answer": "a",
+      "hint": "It answers a yes/no question.",
+      "explanation": "`startswith` and `endswith` return booleans — handy for checking file types."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`name` should end up as `sam` with no spaces, but the spaces are still there. Fix it.",
+      "starterCode": "name = \"  sam  \"\nname.strip()\n",
+      "solution": "name = \"  sam  \"\nname = name.strip()\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert name == 'sam', 'name should be sam with no spaces.'",
+          "message": "name should be sam."
+        }
+      ],
+      "hint": "String methods return a new string. Where does that result go?",
+      "explanation": "Strings can't be changed in place, so store the result back in the variable."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Replace every `tea` with `coffee` in `sentence` (keep the capital in `Tea` → `Coffee`). Store the result in `updated`.",
+      "starterCode": "updated = \n",
+      "solution": "updated = sentence.replace(\"tea\", \"coffee\").replace(\"Tea\", \"Coffee\")",
+      "setupCode": "sentence = \"I love tea. Tea is great in the morning.\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert updated == sentence.replace('tea', 'coffee').replace('Tea', 'Coffee'), 'Replace tea with coffee and Tea with Coffee.'",
+          "message": "Check both replacements."
+        }
+      ],
+      "hint": "`replace` is case-sensitive, so you need two calls.",
+      "explanation": "Chaining two `replace` calls handles both spellings."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the method so `colours` holds the three separate words.",
+      "template": "colours = \"red green blue\".___()",
+      "blanks": [
+        "split"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert colours == ['red', 'green', 'blue'], 'colours should be the three separate words.'",
+          "message": "colours should hold red, green and blue."
+        }
+      ],
+      "hint": "Which method breaks text at spaces?",
+      "explanation": "With no argument, `split()` breaks at any run of spaces."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "`parts` holds the pieces of a date. Join them with `/` into `date`, for example `2026/10/29`.",
+      "starterCode": "date = \n",
+      "solution": "date = \"/\".join(parts)",
+      "setupCode": "parts = [\"2030\", \"01\", \"15\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert date == '/'.join(parts), 'date should be the parts joined with /.'",
+          "message": "Join the parts with /."
+        }
+      ],
+      "hint": "The separator goes before the dot: `\"/\".join(…)`.",
+      "explanation": "`join` is called on the glue, not on the pieces."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Usernames are stored without spaces or `@`, in lowercase. Clean `raw` into `username`, then store in `long_enough` whether it has at least 3 characters.",
+      "starterCode": "username = \nlong_enough = \n",
+      "solution": "username = raw.strip().replace(\"@\", \"\").lower()\nlong_enough = len(username) >= 3",
+      "setupCode": "raw = \"  @Robin_Hood99 \"",
+      "tests": [
+        {
+          "name": "username",
+          "code": "assert username == raw.strip().replace('@', '').lower(), 'username should have no outer spaces, no @, and be lowercase.'",
+          "message": "Check the cleaning steps."
+        },
+        {
+          "name": "length",
+          "code": "assert long_enough == (len(username) >= 3), 'long_enough should be True when username has 3 or more characters.'",
+          "message": "Check the length test."
+        }
+      ],
+      "hint": "Chain `strip`, `replace` and `lower`. Then compare `len()` with 3.",
+      "explanation": "Cleaning input step by step is one of the most common real-world string jobs."
+    }
+  ]
+}

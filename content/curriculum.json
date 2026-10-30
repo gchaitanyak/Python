@@ -21,7 +21,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Explain what Python is used for",
             "Run code and read its output",
@@ -65,7 +65,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use print() with several values",
             "Control separators and line endings",
@@ -93,7 +93,7 @@
           "free": true,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine printing, comments and simple statements"
           ],
@@ -160,7 +160,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use int and float",
             "Apply //, % and **",
@@ -188,7 +188,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Convert between str, int and float",
             "Predict conversion errors",
@@ -216,7 +216,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Evaluate truthiness",
             "Use None as 'no value'",
@@ -240,7 +240,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Read text with input()",
             "Convert input to numbers",
@@ -272,7 +272,7 @@
           "free": true,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine variables, conversion and I/O in a small program"
           ],
@@ -295,7 +295,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use + - * / // % **",
             "Use += and friends"
@@ -330,7 +330,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Compare values",
             "Combine conditions with and/or/not",
@@ -358,7 +358,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Tell is from ==",
             "Test membership with in"
@@ -381,7 +381,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Predict evaluation order",
             "Write conditional expressions"
@@ -408,7 +408,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Mix operators to solve small calculations"
           ],
@@ -431,7 +431,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create strings with quotes",
             "Index characters",
@@ -467,7 +467,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Slice with start:stop:step",
             "Use negative indexes",
@@ -491,7 +491,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Clean text with strip/lower/replace",
             "Split and join",
@@ -515,7 +515,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Embed expressions in f-strings",
             "Format numbers and widths",
@@ -547,7 +547,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Process and format messy text"
           ],
@@ -570,7 +570,7 @@
           "free": true,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Branch on conditions",
             "Nest conditions sensibly"
@@ -613,7 +613,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Match literal values",
             "Use wildcard and guards"
@@ -636,7 +636,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Loop over sequences",
             "Generate numbers with range",
@@ -676,7 +676,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Repeat until a condition changes",
             "Avoid infinite loops"
@@ -699,7 +699,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Exit loops early",
             "Skip iterations",
@@ -731,7 +731,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine branching and loops"
           ],
@@ -802,7 +802,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use append, extend, insert, pop",
             "Copy lists safely"
@@ -829,7 +829,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Sort with sort() and sorted()",
             "Sort by a key",
@@ -853,7 +853,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create and unpack tuples",
             "Know when to choose a tuple"
@@ -888,7 +888,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Remove duplicates",
             "Use union, intersection, difference"
@@ -923,7 +923,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Store key-value pairs",
             "Read safely with get",
@@ -971,7 +971,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write list comprehensions",
             "Filter inside comprehensions",
@@ -1007,7 +1007,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Count with Counter",
             "Use defaultdict and deque"
@@ -1038,7 +1038,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Pick the right structure for a task"
           ],
@@ -1097,7 +1097,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use positional and keyword arguments",
             "Set default values safely"
@@ -1124,7 +1124,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Accept any number of arguments",
             "Unpack arguments into calls"
@@ -1155,7 +1155,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Tell local from global",
             "Use global and nonlocal sparingly"
@@ -1186,7 +1186,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write lambdas",
             "Transform with map",
@@ -1222,7 +1222,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write a base case and a recursive case",
             "Trace a recursive call"
@@ -1249,7 +1249,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Return functions from functions",
             "Write a simple decorator"
@@ -1288,7 +1288,7 @@
           "free": false,
           "daily": true,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use iter and next",
             "Write generators with yield"
@@ -1327,7 +1327,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Design small functions that work together"
           ],
@@ -1350,7 +1350,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Import modules and names",
             "Explore with dir() and help()"
@@ -1381,7 +1381,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Organise a package",
             "Guard script code with if __name__ == '__main__'"
@@ -1412,7 +1412,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create a virtual environment",
             "Install and pin packages"
@@ -1443,7 +1443,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Structure a small multi-file program"
           ],
@@ -1466,7 +1466,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Catch specific exceptions",
             "Clean up with finally"
@@ -1501,7 +1501,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Raise exceptions with clear messages",
             "Define your own exception classes"
@@ -1528,7 +1528,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use assert for invariants",
             "Read a traceback"
@@ -1551,7 +1551,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Make a program robust to bad input"
           ],
@@ -1574,7 +1574,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Open files with with",
             "Read lines",
@@ -1614,7 +1614,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Build paths with pathlib",
             "List and filter files"
@@ -1645,7 +1645,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Read rows with csv",
             "Write CSV safely"
@@ -1676,7 +1676,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Convert between JSON and Python",
             "Read and write JSON files"
@@ -1707,7 +1707,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Load, transform and save a dataset"
           ],
@@ -1730,7 +1730,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Define a class",
             "Use __init__ and self",
@@ -1774,7 +1774,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Write instance and class methods",
             "Use @property"
@@ -1801,7 +1801,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Extend a class",
             "Call super()",
@@ -1837,7 +1837,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use one interface for many types"
           ],
@@ -1863,7 +1863,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Hide internals with naming conventions",
             "Validate in setters"
@@ -1894,7 +1894,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement __str__ and __repr__",
             "Overload operators with __add__ and __eq__"
@@ -1917,7 +1917,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Design a small class hierarchy"
           ],
@@ -1940,7 +1940,7 @@
           "free": true,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create and format datetimes",
             "Do date arithmetic"
@@ -1971,7 +1971,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Use math functions",
             "Generate random values reproducibly"
@@ -2002,7 +2002,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Search and extract with re",
             "Use groups"
@@ -2037,7 +2037,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Call an HTTP API",
             "Parse a JSON response"
@@ -2064,7 +2064,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Log instead of print",
             "Write unit tests"
@@ -2087,7 +2087,7 @@
           "free": false,
           "daily": false,
           "type": "summary",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Combine dates, regex and files"
           ],
@@ -2268,7 +2268,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement binary search",
             "Compare sorting algorithms"
@@ -2295,7 +2295,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Implement a stack and a queue",
             "Walk a binary tree"
@@ -2322,7 +2322,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Create tables and insert rows",
             "Query with parameters"
@@ -2345,7 +2345,7 @@
           "free": false,
           "daily": false,
           "type": "lesson",
-          "status": "to-write",
+          "status": "written",
           "objectives": [
             "Define routes",
             "Return JSON"

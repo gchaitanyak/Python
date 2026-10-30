@@ -1,0 +1,183 @@
+{
+  "id": "py-functions-summary",
+  "moduleId": "functions",
+  "title": "Functions: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: arguments and defaults, `*args` and `**kwargs`, scope, lambdas, recursion, closures, decorators and generators.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Write `clamp(value, low=0, high=100)` that returns `value` limited to the range `low`…`high`.",
+      "starterCode": "def clamp(value, low=0, high=100):\n    pass\n",
+      "solution": "def clamp(value, low=0, high=100):\n    return max(low, min(value, high))",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert clamp(50) == 50 and clamp(-5) == 0 and clamp(250) == 100, 'clamp should keep values between 0 and 100 by default.'",
+          "message": "Check the default range."
+        },
+        {
+          "name": "custom",
+          "code": "assert clamp(7, low=1, high=5) == 5 and clamp(0, 1, 5) == 1, 'Custom low and high should work.'",
+          "message": "Check a custom range."
+        }
+      ],
+      "hint": "`min(value, high)` caps it; `max(low, …)` floors it.",
+      "explanation": "Defaults cover the common 0–100 case."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def f(x, y=2):\n    return x ** y\n\nprint(f(3), f(2, 3))",
+      "expectedOutput": "9 8",
+      "hint": "The default exponent is 2.",
+      "explanation": "3² is 9 and 2³ is 8."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `word_lengths(*words)` that returns a dictionary mapping each word to its length.",
+      "starterCode": "def word_lengths(*words):\n    pass\n",
+      "solution": "def word_lengths(*words):\n    return {w: len(w) for w in words}",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert word_lengths('hi', 'there') == {'hi': 2, 'there': 5} and word_lengths() == {}, 'word_lengths(\"hi\", \"there\") should be {\"hi\": 2, \"there\": 5}.'",
+          "message": "Map each word to its length."
+        }
+      ],
+      "hint": "`words` is a tuple; a dict comprehension does the rest.",
+      "explanation": "`*args` plus a comprehension: flexible and short."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`total([1, 2, 3])` should be 6, but it returns `None`. Fix the recursive function.",
+      "starterCode": "def total(nums):\n    if not nums:\n        return 0\n    nums[0] + total(nums[1:])\n",
+      "solution": "def total(nums):\n    if not nums:\n        return 0\n    return nums[0] + total(nums[1:])\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert total([1, 2, 3]) == 6 and total([]) == 0 and total([10]) == 10, 'total should add up the list.'",
+          "message": "Return the sum."
+        }
+      ],
+      "hint": "The recursive line calculates a value… and then throws it away.",
+      "explanation": "Every branch of a function that should give a result needs a `return`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which `def` is the same as `lambda x: x * 2`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`def f(x): print(x * 2)`"
+        },
+        {
+          "id": "b",
+          "text": "`def f(x): return x * 2`"
+        },
+        {
+          "id": "c",
+          "text": "`def f(): return x * 2`"
+        },
+        {
+          "id": "d",
+          "text": "`def f(x): x * 2`"
+        }
+      ],
+      "answer": "b",
+      "hint": "A lambda's expression is its return value.",
+      "explanation": "Only the `return` version gives back the doubled value."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `make_discounter(percent)` that returns a function. That function takes a price and returns it with `percent`% off, rounded to 2 decimals.",
+      "starterCode": "def make_discounter(percent):\n    pass\n",
+      "solution": "def make_discounter(percent):\n    def apply(price):\n        return round(price * (1 - percent / 100), 2)\n    return apply",
+      "tests": [
+        {
+          "name": "values",
+          "code": "ten = make_discounter(10)\nhalf = make_discounter(50)\nassert ten(20) == 18.0 and half(9.99) == 5.0 and ten(0) == 0, 'make_discounter(10)(20) should be 18.0.'",
+          "message": "Apply the discount."
+        }
+      ],
+      "hint": "The inner function uses `percent` from the outer one.",
+      "explanation": "Closures let you create ready-configured functions."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword so `countdown` produces its numbers one at a time.",
+      "template": "def countdown(n):\n    while n > 0:\n        ___ n\n        n -= 1",
+      "blanks": [
+        "yield"
+      ],
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert list(countdown(3)) == [3, 2, 1], 'list(countdown(3)) should be [3, 2, 1].'",
+          "message": "countdown(3) should give 3, 2, 1."
+        }
+      ],
+      "hint": "It turns the function into a generator.",
+      "explanation": "`yield` hands back each number and pauses."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `apply_all(value, *funcs)` that passes `value` through each function in order and returns the result.",
+      "starterCode": "def apply_all(value, *funcs):\n    pass\n",
+      "solution": "def apply_all(value, *funcs):\n    for f in funcs:\n        value = f(value)\n    return value",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert apply_all(3, lambda x: x + 1, lambda x: x * 2) == 8, 'apply_all(3, +1, ×2) should be 8.'",
+          "message": "Apply each function in order."
+        },
+        {
+          "name": "none",
+          "code": "assert apply_all(5) == 5 and apply_all('a', str.upper) == 'A', 'With no functions, return the value unchanged.'",
+          "message": "Handle no functions."
+        }
+      ],
+      "hint": "Loop over `funcs`, replacing `value` with each result.",
+      "explanation": "Functions are values, so they can be passed around in a tuple."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def deco(f):\n    return lambda n: f(n) + 1\n\n@deco\ndef sq(n):\n    return n * n\n\nprint(sq(3))",
+      "expectedOutput": "10",
+      "hint": "`sq` is now the lambda.",
+      "explanation": "The original gives 9; the decorator adds 1."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `clean_names(names)`: strip spaces, use title case, drop empty entries, remove duplicates and return the names sorted. Split the work into small helper functions if you like.",
+      "starterCode": "def clean_names(names):\n    pass\n",
+      "solution": "def tidy(name):\n    return name.strip().title()\n\ndef clean_names(names):\n    cleaned = {tidy(n) for n in names if n.strip()}\n    return sorted(cleaned)",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert clean_names(['  ana ', 'BEN', 'ana', '', '   ', 'cleo lima']) == ['Ana', 'Ben', 'Cleo Lima'], 'Strip, title-case, drop empties, de-duplicate and sort.'",
+          "message": "Check every cleaning step."
+        },
+        {
+          "name": "empty",
+          "code": "assert clean_names([]) == [], 'An empty list gives an empty list.'",
+          "message": "Handle an empty list."
+        }
+      ],
+      "hint": "A helper for one name, then a set comprehension and `sorted`.",
+      "explanation": "Small functions that each do one job combine into readable programs."
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "modules": [
+    {
+      "id": "fixture",
+      "order": 1,
+      "title": "Fixture",
+      "lessons": [
+        { "id": "py-broken", "order": 1, "title": "Broken", "free": true, "type": "lesson", "status": "written" },
+        { "id": "py-missing", "order": 2, "title": "Missing", "free": true, "type": "lesson", "status": "written" }
+      ]
+    }
+  ]
+}

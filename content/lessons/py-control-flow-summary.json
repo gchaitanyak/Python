@@ -1,0 +1,177 @@
+{
+  "id": "py-control-flow-summary",
+  "moduleId": "control-flow",
+  "title": "Control Flow: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: `if`/`elif`/`else`, `match`, `for` with `range`, `while`, `break`, `continue` and loop `else`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Print the numbers 1 to 15, one per line — but print `Fizz` for multiples of 3, `Buzz` for multiples of 5, and `FizzBuzz` for multiples of both.",
+      "starterCode": "# your code\n",
+      "solution": "for i in range(1, 16):\n    if i % 15 == 0:\n        print(\"FizzBuzz\")\n    elif i % 3 == 0:\n        print(\"Fizz\")\n    elif i % 5 == 0:\n        print(\"Buzz\")\n    else:\n        print(i)",
+      "tests": [
+        {
+          "name": "output",
+          "code": "expected = ['FizzBuzz' if i % 15 == 0 else 'Fizz' if i % 3 == 0 else 'Buzz' if i % 5 == 0 else str(i) for i in range(1, 16)]\nassert __output__.split() == expected, 'Check each line: 3 → Fizz, 5 → Buzz, 15 → FizzBuzz.'",
+          "message": "Check the Fizz/Buzz rules."
+        }
+      ],
+      "hint": "Check *both* first — otherwise 15 would stop at `Fizz`.",
+      "explanation": "Order your conditions from most to least specific."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "total = 0\nfor i in range(5):\n    if i % 2:\n        total += i\nprint(total)",
+      "expectedOutput": "4",
+      "hint": "`i % 2` is 1 (truthy) for odd numbers.",
+      "explanation": "Only 1 and 3 are added."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Using `match`, store how many metres one `unit` is in `factor`: `m` → 1, `km` → 1000, `cm` → 0.01, anything else → `None`.",
+      "starterCode": "# your match here\n",
+      "solution": "match unit:\n    case \"m\":\n        factor = 1\n    case \"km\":\n        factor = 1000\n    case \"cm\":\n        factor = 0.01\n    case _:\n        factor = None",
+      "setupCode": "unit = \"km\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert factor == {'m': 1, 'km': 1000, 'cm': 0.01}.get(unit), 'Check each unit, with None for unknown units.'",
+          "message": "Check each unit."
+        }
+      ],
+      "hint": "Three exact cases and a wildcard.",
+      "explanation": "`None` is a sensible result for *don't know*."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "A score of 95 should give `distinction`, but it gives `pass`. Fix the order of the checks.",
+      "starterCode": "score = 95\nif score >= 50:\n    grade = \"pass\"\nelif score >= 90:\n    grade = \"distinction\"\n",
+      "solution": "score = 95\nif score >= 90:\n    grade = \"distinction\"\nelif score >= 50:\n    grade = \"pass\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert grade == 'distinction', 'grade should be distinction for 95.'",
+          "message": "grade should be distinction."
+        }
+      ],
+      "hint": "95 is also ≥ 50 — and the first true branch wins.",
+      "explanation": "Check the highest boundary first."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which numbers does `range(2, 11, 4)` produce?",
+      "options": [
+        {
+          "id": "a",
+          "text": "2, 6, 10"
+        },
+        {
+          "id": "b",
+          "text": "2, 6"
+        },
+        {
+          "id": "c",
+          "text": "2, 4, 6, 8, 10"
+        },
+        {
+          "id": "d",
+          "text": "4, 8"
+        }
+      ],
+      "answer": "a",
+      "hint": "Start at 2, add 4 each time, stop before 11.",
+      "explanation": "2, 6 and 10 are all below 11."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Count the words in `sentence` that start with a capital letter. Store the count in `capitals`. (`split()` gives the words; `word[0].isupper()` checks the first letter.)",
+      "starterCode": "capitals = 0\n",
+      "solution": "capitals = 0\nfor word in sentence.split():\n    if word[0].isupper():\n        capitals += 1",
+      "setupCode": "sentence = \"Yesterday Ada and Linus met at the Lisbon office\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert capitals == sum(1 for w in sentence.split() if w[0].isupper()), 'capitals should count the words starting with a capital letter.'",
+          "message": "Count capitalised words."
+        }
+      ],
+      "hint": "Loop over `sentence.split()` and add 1 when the first letter is upper case.",
+      "explanation": "A loop, a condition and a counter: the core of most data checks."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword so `odd_total` adds up only the odd numbers below 10.",
+      "template": "odd_total = 0\nfor n in range(10):\n    if n % 2 == 0:\n        ___\n    odd_total += n",
+      "blanks": [
+        "continue"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert odd_total == 25, 'odd_total should be 25.'",
+          "message": "odd_total should be 25."
+        }
+      ],
+      "hint": "Skip the rest of this pass for even numbers.",
+      "explanation": "`continue` jumps to the next number, so only odd ones are added: 25."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "A guessing game: the secret is `42`. Keep asking `Guess? ` until the player gets it. After each wrong guess print `Too high` or `Too low`. At the end print `Correct in N guesses`.",
+      "starterCode": "secret = 42\n",
+      "solution": "secret = 42\nguesses = 0\nwhile True:\n    guess = int(input(\"Guess? \"))\n    guesses += 1\n    if guess > secret:\n        print(\"Too high\")\n    elif guess < secret:\n        print(\"Too low\")\n    else:\n        break\nprint(f\"Correct in {guesses} guesses\")",
+      "setupCode": "__input__ = \"50\\n30\\n42\\n\"",
+      "tests": [
+        {
+          "name": "hints",
+          "code": "lines = [l for l in __output__.splitlines() if l.startswith('Too')]\nassert lines == ['Too high', 'Too low'], 'After each wrong guess print Too high or Too low.'",
+          "message": "Give a hint after each wrong guess."
+        },
+        {
+          "name": "end",
+          "code": "assert __output__.strip().endswith('Correct in 3 guesses'), 'Finish with Correct in N guesses.'",
+          "message": "Finish with Correct in N guesses."
+        }
+      ],
+      "hint": "`while True:` with a `break` on the right guess is a common pattern.",
+      "explanation": "Counting guesses inside the loop gives you the total at the end."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "for i in range(3):\n    for j in range(i):\n        print(i, j)",
+      "expectedOutput": "1 0\n2 0\n2 1",
+      "hint": "When `i` is 0, the inner loop runs zero times.",
+      "explanation": "The inner loop runs `i` times on each pass of the outer loop."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "You have a `budget` and a comma-separated list of `prices`. Buy items in order until the next one would take you **over** budget, then stop. Store the number of items bought in `bought` and the money spent in `spent`.",
+      "starterCode": "bought = 0\nspent = 0\n",
+      "solution": "bought = 0\nspent = 0\nfor text in prices.split(\",\"):\n    price = float(text)\n    if spent + price > budget:\n        break\n    spent += price\n    bought += 1",
+      "setupCode": "budget = 40\nprices = \"12.5,8,30,4.25\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "b, s = 0, 0\nfor t in prices.split(','):\n    p = float(t)\n    if s + p > budget:\n        break\n    s += p\n    b += 1\nassert bought == b and abs(spent - s) < 1e-9, 'Stop before the item that would go over budget.'",
+          "message": "Stop before going over budget."
+        }
+      ],
+      "hint": "Convert each piece with `float()`, check the budget, then `break` or buy.",
+      "explanation": "Checking *before* adding means you never go over."
+    }
+  ]
+}

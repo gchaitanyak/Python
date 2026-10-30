@@ -1,0 +1,163 @@
+{
+  "id": "py-match-statement",
+  "moduleId": "control-flow",
+  "title": "match Statements",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "`match` compares one value against several **patterns**. Each `case` is a pattern; the first one that fits runs. `case _:` is the **wildcard** — it matches anything, so put it last as a catch-all.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Join alternatives with `|`. Add a **guard** with `if` to a case for extra conditions.",
+      "exampleCode": "command = \"stop\"\nmatch command:\n    case \"start\":\n        print(\"Starting\")\n    case \"stop\" | \"halt\":\n        print(\"Stopping\")\n    case _:\n        print(\"Unknown command\")",
+      "explanation": "Change `command` to `\"halt\"` or `\"jump\"` and run it again."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`colour` holds a traffic-light colour. Using `match`, store the action in `action`: `red` → `stop`, `amber` → `wait`, `green` → `go`, anything else → `unknown`.",
+      "starterCode": "match colour:\n    case \"red\":\n        action = \"stop\"\n",
+      "solution": "match colour:\n    case \"red\":\n        action = \"stop\"\n    case \"amber\":\n        action = \"wait\"\n    case \"green\":\n        action = \"go\"\n    case _:\n        action = \"unknown\"",
+      "setupCode": "colour = \"amber\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = {'red': 'stop', 'amber': 'wait', 'green': 'go'}.get(colour, 'unknown')\nassert action == expected, 'Check each colour, and use case _ for anything else.'",
+          "message": "Check each case and the catch-all."
+        }
+      ],
+      "hint": "One `case` per colour, then `case _:` for the rest.",
+      "explanation": "`match` keeps a list of exact options tidy compared with many `elif`s."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "n = 3\nmatch n:\n    case 1:\n        print(\"one\")\n    case 2 | 3:\n        print(\"two or three\")\n    case _:\n        print(\"many\")",
+      "expectedOutput": "two or three",
+      "hint": "`|` means *or* inside a pattern.",
+      "explanation": "3 matches the pattern `2 | 3`."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "What does `case _:` do?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Matches an empty string"
+        },
+        {
+          "id": "b",
+          "text": "Matches anything"
+        },
+        {
+          "id": "c",
+          "text": "Matches nothing"
+        },
+        {
+          "id": "d",
+          "text": "Matches only None"
+        }
+      ],
+      "answer": "b",
+      "hint": "It's called the wildcard.",
+      "explanation": "`_` fits every value, so it works as the default case."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "`day` holds a short day name like `Mon`. Using `match` with `|`, store `\"weekend\"` in `kind` for `Sat` or `Sun`, otherwise `\"weekday\"`.",
+      "starterCode": "# your match here\n",
+      "solution": "match day:\n    case \"Sat\" | \"Sun\":\n        kind = \"weekend\"\n    case _:\n        kind = \"weekday\"",
+      "setupCode": "day = \"Sun\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert kind == ('weekend' if day in ('Sat', 'Sun') else 'weekday'), 'kind should be weekend for Sat and Sun, weekday otherwise.'",
+          "message": "Check weekend and weekday."
+        }
+      ],
+      "hint": "One case can list two values with `|`.",
+      "explanation": "Two cases cover all seven days."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "Unknown size codes should give `\"other\"`, but `\"XXL\"` crashes with a *NameError* on the last line. Fix it.",
+      "starterCode": "code = \"XXL\"\nmatch code:\n    case \"S\":\n        size = \"small\"\n    case \"M\":\n        size = \"medium\"\nlabel = size.upper()\n",
+      "solution": "code = \"XXL\"\nmatch code:\n    case \"S\":\n        size = \"small\"\n    case \"M\":\n        size = \"medium\"\n    case _:\n        size = \"other\"\nlabel = size.upper()\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert label == 'OTHER', 'label should be OTHER for an unknown code.'",
+          "message": "label should be OTHER."
+        }
+      ],
+      "hint": "No case matched, so `size` was never created. Add a catch-all.",
+      "explanation": "A wildcard case guarantees every path sets the variable."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Using `match` with **guards**, store the state of water at `temp` °C in `state`: below 0 → `ice`, up to and including 100 → `water`, above 100 → `steam`.",
+      "starterCode": "match temp:\n    case t if t < 0:\n        state = \"ice\"\n",
+      "solution": "match temp:\n    case t if t < 0:\n        state = \"ice\"\n    case t if t <= 100:\n        state = \"water\"\n    case _:\n        state = \"steam\"",
+      "setupCode": "temp = 37",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = 'ice' if temp < 0 else 'water' if temp <= 100 else 'steam'\nassert state == expected, 'Check the boundaries: below 0 ice, up to 100 water, above steam.'",
+          "message": "Check the three ranges."
+        }
+      ],
+      "hint": "`case t if t <= 100:` captures the value as `t` and checks it.",
+      "explanation": "Guards let a case match ranges, not just exact values."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Fill in the symbol so both `\"y\"` and `\"yes\"` are accepted.",
+      "template": "answer = \"yes\"\nmatch answer:\n    case \"y\" ___ \"yes\":\n        ok = True\n    case _:\n        ok = False",
+      "blanks": [
+        "|"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert ok is True, 'ok should be True for yes.'",
+          "message": "ok should be True."
+        }
+      ],
+      "hint": "Inside a pattern, *or* is written as a vertical bar.",
+      "explanation": "`\"y\" | \"yes\"` matches either value."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "match \"HELLO\".lower():\n    case \"hello\":\n        print(\"hi!\")\n    case _:\n        print(\"?\")",
+      "expectedOutput": "hi!",
+      "hint": "The value is worked out before matching.",
+      "explanation": "`\"HELLO\".lower()` is `\"hello\"`, which matches the first case."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Web servers reply with status codes. Using `match`, store a `message` for `status`: `200` → `OK`, `301` or `302` → `Redirect`, `404` → `Not found`, 500 and above → `Server error`, anything else → `Other`.",
+      "starterCode": "# your match here\n",
+      "solution": "match status:\n    case 200:\n        message = \"OK\"\n    case 301 | 302:\n        message = \"Redirect\"\n    case 404:\n        message = \"Not found\"\n    case s if s >= 500:\n        message = \"Server error\"\n    case _:\n        message = \"Other\"",
+      "setupCode": "status = 503",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = 'OK' if status == 200 else 'Redirect' if status in (301, 302) else 'Not found' if status == 404 else 'Server error' if status >= 500 else 'Other'\nassert message == expected, 'Check each status code rule.'",
+          "message": "Check each status rule."
+        }
+      ],
+      "hint": "Mix literal cases, an `|` case, a guard and the wildcard.",
+      "explanation": "Status codes are a classic use for `match`."
+    }
+  ]
+}

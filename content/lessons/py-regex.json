@@ -1,0 +1,184 @@
+{
+  "id": "py-regex",
+  "moduleId": "standard-library",
+  "title": "Regular Expressions",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "A **regular expression** (regex) is a small pattern language for text. The `re` module searches with it: `re.search` finds the first match, `re.findall` finds them all, `re.fullmatch` checks a whole string and `re.sub` replaces matches. Write patterns as raw strings (`r\"...\"`) so backslashes reach `re` unchanged.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`\\d` is a digit, `\\w` a letter, digit or underscore, `\\s` a space. `+` means one or more, `*` zero or more, `?` optional, `{3}` exactly three. Brackets `( )` make a **group** you can pull out.",
+      "exampleCode": "import re\n\ntext = \"Room 12B opens at 09:30, room 7 at 10:15.\"\nprint(re.findall(r\"\\d\\d:\\d\\d\", text))     # ['09:30', '10:15']\n\nm = re.search(r\"Room (\\d+)(\\w?)\", text)\nprint(m.group(0), m.group(1), m.group(2))  # Room 12B 12 B",
+      "explanation": "`group(0)` is the whole match; `group(1)` onwards are the brackets, left to right."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import re\n\nprint(re.findall(r\"\\d+\", \"Order 66 shipped 3 boxes on day 12\"))",
+      "expectedOutput": "['66', '3', '12']",
+      "hint": "`\\d+` grabs each run of digits.",
+      "explanation": "`findall` returns every match as a string, in order."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write `find_emails(text)` that returns a list of the email addresses in `text`, in order. An address has a name, `@`, and a domain with at least one dot.",
+      "starterCode": "import re\n\ndef find_emails(text):\n    pass\n",
+      "solution": "import re\n\ndef find_emails(text):\n    return re.findall(r\"[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+\", text)",
+      "tests": [
+        {
+          "name": "found",
+          "code": "assert find_emails('Write to ana@example.com or ben.lee@mail.example.org.') == ['ana@example.com', 'ben.lee@mail.example.org'], 'Find both addresses, without the full stop at the end.'",
+          "message": "Find the addresses."
+        },
+        {
+          "name": "not addresses",
+          "code": "assert find_emails('No address: @nope, x@y, plain text') == [], 'Text without a real address gives [].'",
+          "message": "Skip things that aren't addresses."
+        }
+      ],
+      "hint": "Name: `[\\w.+-]+`. Then `@`. Then a word, followed by one or more `.word` parts: `(?:\\.[\\w-]+)+`.",
+      "explanation": "`(?: )` groups without capturing, so `findall` still returns whole addresses. Real email rules are looser — this is a practical pattern, not a perfect one."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `parse_iso(text)` that turns `\"2025-10-29\"` into the tuple `(2025, 10, 29)` of ints. Return `None` if the **whole** text isn't in that `YYYY-MM-DD` form.",
+      "starterCode": "import re\n\ndef parse_iso(text):\n    pass\n",
+      "solution": "import re\n\ndef parse_iso(text):\n    m = re.fullmatch(r\"(\\d{4})-(\\d{2})-(\\d{2})\", text)\n    if not m:\n        return None\n    return tuple(int(g) for g in m.groups())",
+      "tests": [
+        {
+          "name": "valid",
+          "code": "assert parse_iso('2025-10-29') == (2025, 10, 29), 'Return a tuple of three ints.'",
+          "message": "Parse a valid date."
+        },
+        {
+          "name": "invalid",
+          "code": "assert parse_iso('29/10/2025') is None and parse_iso('2025-10-29!') is None and parse_iso('x2025-10-29') is None, 'Anything not exactly YYYY-MM-DD returns None.'",
+          "message": "Reject other text."
+        }
+      ],
+      "hint": "`re.fullmatch` with three groups; `m.groups()` gives them as a tuple of strings.",
+      "explanation": "`fullmatch` must cover the whole text, so extra characters at either end fail."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Why write regex patterns as raw strings, like `r\"\\d+\"`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "They run faster"
+        },
+        {
+          "id": "b",
+          "text": "Python leaves the backslashes alone, so `re` sees them"
+        },
+        {
+          "id": "c",
+          "text": "They ignore upper and lower case"
+        },
+        {
+          "id": "d",
+          "text": "They're required by `re`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Think about what a plain string does with `\\`.",
+      "explanation": "In a normal string, `\\b` would become a backspace character before `re` ever sees it. Raw strings keep every backslash."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`first_tag` should be `<b>`, but it grabs the whole string. Fix the pattern.",
+      "starterCode": "import re\n\nhtml = \"<b>bold</b> and <i>italic</i>\"\nfirst_tag = re.search(r\"<.*>\", html).group()\n",
+      "solution": "import re\n\nhtml = \"<b>bold</b> and <i>italic</i>\"\nfirst_tag = re.search(r\"<.*?>\", html).group()\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert first_tag == '<b>', 'first_tag should be <b>.'",
+          "message": "Match only the first tag."
+        }
+      ],
+      "hint": "`.*` is **greedy**: it takes as much as it can.",
+      "explanation": "Adding `?` (`.*?`) makes it lazy: it stops at the first `>`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the group name so `user` is the part before the `@`.",
+      "template": "import re\n\nm = re.search(r\"(?P<___>[\\w.]+)@\", \"ana@example.com\")\nuser = m.group(\"user\")",
+      "blanks": [
+        "user"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert user == 'ana', 'user should be ana.'",
+          "message": "user should be ana."
+        }
+      ],
+      "hint": "The name in `(?P<name>...)` must match the one in `group(...)`.",
+      "explanation": "Named groups make patterns easier to read than counting brackets."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `mask_phones(text)` that hides phone numbers like `912 345 678`, keeping only the last three digits: `*** *** 678`.",
+      "starterCode": "import re\n\ndef mask_phones(text):\n    return text\n",
+      "solution": "import re\n\ndef mask_phones(text):\n    return re.sub(r\"\\b\\d{3} \\d{3} (\\d{3})\\b\", r\"*** *** \\1\", text)",
+      "tests": [
+        {
+          "name": "one",
+          "code": "assert mask_phones('Call 912 345 678 today') == 'Call *** *** 678 today', 'Mask the first six digits.'",
+          "message": "Mask one number."
+        },
+        {
+          "name": "many",
+          "code": "assert mask_phones('A: 210 000 111, B: 933 222 444') == 'A: *** *** 111, B: *** *** 444', 'Mask every number.'",
+          "message": "Mask all numbers."
+        },
+        {
+          "name": "other numbers",
+          "code": "assert mask_phones('Order 1234 for 3 people') == 'Order 1234 for 3 people', 'Leave other numbers alone.'",
+          "message": "Leave other text alone."
+        }
+      ],
+      "hint": "Capture the last three digits with a group and put them back with `\\1` in the replacement.",
+      "explanation": "`re.sub` can reuse groups in the replacement: `\\1` is the first group."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "`re.split` splits on a pattern. What does this print?",
+      "code": "import re\n\nprint(re.split(r\"[,;]\\s*\", \"tea, milk;bread;  eggs\"))",
+      "expectedOutput": "['tea', 'milk', 'bread', 'eggs']",
+      "hint": "Split at a comma or semicolon, plus any spaces after it.",
+      "explanation": "One pattern copes with mixed separators that `str.split` can't."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Log lines look like `2025-10-29 14:03:11 ERROR Disk full`. Write `parse_log(line)` returning a dict with keys `date`, `time`, `level` and `message` (all strings), or `None` if the line doesn't fit.",
+      "starterCode": "import re\n\ndef parse_log(line):\n    pass\n",
+      "solution": "import re\n\nLOG = re.compile(r\"(?P<date>\\d{4}-\\d{2}-\\d{2}) (?P<time>\\d{2}:\\d{2}:\\d{2}) (?P<level>[A-Z]+) (?P<message>.+)\")\n\ndef parse_log(line):\n    m = LOG.fullmatch(line.strip())\n    return m.groupdict() if m else None",
+      "tests": [
+        {
+          "name": "valid",
+          "code": "assert parse_log('2025-10-29 14:03:11 ERROR Disk full') == {'date': '2025-10-29', 'time': '14:03:11', 'level': 'ERROR', 'message': 'Disk full'}, 'Split the line into date, time, level and message.'",
+          "message": "Parse a valid line."
+        },
+        {
+          "name": "invalid",
+          "code": "assert parse_log('Disk full') is None and parse_log('') is None, 'Lines that do not fit return None.'",
+          "message": "Reject other lines."
+        }
+      ],
+      "hint": "Named groups plus `m.groupdict()` give you the dictionary directly.",
+      "explanation": "`re.compile` once, use many times — tidy when the same pattern runs over thousands of lines."
+    }
+  ]
+}

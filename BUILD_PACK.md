@@ -8,14 +8,14 @@ This folder is a complete brief for Claude Code to build a gamified Python pract
 2. Open a terminal in that folder and start Claude Code: `claude`
 3. Give it this first prompt:
 
-   > Read CLAUDE.md and every file it lists. Then start docs/BUILD_PLAN.md Phase 0. Stop at the end of the phase and show me the acceptance checks.
+   > Read CLAUDE.md and every file it lists. Then start docs/BUILD_PLAN.md Phase 1. Stop at the end of the phase and show me the acceptance checks.
 
 4. After each phase, review, then say: `Continue with the next phase.`
 
 You'll need, at the points the build plan says:
-- A Firebase project (free Spark plan is enough until Phase 5; Functions need the Blaze plan).
-- A Stripe account in test mode (Phase 5).
-- An LLM API key for AI hints (Phase 6, optional).
+- A Firebase project (free Spark plan is enough until Phase 6; Functions need the Blaze plan).
+- A Stripe account in test mode (Phase 6).
+- An LLM API key for AI hints (Phase 7, optional).
 
 ## What's inside
 

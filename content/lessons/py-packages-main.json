@@ -1,0 +1,198 @@
+{
+  "id": "py-packages-main",
+  "moduleId": "modules-packages",
+  "title": "Packages and __main__",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **package** is a folder of modules — like `os` containing `os.path`, or `email` containing `email.utils`. You import from it with dots: `import os.path` or `from email.utils import parseaddr`. Every module has a `__name__`. When a file is run directly, its `__name__` is `\"__main__\"`; when it's imported, it's the module's name.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`if __name__ == \"__main__\":` runs code only when the file is the program being run, not when it's imported by another file. Here your code is the program being run.",
+      "exampleCode": "import os.path\nprint(os.path.join(\"data\", \"sales.csv\"))\nprint(os.path.basename(\"/home/ana/report.pdf\"))\nprint(__name__)\n\nif __name__ == \"__main__\":\n    print(\"Running as a script\")",
+      "explanation": "A regular package folder usually contains an `__init__.py` file, which runs when the package is imported."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`path` holds a file path. Using `os.path`, store the folder in `folder`, the file name in `name` and the extension (like `.jpg`) in `ext`.",
+      "starterCode": "import os.path\n",
+      "solution": "import os.path\nfolder = os.path.dirname(path)\nname = os.path.basename(path)\next = os.path.splitext(path)[1]",
+      "setupCode": "path = \"/home/ana/photos/beach-2026.jpg\"",
+      "tests": [
+        {
+          "name": "folder",
+          "code": "import os.path as _p\nassert folder == _p.dirname(path), 'folder should be the directory part of the path.'",
+          "message": "Check folder."
+        },
+        {
+          "name": "name",
+          "code": "import os.path as _p\nassert name == _p.basename(path), 'name should be the file name.'",
+          "message": "Check name."
+        },
+        {
+          "name": "ext",
+          "code": "import os.path as _p\nassert ext == _p.splitext(path)[1], 'ext should be the extension, including the dot.'",
+          "message": "Check ext."
+        }
+      ],
+      "hint": "Look for `dirname`, `basename` and `splitext` in `os.path`.",
+      "explanation": "`os.path` handles separators correctly on every operating system."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "Your code here runs as the main program. What does this print?",
+      "code": "print(__name__)",
+      "expectedOutput": "__main__",
+      "hint": "This file isn't being imported by another.",
+      "explanation": "A program that is run directly is always named `__main__`."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Define a function `main()` that prints `Report ready`. Then call it only when the file is run directly, using a `__main__` guard.",
+      "starterCode": "def main():\n    pass\n",
+      "solution": "def main():\n    print(\"Report ready\")\n\nif __name__ == \"__main__\":\n    main()",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Report ready', 'Running the file should print Report ready once.'",
+          "message": "Print Report ready once."
+        },
+        {
+          "name": "main",
+          "code": "assert callable(main), 'Define a function called main.'",
+          "message": "Define main()."
+        }
+      ],
+      "hint": "Put the call inside `if __name__ == \"__main__\":`.",
+      "explanation": "This lets other files import `main` without it running automatically."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "A file `tools.py` is **imported** by another program. What is `__name__` inside `tools.py`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"__main__\"`"
+        },
+        {
+          "id": "b",
+          "text": "`\"tools\"`"
+        },
+        {
+          "id": "c",
+          "text": "`\"tools.py\"`"
+        },
+        {
+          "id": "d",
+          "text": "`None`"
+        }
+      ],
+      "answer": "b",
+      "hint": "When imported, it's the module's own name.",
+      "explanation": "Only the program being run directly is called `__main__`."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This script should print `Starting backup` when run, but prints nothing. Fix the guard.",
+      "starterCode": "def run():\n    print(\"Starting backup\")\n\nif __name__ == \"main\":\n    run()\n",
+      "solution": "def run():\n    print(\"Starting backup\")\n\nif __name__ == \"__main__\":\n    run()\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Starting backup', 'The script should print Starting backup.'",
+          "message": "Print Starting backup."
+        }
+      ],
+      "hint": "Check the exact spelling of the special name.",
+      "explanation": "It's `\"__main__\"`, with two underscores on each side."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword to import one name from a package's module.",
+      "template": "from os.path ___ join\nresult = join(\"reports\", \"march.csv\")",
+      "blanks": [
+        "import"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert result == 'reports/march.csv', 'result should be reports/march.csv.'",
+          "message": "result should be reports/march.csv."
+        }
+      ],
+      "hint": "`from … ___ …`",
+      "explanation": "`from package.module import name` reaches inside the package."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "The `email` package contains a `utils` module. Import `parseaddr` from it and split `contact` into `display_name` and `address`. (`parseaddr` returns a `(name, address)` tuple.)",
+      "starterCode": "# your import here\n",
+      "solution": "from email.utils import parseaddr\ndisplay_name, address = parseaddr(contact)",
+      "setupCode": "contact = \"Dev Patel <dev.patel@example.org>\"",
+      "tests": [
+        {
+          "name": "values",
+          "code": "from email.utils import parseaddr as _p\nassert (display_name, address) == _p(contact), 'Unpack parseaddr(contact) into display_name and address.'",
+          "message": "Unpack the name and address."
+        }
+      ],
+      "hint": "`from email.utils import parseaddr`, then unpack the tuple it returns.",
+      "explanation": "Dotted imports reach modules inside packages."
+    },
+    {
+      "id": "q09",
+      "type": "multiple_choice",
+      "prompt": "Which file traditionally marks a folder as a regular Python package and runs when it's imported?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`main.py`"
+        },
+        {
+          "id": "b",
+          "text": "`__init__.py`"
+        },
+        {
+          "id": "c",
+          "text": "`setup.cfg`"
+        },
+        {
+          "id": "d",
+          "text": "`__name__.py`"
+        }
+      ],
+      "answer": "b",
+      "hint": "It has double underscores, like `__name__`.",
+      "explanation": "`__init__.py` sits in the package folder; it can be empty."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `main(argv)` that takes a list of number strings, prints `Total: N` and returns the total. Then call `main([\"3\", \"4\", \"5\"])` under a `__main__` guard.",
+      "starterCode": "def main(argv):\n    pass\n",
+      "solution": "def main(argv):\n    total = sum(int(a) for a in argv)\n    print(f\"Total: {total}\")\n    return total\n\nif __name__ == \"__main__\":\n    main([\"3\", \"4\", \"5\"])",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Total: 12', 'Running the file should print Total: 12.'",
+          "message": "Print Total: 12."
+        },
+        {
+          "name": "reusable",
+          "code": "assert main(['10', '5']) == 15, 'main([\"10\", \"5\"]) should return 15.'",
+          "message": "main should return the total."
+        }
+      ],
+      "hint": "Convert each string with `int()`, add them up, print and return.",
+      "explanation": "Taking arguments as a list makes `main` easy to test — real scripts pass `sys.argv[1:]`."
+    }
+  ]
+}

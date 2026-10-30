@@ -1,0 +1,224 @@
+{
+  "id": "py-http-requests",
+  "moduleId": "standard-library",
+  "title": "Working with Web APIs",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "A **web API** is a web address that returns data, usually JSON, instead of a page. With the popular `requests` library you send a GET request, check the **status code** and read the JSON. Code here can't reach the internet, so these exercises use a practice copy of `requests` that answers for `https://api.example.com`. The code you write is the same as with the real library (`pip install requests`).",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Status `200` means OK; `4xx` means the request was wrong (404 = not found); `5xx` means the server failed. Always pass a `timeout` so a slow server can't freeze your program.",
+      "exampleCode": "import requests\n\nresp = requests.get(\"https://api.example.com/weather\",\n                    params={\"city\": \"Oslo\"}, timeout=5)\nprint(resp.status_code)      # 200\ndata = resp.json()           # JSON text -> Python dict\nprint(data[\"temp_c\"], data[\"conditions\"])",
+      "explanation": "`params` builds the `?city=Oslo` part of the address for you, escaping spaces and symbols.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Get the weather for `Lisbon` from `https://api.example.com/weather` (pass the city in `params`, and a `timeout`). Store the temperature (the `temp_c` field) in `temp`.",
+      "starterCode": "import requests\n\n",
+      "solution": "import requests\n\nresp = requests.get(\"https://api.example.com/weather\", params={\"city\": \"Lisbon\"}, timeout=5)\ntemp = resp.json()[\"temp_c\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert temp == 21, 'temp should be the temp_c value for Lisbon.'",
+          "message": "temp should be Lisbon's temperature."
+        },
+        {
+          "name": "timeout",
+          "code": "assert requests.calls and requests.calls[-1]['timeout'], 'Pass a timeout to requests.get.'",
+          "message": "Pass a timeout."
+        }
+      ],
+      "hint": "`requests.get(url, params={...}, timeout=5).json()` gives a dict.",
+      "explanation": "The JSON object becomes a Python dict, so you read fields with square brackets.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q03",
+      "type": "multiple_choice",
+      "prompt": "An API answers with status code **404**. What does that mean?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Everything worked"
+        },
+        {
+          "id": "b",
+          "text": "The thing you asked for doesn't exist"
+        },
+        {
+          "id": "c",
+          "text": "The server crashed"
+        },
+        {
+          "id": "d",
+          "text": "You need to wait and retry"
+        }
+      ],
+      "answer": "b",
+      "hint": "4xx codes mean the request was the problem.",
+      "explanation": "404 is *Not Found*. A crashed server sends 5xx; 200 means success."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `get_temp(city)` that returns the city's `temp_c`, or `None` when the API answers 404 (unknown city).",
+      "starterCode": "import requests\n\ndef get_temp(city):\n    resp = requests.get(\"https://api.example.com/weather\", params={\"city\": city}, timeout=5)\n    return resp.json()[\"temp_c\"]\n",
+      "solution": "import requests\n\ndef get_temp(city):\n    resp = requests.get(\"https://api.example.com/weather\", params={\"city\": city}, timeout=5)\n    if resp.status_code == 404:\n        return None\n    return resp.json()[\"temp_c\"]",
+      "tests": [
+        {
+          "name": "known",
+          "code": "assert get_temp('Oslo') == 4 and get_temp('Nairobi') == 25, 'Return temp_c for known cities.'",
+          "message": "Known cities."
+        },
+        {
+          "name": "unknown",
+          "code": "assert get_temp('Atlantis') is None, 'Unknown cities (404) should return None.'",
+          "message": "Unknown city returns None."
+        }
+      ],
+      "hint": "Check `resp.status_code` before reading the JSON.",
+      "explanation": "An error response still has a JSON body — just not the one you wanted. Check the status first.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q05",
+      "type": "predict_output",
+      "prompt": "`json.loads` turns JSON text into Python values. What does this print?",
+      "code": "import json\n\ndata = json.loads('{\"items\": [{\"n\": 1}, {\"n\": 2}], \"next\": null}')\nprint(sum(i[\"n\"] for i in data[\"items\"]), data[\"next\"])",
+      "expectedOutput": "3 None",
+      "hint": "JSON `null` becomes Python `None`.",
+      "explanation": "Objects become dicts, arrays become lists, and `null` becomes `None` — exactly what `resp.json()` does too."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should list the names of active users from `https://api.example.com/users`, but crashes with *TypeError: 'Response' object is not iterable*. Fix it.",
+      "starterCode": "import requests\n\nusers = requests.get(\"https://api.example.com/users\", timeout=5)\nactive = [u[\"name\"] for u in users if u[\"active\"]]\n",
+      "solution": "import requests\n\nusers = requests.get(\"https://api.example.com/users\", timeout=5).json()\nactive = [u[\"name\"] for u in users if u[\"active\"]]\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert active == ['Ana', 'Caro', 'Dev'], 'active should be the names of the active users.'",
+          "message": "List the active users."
+        }
+      ],
+      "hint": "`get` returns a response object, not the data.",
+      "explanation": "Call `.json()` to turn the response body into Python data.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the argument name that sends `city=Oslo` as part of the request.",
+      "template": "import requests\n\nresp = requests.get(\"https://api.example.com/weather\", ___={\"city\": \"Oslo\"}, timeout=5)",
+      "blanks": [
+        "params"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert resp.json()['city'] == 'Oslo', 'The response should be for Oslo.'",
+          "message": "Ask for Oslo."
+        }
+      ],
+      "hint": "The query-string values are the request's *parameters*.",
+      "explanation": "`params` adds `?city=Oslo` to the address.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`https://api.example.com/todos?page=1` returns `{\"page\": 1, \"items\": [...], \"next\": 2}`; the last page has `\"next\": null`. Write `fetch_all_todos()` that follows the pages and returns every item in one list. Pass a timeout on every request.",
+      "starterCode": "import requests\n\ndef fetch_all_todos():\n    pass\n",
+      "solution": "import requests\n\ndef fetch_all_todos():\n    items = []\n    page = 1\n    while page is not None:\n        data = requests.get(\"https://api.example.com/todos\", params={\"page\": page}, timeout=5).json()\n        items.extend(data[\"items\"])\n        page = data[\"next\"]\n    return items",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert fetch_all_todos() == ['Buy milk', 'Call Ana', 'Book dentist', 'Pay rent', 'Water plants'], 'Return the items from every page, in order.'",
+          "message": "Collect every page."
+        },
+        {
+          "name": "timeouts",
+          "code": "requests.calls.clear()\nfetch_all_todos()\nassert len(requests.calls) == 3 and all(c['timeout'] for c in requests.calls), 'Make one request per page, each with a timeout.'",
+          "message": "One request per page, each with a timeout."
+        }
+      ],
+      "hint": "Loop while there's a next page: fetch it, add its items, move to `data[\"next\"]`.",
+      "explanation": "Most APIs split long lists into pages. Following `next` until it's empty is the usual pattern.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Write `fetch_json(url)` that returns the parsed JSON, but raises `requests.HTTPError` when the status is 4xx or 5xx.",
+      "starterCode": "import requests\n\ndef fetch_json(url):\n    return requests.get(url, timeout=5).json()\n",
+      "solution": "import requests\n\ndef fetch_json(url):\n    resp = requests.get(url, timeout=5)\n    resp.raise_for_status()\n    return resp.json()",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert len(fetch_json('https://api.example.com/users')) == 4, 'Return the JSON for a successful request.'",
+          "message": "Return JSON on success."
+        },
+        {
+          "name": "error",
+          "code": "try:\n    fetch_json('https://api.example.com/status/500')\nexcept requests.HTTPError:\n    pass\nelse:\n    raise AssertionError('A 500 response should raise requests.HTTPError.')",
+          "message": "Raise on a 5xx."
+        },
+        {
+          "name": "not found",
+          "code": "try:\n    fetch_json('https://api.example.com/nothing-here')\nexcept requests.HTTPError:\n    pass\nelse:\n    raise AssertionError('A 404 response should raise requests.HTTPError.')",
+          "message": "Raise on a 4xx."
+        }
+      ],
+      "hint": "`resp.raise_for_status()` does nothing for success and raises for errors.",
+      "explanation": "Failing loudly beats carrying on with an error message where you expected data.",
+      "setupCode": "import sys as _sys, types as _types, json as _json\nfrom urllib.parse import urlsplit as _urlsplit, parse_qsl as _parse_qsl, urlencode as _urlencode\n\n\ndef _install_practice_requests():\n    _WEATHER = {\"Lisbon\": (21, \"sunny\"), \"Oslo\": (4, \"snow\"), \"Nairobi\": (25, \"cloudy\")}\n    _USERS = [{\"id\": 1, \"name\": \"Ana\", \"active\": True}, {\"id\": 2, \"name\": \"Ben\", \"active\": False},\n              {\"id\": 3, \"name\": \"Caro\", \"active\": True}, {\"id\": 4, \"name\": \"Dev\", \"active\": True}]\n    _TODOS = [[\"Buy milk\", \"Call Ana\"], [\"Book dentist\", \"Pay rent\"], [\"Water plants\"]]\n\n    class HTTPError(Exception):\n        pass\n\n    class Timeout(Exception):\n        pass\n\n    class Response:\n        def __init__(self, url, status_code, body):\n            self.url = url\n            self.status_code = status_code\n            self.text = _json.dumps(body)\n            self.ok = status_code < 400\n\n        def json(self):\n            return _json.loads(self.text)\n\n        def raise_for_status(self):\n            if self.status_code >= 400:\n                raise HTTPError(f\"{self.status_code} error for url: {self.url}\")\n\n        def __repr__(self):\n            return f\"<Response [{self.status_code}]>\"\n\n    def _route(path, query):\n        if path == \"/weather\":\n            city = query.get(\"city\", \"\")\n            if city not in _WEATHER:\n                return 404, {\"error\": \"city not found\"}\n            temp, conditions = _WEATHER[city]\n            return 200, {\"city\": city, \"temp_c\": temp, \"conditions\": conditions}\n        if path == \"/users\":\n            return 200, _USERS\n        if path == \"/todos\":\n            page = int(query.get(\"page\", 1))\n            if not 1 <= page <= len(_TODOS):\n                return 404, {\"error\": \"no such page\"}\n            return 200, {\"page\": page, \"items\": _TODOS[page - 1], \"next\": page + 1 if page < len(_TODOS) else None}\n        if path.startswith(\"/status/\"):\n            code = int(path.rsplit(\"/\", 1)[1])\n            return code, {\"status\": code}\n        return 404, {\"error\": \"not found\"}\n\n    def get(url, params=None, timeout=None, headers=None):\n        parts = _urlsplit(url)\n        query = dict(_parse_qsl(parts.query))\n        query.update({k: str(v) for k, v in (params or {}).items()})\n        full = f\"{parts.scheme}://{parts.netloc}{parts.path}\" + (f\"?{_urlencode(query)}\" if query else \"\")\n        calls.append({\"url\": full, \"timeout\": timeout})\n        if parts.netloc != \"api.example.com\":\n            raise ConnectionError(f\"Practice mode only knows https://api.example.com, not {parts.netloc}\")\n        status, body = _route(parts.path, query)\n        return Response(full, status, body)\n\n    calls = []\n    requests = _types.ModuleType(\"requests\")\n    requests.get = get\n    requests.Response = Response\n    requests.HTTPError = HTTPError\n    requests.exceptions = _types.SimpleNamespace(HTTPError=HTTPError, Timeout=Timeout)\n    requests.calls = calls\n    _sys.modules[\"requests\"] = requests\n    return requests\n\nrequests = _install_practice_requests()\n"
+    },
+    {
+      "id": "q10",
+      "type": "multiple_choice",
+      "prompt": "Why pass `timeout=` to every request?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It makes requests faster"
+        },
+        {
+          "id": "b",
+          "text": "Without it, a server that never answers can make your program wait forever"
+        },
+        {
+          "id": "c",
+          "text": "The API requires it"
+        },
+        {
+          "id": "d",
+          "text": "It retries failed requests"
+        }
+      ],
+      "answer": "b",
+      "hint": "What happens if the server just never replies?",
+      "explanation": "`requests` waits indefinitely by default. A timeout turns a hang into an exception you can handle."
+    },
+    {
+      "id": "q11",
+      "type": "write_code",
+      "prompt": "Write `make_url(base, params)` that returns `base` plus a correctly escaped query string, using `urllib.parse.urlencode`.",
+      "starterCode": "def make_url(base, params):\n    return base + \"?\" + \"&\".join(f\"{k}={v}\" for k, v in params.items())\n",
+      "solution": "from urllib.parse import urlencode\n\ndef make_url(base, params):\n    return base + \"?\" + urlencode(params)",
+      "tests": [
+        {
+          "name": "escaped",
+          "code": "assert make_url('https://api.example.com/search', {'q': 'green tea & honey', 'page': 2}) == 'https://api.example.com/search?q=green+tea+%26+honey&page=2', 'Spaces and & must be escaped.'",
+          "message": "Escape special characters."
+        }
+      ],
+      "hint": "`urlencode(dict)` builds `key=value&key=value` with escaping.",
+      "explanation": "An unescaped `&` in a value would start a new parameter. That's why `params=` and `urlencode` exist."
+    }
+  ]
+}

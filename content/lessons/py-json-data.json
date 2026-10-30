@@ -1,0 +1,168 @@
+{
+  "id": "py-json-data",
+  "moduleId": "files-data",
+  "title": "JSON",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "**JSON** is a text format for data, used by web APIs and config files. It looks like Python dictionaries and lists. `json.loads(text)` turns JSON text into Python data; `json.dumps(data)` turns data into JSON text. `json.load(f)` and `json.dump(data, f)` do the same with files.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "JSON writes `true`, `false` and `null` where Python has `True`, `False` and `None`. `indent` makes the output readable.",
+      "exampleCode": "import json\ndata = {\"name\": \"Ana\", \"active\": True, \"tags\": [\"admin\", \"beta\"], \"manager\": None}\ntext = json.dumps(data, indent=2)\nprint(text)\nback = json.loads(text)\nprint(back[\"tags\"][0])",
+      "explanation": "The `s` in `loads`/`dumps` stands for *string*."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "`text` is a JSON string describing a person. Parse it into `data`, then store their city in `city`.",
+      "starterCode": "import json\n",
+      "solution": "import json\ndata = json.loads(text)\ncity = data[\"address\"][\"city\"]",
+      "setupCode": "text = '{\"name\": \"Kwame\", \"address\": {\"city\": \"Accra\", \"country\": \"Ghana\"}}'",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert city == 'Accra' and data['name'] == 'Kwame', 'city should come from data[\"address\"][\"city\"].'",
+          "message": "Parse and read the city."
+        }
+      ],
+      "hint": "`json.loads` gives a dictionary; nested values use more square brackets.",
+      "explanation": "JSON maps straight onto dictionaries and lists."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import json\nprint(json.dumps({\"ok\": True, \"n\": None}))",
+      "expectedOutput": "{\"ok\": true, \"n\": null}",
+      "hint": "JSON spells the values differently.",
+      "explanation": "`True` becomes `true`, `None` becomes `null`, and strings use double quotes."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Turn `settings` into readable JSON text in `pretty`, indented by 2 spaces with the keys sorted.",
+      "starterCode": "import json\n",
+      "solution": "import json\npretty = json.dumps(settings, indent=2, sort_keys=True)",
+      "setupCode": "settings = {\"theme\": \"dark\", \"font_size\": 14, \"autosave\": True}",
+      "tests": [
+        {
+          "name": "value",
+          "code": "import json as _j\nassert pretty == _j.dumps(settings, indent=2, sort_keys=True), 'Use indent=2 and sort_keys=True.'",
+          "message": "Indent and sort the keys."
+        }
+      ],
+      "hint": "`dumps` accepts `indent` and `sort_keys`.",
+      "explanation": "Sorted keys make config files easy to compare."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does a Python **tuple** become in JSON?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A tuple"
+        },
+        {
+          "id": "b",
+          "text": "A list (array)"
+        },
+        {
+          "id": "c",
+          "text": "A string"
+        },
+        {
+          "id": "d",
+          "text": "An error"
+        }
+      ],
+      "answer": "b",
+      "hint": "JSON only has arrays.",
+      "explanation": "Tuples are written as arrays and come back as lists."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This crashes with *AttributeError: 'str' object has no attribute 'read'*. Fix it.",
+      "starterCode": "import json\ntext = '{\"score\": 42}'\ndata = json.load(text)\n",
+      "solution": "import json\ntext = '{\"score\": 42}'\ndata = json.loads(text)\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert data == {'score': 42}, 'data should be {\"score\": 42}.'",
+          "message": "Parse the text."
+        }
+      ],
+      "hint": "`load` reads from a file; which one reads from a string?",
+      "explanation": "`json.loads` (with an `s`) parses a string."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the function that writes data to an open file.",
+      "template": "import json\nwith open(\"dump_demo.json\", \"w\") as f:\n    json.___({\"a\": 1}, f)",
+      "blanks": [
+        "dump"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "import json as _j\nwith open('dump_demo.json') as _f:\n    assert _j.load(_f) == {'a': 1}, 'The file should contain {\"a\": 1}.'",
+          "message": "Write the data to the file."
+        }
+      ],
+      "hint": "No `s`, because it's a file.",
+      "explanation": "`json.dump(data, f)` writes straight to the file."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Save `profile` to `profile.json` (indented by 2), then read it back into `loaded`.",
+      "starterCode": "import json\n",
+      "solution": "import json\nwith open(\"profile.json\", \"w\") as f:\n    json.dump(profile, f, indent=2)\nwith open(\"profile.json\") as f:\n    loaded = json.load(f)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['profile.json']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nprofile = {\"user\": \"lee\", \"level\": 3, \"badges\": [\"starter\", \"streak-7\"]}\n",
+      "tests": [
+        {
+          "name": "file",
+          "code": "import json as _j\nwith open('profile.json') as _f:\n    assert _j.load(_f) == profile, 'profile.json should contain the profile.'",
+          "message": "Save the profile."
+        },
+        {
+          "name": "loaded",
+          "code": "assert loaded == profile, 'loaded should equal profile.'",
+          "message": "Read it back."
+        }
+      ],
+      "hint": "`json.dump` with `\"w\"`, then `json.load` with a new `with`.",
+      "explanation": "Round-tripping through a file is how apps save settings between runs."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import json\nprint(json.loads('[1, 2, {\"a\": [3]}]')[2][\"a\"][0])",
+      "expectedOutput": "3",
+      "hint": "Index the list, then the dictionary, then the inner list.",
+      "explanation": "Nested JSON becomes nested lists and dictionaries."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`inventory.json` holds `{\"items\": [{\"name\": …, \"qty\": …}, …]}`. Add 5 to the `qty` of `pens`, add a new item `{\"name\": \"tape\", \"qty\": 10}`, and save the file back with `indent=2`.",
+      "starterCode": "import json\n",
+      "solution": "import json\nwith open(\"inventory.json\") as f:\n    data = json.load(f)\nfor item in data[\"items\"]:\n    if item[\"name\"] == \"pens\":\n        item[\"qty\"] += 5\ndata[\"items\"].append({\"name\": \"tape\", \"qty\": 10})\nwith open(\"inventory.json\", \"w\") as f:\n    json.dump(data, f, indent=2)",
+      "setupCode": "import json as _j\nwith open('inventory.json', 'w') as _f:\n    _j.dump({'items': [{'name': 'pens', 'qty': 20}, {'name': 'clips', 'qty': 3}]}, _f)\n",
+      "tests": [
+        {
+          "name": "saved",
+          "code": "import json as _j\nwith open('inventory.json') as _f:\n    d = _j.load(_f)\nassert d == {'items': [{'name': 'pens', 'qty': 25}, {'name': 'clips', 'qty': 3}, {'name': 'tape', 'qty': 10}]}, 'pens should be 25 and tape should be added.'",
+          "message": "Update and save the inventory."
+        }
+      ],
+      "hint": "Load, change the Python data, then dump it back.",
+      "explanation": "Load → modify → save is how you update any JSON file."
+    }
+  ]
+}

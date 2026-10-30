@@ -1,0 +1,56 @@
+/* Design tokens. All colour pairs used for text meet WCAG AA (4.5:1) on their backgrounds. */
+:root {
+  /* Colour */
+  --color-bg: #ffffff;
+  --color-surface: #f5f7fa;
+  --color-border: #d5dbe3;
+  --color-text: #1b1f24;
+  --color-text-muted: #4f5b67;
+  --color-primary: #2353b8;
+  --color-primary-hover: #1b4195;
+  --color-on-primary: #ffffff;
+  --color-accent: #f2c94c;
+  --color-on-accent: #1b1f24;
+  --color-success: #1e7a3c;
+  --color-danger: #b42318;
+  --color-warning: #8a5a00;
+  --color-focus: #2353b8;
+  --color-code-bg: #0f1720;
+  --color-code-text: #e6edf3;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --leading: 1.6;
+
+  /* Space (4px scale) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Shape and motion */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.1);
+  --focus-ring: 3px solid var(--color-focus);
+  --transition: 150ms ease;
+  --container: 72rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: 0ms;
+  }
+}

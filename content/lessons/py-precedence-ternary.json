@@ -1,0 +1,165 @@
+{
+  "id": "py-precedence-ternary",
+  "moduleId": "operators",
+  "title": "Precedence and One-Line If",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "When an expression has several operators, Python follows **precedence** rules — like maths. Brackets go first, then `**`, then `* / // %`, then `+ -`, then comparisons, then `not`, `and` and finally `or`. A **conditional expression** picks one of two values in a single line.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "When in doubt, add brackets: they make your intent clear and always win.",
+      "exampleCode": "print(2 + 3 * 4)\nprint((2 + 3) * 4)\nprint(2 * 3 ** 2)\nprint(10 - 4 - 3)",
+      "explanation": "`*` happens before `+`, and `**` before `*`. Operators of equal rank run left to right (except `**`)."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(10 - 2 * 3)",
+      "expectedOutput": "4",
+      "hint": "Which happens first, `-` or `*`?",
+      "explanation": "2 × 3 = 6 first, then 10 − 6 = 4."
+    },
+    {
+      "id": "q03",
+      "type": "fix_code",
+      "prompt": "This converts 212 °F to Celsius (the answer should be 100), but the maths is wrong. Fix it with brackets.",
+      "starterCode": "f = 212\nc = f - 32 * 5 / 9\n",
+      "solution": "f = 212\nc = (f - 32) * 5 / 9\n",
+      "tests": [
+        {
+          "name": "c",
+          "code": "assert abs(c - 100) < 1e-9, 'c should be 100 — subtract 32 before multiplying.'",
+          "message": "c should be 100."
+        }
+      ],
+      "hint": "The 32 should come off before multiplying by 5/9.",
+      "explanation": "Without brackets only 32 was multiplied, so the subtraction happened last."
+    },
+    {
+      "id": "q04",
+      "type": "multiple_choice",
+      "prompt": "What is `2 ** 3 ** 2`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`64`"
+        },
+        {
+          "id": "b",
+          "text": "`512`"
+        },
+        {
+          "id": "c",
+          "text": "`36`"
+        },
+        {
+          "id": "d",
+          "text": "`12`"
+        }
+      ],
+      "answer": "b",
+      "hint": "`**` is the exception: it works right to left.",
+      "explanation": "`3 ** 2` is 9 first, then `2 ** 9` is 512."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "A shop takes 10 off the `price`, then adds 20% tax to what's left. Store the result in `final`.",
+      "starterCode": "final = \n",
+      "solution": "final = (price - 10) * 1.2",
+      "setupCode": "price = 50",
+      "tests": [
+        {
+          "name": "final",
+          "code": "assert abs(final - (price - 10) * 1.2) < 1e-9, 'final should be (price − 10) × 1.2 — take the 10 off first.'",
+          "message": "Take 10 off, then add 20%."
+        }
+      ],
+      "hint": "Brackets make the discount happen before the tax.",
+      "explanation": "Order matters: tax on the discounted price is less than tax on the full price."
+    },
+    {
+      "id": "q06",
+      "type": "explain",
+      "prompt": "A **conditional expression** is a one-line if: `value_if_true if condition else value_if_false`. It's handy for choosing a label or a number.",
+      "exampleCode": "age = 20\nlabel = \"adult\" if age >= 18 else \"child\"\nprint(label)\nitems = 1\nprint(items, \"item\" if items == 1 else \"items\")",
+      "explanation": "Python checks the condition in the middle, then gives the left or right value."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "`stock` holds how many are left. Store `\"in stock\"` in `status` when stock is above 0, otherwise `\"sold out\"`. Use a conditional expression.",
+      "starterCode": "status = \n",
+      "solution": "status = \"in stock\" if stock > 0 else \"sold out\"",
+      "setupCode": "stock = 0",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert status == ('in stock' if stock > 0 else 'sold out'), 'status should be in stock when stock > 0, else sold out.'",
+          "message": "Check both cases."
+        }
+      ],
+      "hint": "Shape: `A if condition else B`.",
+      "explanation": "The condition sits in the middle; the result on each side."
+    },
+    {
+      "id": "q08",
+      "type": "fill_blank",
+      "prompt": "Complete the conditional expression so `label` is `\"odd\"` for 7.",
+      "template": "n = 7\nlabel = \"even\" if n % 2 == 0 ___ \"odd\"",
+      "blanks": [
+        "else"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert label == 'odd', 'label should be odd for 7.'",
+          "message": "label should be odd."
+        }
+      ],
+      "hint": "What keyword introduces the other choice?",
+      "explanation": "Every conditional expression needs an `else` part."
+    },
+    {
+      "id": "q09",
+      "type": "fix_code",
+      "prompt": "`parity` says `\"odd\"` for 4. Fix the condition so even numbers say `\"even\"`.",
+      "starterCode": "n = 4\nparity = \"even\" if n % 2 else \"odd\"\n",
+      "solution": "n = 4\nparity = \"even\" if n % 2 == 0 else \"odd\"\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert parity == 'even', 'parity should be even for 4.'",
+          "message": "parity should be even for 4."
+        }
+      ],
+      "hint": "For an even number, `n % 2` is 0 — and 0 is falsy.",
+      "explanation": "`n % 2` alone is truthy for odd numbers, so the labels were flipped. Compare with `== 0`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Shipping costs 4.99 for parcels up to 2 kg. Heavier parcels cost 4.99 plus 1.50 for each kg over 2. Using `weight`, store the cost rounded to 2 places in `cost` (one conditional expression). Print it like `Shipping: 4.99`.",
+      "starterCode": "cost = \n",
+      "solution": "cost = round(4.99 if weight <= 2 else 4.99 + (weight - 2) * 1.5, 2)\nprint(\"Shipping:\", cost)",
+      "setupCode": "weight = 3.2",
+      "tests": [
+        {
+          "name": "cost",
+          "code": "assert cost == round(4.99 if weight <= 2 else 4.99 + (weight - 2) * 1.5, 2), 'cost should be 4.99, plus 1.50 per kg over 2 kg, rounded to 2 places.'",
+          "message": "Check the shipping rule."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Shipping: ' + str(cost), 'Print Shipping: followed by cost.'",
+          "message": "Print Shipping: followed by cost."
+        }
+      ],
+      "hint": "Inside the `else` part, brackets make `weight - 2` happen before `* 1.5`.",
+      "explanation": "Precedence and a conditional expression together turn a pricing rule into one clear line."
+    }
+  ]
+}

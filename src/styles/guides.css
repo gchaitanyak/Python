@@ -1,0 +1,109 @@
+.guide-grid {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .guide-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.guide-card {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+}
+
+.guide-card__title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-lg);
+}
+
+.guide-card p {
+  margin: 0;
+}
+
+.guide {
+  max-width: 46rem;
+  padding-block: var(--space-6) var(--space-8);
+}
+
+.guide__toc {
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-surface);
+}
+
+.guide__toc h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-base, 1rem);
+}
+
+.guide__toc ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.guide__body h2 {
+  margin-top: var(--space-8);
+  scroll-margin-top: var(--space-6);
+}
+
+.guide__body p,
+.guide__body li {
+  line-height: 1.65;
+}
+
+.example {
+  margin: var(--space-4) 0;
+}
+
+.example .code-sample {
+  margin: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.example__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-top: 0;
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+}
+
+.example__output {
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin: 0;
+  max-height: 16rem;
+  overflow: auto;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  font-size: var(--text-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.guide__practise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+
+.guide__practise p {
+  margin: 0;
+}

@@ -1,0 +1,172 @@
+{
+  "id": "py-tuples",
+  "moduleId": "data-structures",
+  "title": "Tuples",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "A **tuple** is like a list that can't change. Write it with round brackets: `(3, 4)`. Use tuples for fixed groups of values that belong together, like coordinates or a name and an age. **Unpacking** puts each value into its own variable in one line.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "A one-item tuple needs a trailing comma: `(\"red\",)`. Loops can unpack pairs directly.",
+      "exampleCode": "point = (3, 4)\nx, y = point\nprint(x, y)\nprint(len(point), point[0])\nfor name, age in [(\"Ana\", 31), (\"Ben\", 25)]:\n    print(name, age)",
+      "explanation": "Because tuples can't change, they're safe to share and can be used as dictionary keys."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Create a tuple `rgb` with the values `255, 165, 0`, then unpack it into `r`, `g` and `b`.",
+      "starterCode": "rgb = \n",
+      "solution": "rgb = (255, 165, 0)\nr, g, b = rgb",
+      "tests": [
+        {
+          "name": "tuple",
+          "code": "assert isinstance(rgb, tuple) and rgb == (255, 165, 0), 'rgb should be the tuple (255, 165, 0).'",
+          "message": "rgb should be a tuple."
+        },
+        {
+          "name": "unpacked",
+          "code": "assert (r, g, b) == (255, 165, 0), 'r, g and b should hold the three values.'",
+          "message": "Unpack into r, g, b."
+        }
+      ],
+      "hint": "Round brackets for the tuple; `r, g, b = rgb` to unpack.",
+      "explanation": "Unpacking needs exactly as many names as values."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "t = (1, 2) + (3,)\nprint(t)",
+      "expectedOutput": "(1, 2, 3)",
+      "hint": "`+` joins tuples into a new one.",
+      "explanation": "You can't change a tuple, but you can build a new one."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`location` holds a `(latitude, longitude)` tuple. Unpack it into `lat` and `lon`.",
+      "starterCode": "lat, lon = \n",
+      "solution": "lat, lon = location",
+      "setupCode": "location = (38.7223, -9.1393)",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert (lat, lon) == location, 'lat and lon should be the two values from location.'",
+          "message": "Unpack location."
+        }
+      ],
+      "hint": "Two names on the left, the tuple on the right.",
+      "explanation": "Unpacking is clearer than `location[0]` and `location[1]`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which of these is a tuple with **one** item?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`(5)`"
+        },
+        {
+          "id": "b",
+          "text": "`(5,)`"
+        },
+        {
+          "id": "c",
+          "text": "`[5]`"
+        },
+        {
+          "id": "d",
+          "text": "`tuple(5)`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Without a comma, the brackets are just maths brackets.",
+      "explanation": "`(5)` is the number 5. The comma makes the tuple."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should change the width to 15, but tuples can't be changed — *TypeError*. Fix it by building a new tuple.",
+      "starterCode": "size = (10, 20)\nsize[0] = 15\n",
+      "solution": "size = (10, 20)\nsize = (15, size[1])\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert size == (15, 20), 'size should be (15, 20).'",
+          "message": "size should be (15, 20)."
+        }
+      ],
+      "hint": "Make a new tuple and store it in `size`.",
+      "explanation": "Replacing the whole tuple is how you *change* an immutable value."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Swap the values of `a` and `b` in one line.",
+      "template": "a = 1\nb = 2\na, b = ___",
+      "blanks": [
+        "b, a"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert (a, b) == (2, 1), 'a should be 2 and b should be 1.'",
+          "message": "a and b should be swapped."
+        }
+      ],
+      "hint": "The right side is packed into a tuple first.",
+      "explanation": "`a, b = b, a` builds the tuple `(2, 1)` and unpacks it."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`stock` is a list of `(fruit, count)` tuples. Print each one as `apples: 12`, and build a list `out_of_stock` of the fruit names whose count is 0.",
+      "starterCode": "out_of_stock = []\n",
+      "solution": "out_of_stock = []\nfor fruit, count in stock:\n    print(f\"{fruit}: {count}\")\n    if count == 0:\n        out_of_stock.append(fruit)",
+      "setupCode": "stock = [(\"apples\", 12), (\"pears\", 0), (\"plums\", 5), (\"kiwis\", 0)]",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == [f'{f}: {c}' for f, c in stock], 'Print each pair as fruit: count.'",
+          "message": "Print fruit: count lines."
+        },
+        {
+          "name": "empty",
+          "code": "assert out_of_stock == [f for f, c in stock if c == 0], 'out_of_stock should list the fruits with count 0.'",
+          "message": "List the fruits with count 0."
+        }
+      ],
+      "hint": "`for fruit, count in stock:` unpacks each pair.",
+      "explanation": "Unpacking in the `for` line names both parts at once."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "A `*` name collects the leftovers. What does this print?",
+      "code": "first, *rest = (1, 2, 3, 4)\nprint(rest)",
+      "expectedOutput": "[2, 3, 4]",
+      "hint": "`first` gets one value; `rest` gets everything else.",
+      "explanation": "Starred unpacking always gives a list."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`dimensions` is a list of `(width, height)` tuples. Store the tuple with the **largest area** in `largest`.",
+      "starterCode": "largest = dimensions[0]\n",
+      "solution": "largest = dimensions[0]\nfor w, h in dimensions:\n    if w * h > largest[0] * largest[1]:\n        largest = (w, h)",
+      "setupCode": "dimensions = [(4, 5), (10, 1), (3, 9), (6, 3)]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "best = dimensions[0]\nfor d in dimensions:\n    if d[0] * d[1] > best[0] * best[1]:\n        best = d\nassert largest == best, 'largest should be the (width, height) with the biggest area.'",
+          "message": "Find the biggest area."
+        }
+      ],
+      "hint": "Keep the best so far; replace it when a bigger area comes along.",
+      "explanation": "Tracking the best tuple keeps width and height together."
+    }
+  ]
+}

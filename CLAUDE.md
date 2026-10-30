@@ -42,7 +42,7 @@ Read these files before writing any code, in this order:
 | Analytics | Google Analytics 4 (consent-gated) |
 | Tests | Vitest (unit), Playwright (end-to-end), Firebase Emulator Suite (rules + functions) |
 
-## Commands (create these in phase 0)
+## Commands (create these in phase 1)
 
 ```bash
 npm install
@@ -51,7 +51,9 @@ npm run build          # type-check, build static site, generate sitemap
 npm run test           # Vitest
 npm run test:e2e       # Playwright against emulators
 npm run test:rules     # Firestore security rules tests
+npm run test:functions # Cloud Functions integration tests (Auth + Firestore + Functions emulators)
 npm run validate:content   # validate content/**/*.json against lesson.schema.json and run every lesson's reference solutions through its tests
+npm run fetch:pyodide  # download the NumPy/pandas/Matplotlib/scikit-learn wheels into node_modules/pyodide (needs cdn.jsdelivr.net)
 npm run deploy         # firebase deploy (hosting, functions, rules)
 ```
 

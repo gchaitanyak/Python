@@ -1,6 +1,11 @@
 __pycache__/
 node_modules/
 dist/
+dist-e2e/
 .env.local
 .firebase/
 *.log
+.env*.local
+functions/lib/
+test-results/
+playwright-report/

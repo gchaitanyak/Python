@@ -13,7 +13,9 @@ import sys
 import jsonschema
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+# Validate with the harness the browser ships; fall back to the reference copy.
 sys.path.insert(0, str(ROOT / "tools"))
+sys.path.insert(0, str(ROOT.parent / "src" / "worker"))
 import harness  # noqa: E402
 
 schema = json.loads((ROOT / "lesson.schema.json").read_text())

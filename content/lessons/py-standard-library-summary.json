@@ -1,0 +1,176 @@
+{
+  "id": "py-standard-library-summary",
+  "moduleId": "standard-library",
+  "title": "Standard Library: Skill Summary",
+  "estimatedMinutes": 16,
+  "basePoints": 10,
+  "intro": "Put the module together: read a log file, pull fields out with regular expressions, work with the timestamps using `datetime`, summarise with `statistics`, and write a report. Several questions use the same `server.log` file, which has one line that doesn't fit the format — your code should skip it.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Read `server.log` and build `levels`, a dict counting lines per level (like `{\"INFO\": 3, ...}`). Skip lines that don't match `YYYY-MM-DD HH:MM:SS LEVEL message`.",
+      "starterCode": "import re\n\nlevels = {}\n",
+      "solution": "import re\n\nLINE = re.compile(r\"(?P<stamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) (?P<level>[A-Z]+) (?P<message>.+)\")\nlevels = {}\nwith open(\"server.log\") as f:\n    for line in f:\n        m = LINE.fullmatch(line.strip())\n        if m:\n            levels[m[\"level\"]] = levels.get(m[\"level\"], 0) + 1",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['server.log', 'daily.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('server.log', 'w') as _f:\n    _f.write('2025-10-27 08:59:58 INFO Server started\\n2025-10-27 09:14:03 WARNING Slow response 1840ms on /search\\n2025-10-27 09:15:41 ERROR Database timeout on /orders\\ngarbled line\\n2025-10-27 11:02:00 INFO Backup finished\\n2025-10-28 07:30:12 ERROR Disk 91% full\\n2025-10-28 07:45:00 WARNING Slow response 2210ms on /orders\\n2025-10-28 10:00:00 INFO Server stopped\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert levels == {'INFO': 3, 'WARNING': 2, 'ERROR': 2}, 'Count the INFO, WARNING and ERROR lines; skip the garbled one.'",
+          "message": "Count lines per level."
+        }
+      ],
+      "hint": "Loop over the file, `fullmatch` each stripped line, and count `m[\"level\"]`.",
+      "explanation": "`m[\"level\"]` is a short way to write `m.group(\"level\")`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "How long did the server run? Set `uptime_hours` to the hours between the **first** and **last** timestamps in `server.log`, rounded to 1 decimal place.",
+      "starterCode": "from datetime import datetime\n\nuptime_hours = 0\n",
+      "solution": "import re\nfrom datetime import datetime\n\nstamps = []\nwith open(\"server.log\") as f:\n    for line in f:\n        m = re.match(r\"(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \", line)\n        if m:\n            stamps.append(datetime.strptime(m.group(1), \"%Y-%m-%d %H:%M:%S\"))\nuptime_hours = round((max(stamps) - min(stamps)).total_seconds() / 3600, 1)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['server.log', 'daily.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('server.log', 'w') as _f:\n    _f.write('2025-10-27 08:59:58 INFO Server started\\n2025-10-27 09:14:03 WARNING Slow response 1840ms on /search\\n2025-10-27 09:15:41 ERROR Database timeout on /orders\\ngarbled line\\n2025-10-27 11:02:00 INFO Backup finished\\n2025-10-28 07:30:12 ERROR Disk 91% full\\n2025-10-28 07:45:00 WARNING Slow response 2210ms on /orders\\n2025-10-28 10:00:00 INFO Server stopped\\n')\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert uptime_hours == 25.0, 'From 08:59:58 on the 27th to 10:00:00 on the 28th is about 25.0 hours.'",
+          "message": "Measure the uptime."
+        }
+      ],
+      "hint": "Collect each timestamp with `strptime(..., \"%Y-%m-%d %H:%M:%S\")`, then subtract the earliest from the latest.",
+      "explanation": "Subtracting datetimes gives a `timedelta`; `total_seconds() / 3600` turns it into hours."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "The `WARNING` lines mention response times like `1840ms`. Set `slow_times` to a list of those numbers as ints, and `typical` to their median.",
+      "starterCode": "import statistics\n\nslow_times = []\n",
+      "solution": "import re, statistics\n\nwith open(\"server.log\") as f:\n    slow_times = [int(ms) for ms in re.findall(r\"(\\d+)ms\", f.read())]\ntypical = statistics.median(slow_times)",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['server.log', 'daily.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('server.log', 'w') as _f:\n    _f.write('2025-10-27 08:59:58 INFO Server started\\n2025-10-27 09:14:03 WARNING Slow response 1840ms on /search\\n2025-10-27 09:15:41 ERROR Database timeout on /orders\\ngarbled line\\n2025-10-27 11:02:00 INFO Backup finished\\n2025-10-28 07:30:12 ERROR Disk 91% full\\n2025-10-28 07:45:00 WARNING Slow response 2210ms on /orders\\n2025-10-28 10:00:00 INFO Server stopped\\n')\n",
+      "tests": [
+        {
+          "name": "times",
+          "code": "assert slow_times == [1840, 2210], 'slow_times should be [1840, 2210].'",
+          "message": "Extract the response times."
+        },
+        {
+          "name": "median",
+          "code": "assert typical == 2025, 'typical should be the median, 2025.'",
+          "message": "Take the median."
+        }
+      ],
+      "hint": "`re.findall(r\"(\\d+)ms\", text)` returns just the digits from the group.",
+      "explanation": "When the pattern has one group, `findall` returns that group instead of the whole match."
+    },
+    {
+      "id": "q04",
+      "type": "predict_output",
+      "prompt": "Groups can be rearranged in a replacement. What does this print?",
+      "code": "import re\n\nprint(re.sub(r\"(\\d{2})/(\\d{2})/(\\d{4})\", r\"\\3-\\2-\\1\", \"Due 05/11/2025, paid 30/10/2025\"))",
+      "expectedOutput": "Due 2025-11-05, paid 2025-10-30",
+      "hint": "`\\3` is the year, `\\2` the month, `\\1` the day.",
+      "explanation": "One `re.sub` reorders every date in the text."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "Write `extract_dates(text)` returning a list of `date` objects for every `DD/MM/YYYY` in the text. Skip impossible dates like `31/02/2025`.",
+      "starterCode": "import re\nfrom datetime import date\n\ndef extract_dates(text):\n    pass\n",
+      "solution": "import re\nfrom datetime import date\n\ndef extract_dates(text):\n    found = []\n    for d, m, y in re.findall(r\"\\b(\\d{2})/(\\d{2})/(\\d{4})\\b\", text):\n        try:\n            found.append(date(int(y), int(m), int(d)))\n        except ValueError:\n            pass\n    return found",
+      "tests": [
+        {
+          "name": "dates",
+          "code": "from datetime import date as _d\nassert extract_dates('Start 01/03/2025, end 15/04/2025.') == [_d(2025, 3, 1), _d(2025, 4, 15)], 'Return both dates as date objects.'",
+          "message": "Find the dates."
+        },
+        {
+          "name": "impossible",
+          "code": "from datetime import date as _d\nassert extract_dates('Bad 31/02/2025, good 28/02/2025') == [_d(2025, 2, 28)], 'Skip dates that do not exist.'",
+          "message": "Skip impossible dates."
+        }
+      ],
+      "hint": "With three groups, `findall` gives `(day, month, year)` tuples. `date(...)` raises `ValueError` for impossible dates.",
+      "explanation": "Regex checks the *shape* of the text; `date` checks that the date is real. Use both."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`due` should be 29 October 2025, but it comes out as a January date at 00:10. Fix the format string.",
+      "starterCode": "from datetime import datetime\n\ndue = datetime.strptime(\"2025-10-29\", \"%Y-%M-%d\")\n",
+      "solution": "from datetime import datetime\n\ndue = datetime.strptime(\"2025-10-29\", \"%Y-%m-%d\")\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from datetime import datetime as _dt\nassert due == _dt(2025, 10, 29), 'due should be 29 October 2025.'",
+          "message": "Read the month correctly."
+        }
+      ],
+      "hint": "Capital `%M` is minutes.",
+      "explanation": "Lower-case `%m` is the month. Mixing them up gives no error, just a wrong date — test with known values."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Write `daily_report(log_path, out_path)` that writes a CSV with header `date,errors` and one row per day that appears in the log (sorted by date), counting that day's `ERROR` lines. Use the `csv` module.",
+      "starterCode": "import csv, re\n\ndef daily_report(log_path, out_path):\n    pass\n",
+      "solution": "import csv, re\n\nLINE = re.compile(r\"(?P<stamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) (?P<level>[A-Z]+) (?P<message>.+)\")\n\ndef daily_report(log_path, out_path):\n    counts = {}\n    with open(log_path) as f:\n        for line in f:\n            m = LINE.fullmatch(line.strip())\n            if m:\n                day = m[\"stamp\"][:10]\n                counts[day] = counts.get(day, 0) + (m[\"level\"] == \"ERROR\")\n    with open(out_path, \"w\", newline=\"\") as f:\n        writer = csv.writer(f)\n        writer.writerow([\"date\", \"errors\"])\n        for day in sorted(counts):\n            writer.writerow([day, counts[day]])",
+      "setupCode": "import os as _os, shutil as _sh\nfor _p in ['server.log', 'daily.csv']:\n    _sh.rmtree(_p, ignore_errors=True) if _os.path.isdir(_p) else (_os.remove(_p) if _os.path.exists(_p) else None)\nwith open('server.log', 'w') as _f:\n    _f.write('2025-10-27 08:59:58 INFO Server started\\n2025-10-27 09:14:03 WARNING Slow response 1840ms on /search\\n2025-10-27 09:15:41 ERROR Database timeout on /orders\\ngarbled line\\n2025-10-27 11:02:00 INFO Backup finished\\n2025-10-28 07:30:12 ERROR Disk 91% full\\n2025-10-28 07:45:00 WARNING Slow response 2210ms on /orders\\n2025-10-28 10:00:00 INFO Server stopped\\n')\n",
+      "tests": [
+        {
+          "name": "file",
+          "code": "daily_report('server.log', 'daily.csv')\nwith open('daily.csv') as _f:\n    _rows = [r.strip() for r in _f if r.strip()]\nassert _rows == ['date,errors', '2025-10-27,1', '2025-10-28,1'], 'daily.csv should have a header and one row per day.'",
+          "message": "Write the daily CSV."
+        }
+      ],
+      "hint": "Count per day in a dict (`True` adds 1, `False` adds 0), then write the sorted rows with `csv.writer`.",
+      "explanation": "Splitting the work — parse, count, then write — keeps each step easy to check."
+    },
+    {
+      "id": "q08",
+      "type": "multiple_choice",
+      "prompt": "You need to check whether a username is 3–16 lowercase letters, digits or underscores. Which call fits best?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`re.search(r\"[a-z0-9_]{3,16}\", name)`"
+        },
+        {
+          "id": "b",
+          "text": "`re.fullmatch(r\"[a-z0-9_]{3,16}\", name)`"
+        },
+        {
+          "id": "c",
+          "text": "`re.findall(r\"[a-z0-9_]\", name)`"
+        },
+        {
+          "id": "d",
+          "text": "`name.isalnum()`"
+        }
+      ],
+      "answer": "b",
+      "hint": "The *whole* name must fit the rule.",
+      "explanation": "`search` would accept `\"ab!!cde\"` because part of it matches. `fullmatch` checks every character."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Write `week_summary(dates)` that takes a list of `date` objects and returns a dict mapping each ISO week number to how many dates fall in it.",
+      "starterCode": "def week_summary(dates):\n    pass\n",
+      "solution": "def week_summary(dates):\n    weeks = {}\n    for d in dates:\n        week = d.isocalendar().week\n        weeks[week] = weeks.get(week, 0) + 1\n    return weeks",
+      "tests": [
+        {
+          "name": "value",
+          "code": "from datetime import date as _d\nassert week_summary([_d(2025, 10, 27), _d(2025, 10, 29), _d(2025, 11, 2), _d(2025, 11, 3)]) == {44: 3, 45: 1}, 'Mon 27 Oct to Sun 2 Nov is week 44; Mon 3 Nov is week 45.'",
+          "message": "Group by ISO week."
+        },
+        {
+          "name": "empty",
+          "code": "assert week_summary([]) == {}, 'No dates give an empty dict.'",
+          "message": "Handle an empty list."
+        }
+      ],
+      "hint": "`d.isocalendar().week` is the ISO week number (weeks start on Monday).",
+      "explanation": "ISO weeks are the standard way to group by week, and they handle the change of year correctly."
+    }
+  ]
+}

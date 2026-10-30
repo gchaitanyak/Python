@@ -1,0 +1,187 @@
+{
+  "id": "py-modules-packages-summary",
+  "moduleId": "modules-packages",
+  "title": "Modules: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: imports, the standard library, packages, `__main__` guards and working with requirements.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Import `math` and store the circumference of a circle with radius `r` (`2πr`), rounded to 2 decimals, in `circumference`.",
+      "starterCode": "# your code\n",
+      "solution": "import math\ncircumference = round(2 * math.pi * r, 2)",
+      "setupCode": "r = 4.5",
+      "tests": [
+        {
+          "name": "value",
+          "code": "import math as _m\nassert circumference == round(2 * _m.pi * r, 2), 'circumference should be 2πr rounded to 2 places.'",
+          "message": "Check the circumference."
+        }
+      ],
+      "hint": "`math.pi` holds π.",
+      "explanation": "Use the module's constant rather than typing 3.14."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from math import sqrt as root\nprint(root(81))",
+      "expectedOutput": "9.0",
+      "hint": "`sqrt` always returns a float.",
+      "explanation": "`as` renames the imported function; it still returns 9.0."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "`scores` is a list of whole numbers. Store the mean rounded to 1 decimal in `avg` (use `statistics`), and the most frequent score in `common` (use `collections.Counter`).",
+      "starterCode": "# your imports and code\n",
+      "solution": "from statistics import mean\nfrom collections import Counter\navg = round(mean(scores), 1)\ncommon = Counter(scores).most_common(1)[0][0]",
+      "setupCode": "scores = [7, 9, 7, 6, 10, 7, 8]",
+      "tests": [
+        {
+          "name": "avg",
+          "code": "assert avg == round(sum(scores) / len(scores), 1), 'avg should be the mean rounded to 1 place.'",
+          "message": "Check the mean."
+        },
+        {
+          "name": "common",
+          "code": "assert common == max(set(scores), key=scores.count), 'common should be the most frequent score.'",
+          "message": "Check the most common score."
+        }
+      ],
+      "hint": "Two imports from two modules, then two lines of code.",
+      "explanation": "Mixing standard library modules is normal — each does one job well."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "This crashes with *ModuleNotFoundError*. Fix it.",
+      "starterCode": "import Math\narea = Math.pi * 2 ** 2\n",
+      "solution": "import math\narea = math.pi * 2 ** 2\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "import math as _m\nassert abs(area - _m.pi * 4) < 1e-9, 'area should be π × 4.'",
+          "message": "area should be π × 4."
+        }
+      ],
+      "hint": "Module names are case-sensitive.",
+      "explanation": "The module is `math`, all lowercase."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What's the main downside of `from math import *`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It's slower to run"
+        },
+        {
+          "id": "b",
+          "text": "It hides which names came from where and can overwrite your own names"
+        },
+        {
+          "id": "c",
+          "text": "It only imports half the module"
+        },
+        {
+          "id": "d",
+          "text": "It doesn't work in scripts"
+        }
+      ],
+      "answer": "b",
+      "hint": "Think about a variable you already called `e` or `pow`.",
+      "explanation": "Star imports dump every name into your file, so clashes are easy and hard to spot."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `main()` that **returns** the text `3 tasks due`. Under a `__main__` guard, print what `main()` returns.",
+      "starterCode": "def main():\n    pass\n",
+      "solution": "def main():\n    return \"3 tasks due\"\n\nif __name__ == \"__main__\":\n    print(main())",
+      "tests": [
+        {
+          "name": "return",
+          "code": "assert main() == '3 tasks due', 'main() should return \"3 tasks due\".'",
+          "message": "main() should return the text."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == '3 tasks due', 'Running the file should print it once.'",
+          "message": "Print it under the guard."
+        }
+      ],
+      "hint": "Return in `main`, print in the guard.",
+      "explanation": "Returning values keeps `main` testable; the guard handles the printing."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the class to import so `d` is a date.",
+      "template": "from datetime import ___\nd = date(2026, 1, 1)",
+      "blanks": [
+        "date"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert d.year == 2026 and d.month == 1, 'd should be 1 January 2026.'",
+          "message": "d should be 1 January 2026."
+        }
+      ],
+      "hint": "The name used on the next line.",
+      "explanation": "`from datetime import date` brings in the `date` class."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Using `os.path.join`, store the path of a yearly report inside `folder` in `report_path` — the file is named like `report-2026.csv` using `year`.",
+      "starterCode": "import os.path\n",
+      "solution": "import os.path\nreport_path = os.path.join(folder, f\"report-{year}.csv\")",
+      "setupCode": "folder = \"exports/finance\"\nyear = 2027",
+      "tests": [
+        {
+          "name": "value",
+          "code": "import os.path as _p\nassert report_path == _p.join(folder, f'report-{year}.csv'), 'report_path should join folder and report-<year>.csv.'",
+          "message": "Join the folder and file name."
+        }
+      ],
+      "hint": "Build the file name with an f-string, then `join` it to the folder.",
+      "explanation": "`os.path.join` adds the right separator for you."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "import random\nrandom.seed(1)\na = random.random()\nrandom.seed(1)\nb = random.random()\nprint(a == b)",
+      "expectedOutput": "True",
+      "hint": "The same seed restarts the same sequence.",
+      "explanation": "Seeding makes random numbers repeatable."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`required` is requirements-file text (`name==version` per line) and `installed` maps names to versions. Store a sorted list of required packages that aren't installed in `missing`, and a sorted list of installed ones older than required in `outdated`. Compare versions as tuples of numbers.",
+      "starterCode": "missing = []\noutdated = []\n",
+      "solution": "def vt(v):\n    return tuple(int(p) for p in v.split(\".\"))\n\nmissing = []\noutdated = []\nfor line in required.split():\n    name, version = line.split(\"==\")\n    if name not in installed:\n        missing.append(name)\n    elif vt(installed[name]) < vt(version):\n        outdated.append(name)\nmissing.sort()\noutdated.sort()",
+      "setupCode": "required = \"\"\"requests==2.32.3\nflask==3.0.3\npandas==2.2.2\nnumpy==1.26.4\"\"\"\ninstalled = {\"requests\": \"2.31.0\", \"flask\": \"2.9.10\", \"numpy\": \"1.26.4\"}",
+      "tests": [
+        {
+          "name": "missing",
+          "code": "assert missing == ['pandas'], 'missing should list required packages that are not installed.'",
+          "message": "Check missing."
+        },
+        {
+          "name": "outdated",
+          "code": "assert outdated == ['flask', 'requests'], 'outdated should list installed packages older than required (compare as numbers).'",
+          "message": "Check outdated."
+        }
+      ],
+      "hint": "Parse each line, look it up in `installed`, and compare version tuples.",
+      "explanation": "This is a small version of what `pip check` and dependency tools do."
+    }
+  ]
+}

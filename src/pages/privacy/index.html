@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy — Python Exercises</title>
+    <meta name="description" content="What Python Exercises collects, why, which services process it (Firebase, Stripe, Google Analytics, Anthropic) and how to delete your data." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1" class="container legal prose">
+      <h1>Privacy</h1>
+      <p class="help-text">Last updated 29 October 2026.</p>
+      <p>This page explains what we collect when you use Python Exercises, why, who processes it for us, and the choices you have. Contact <a href="mailto:hello@example.com">hello@example.com</a> with any question.</p>
+
+      <h2>Your code stays in your browser</h2>
+      <p>The Python you write runs inside your own browser. We never send your code to our servers to run it. The only exception is when you choose to ask the AI tutor for a hint (see below).</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Without an account:</strong> your lesson progress, points and streak are kept in your browser’s local storage. They don’t leave your device.</li>
+        <li><strong>With an account:</strong> your email address, first name, username, time zone, lesson progress (completion, best accuracy, points, answers’ correctness), streak, daily-challenge results and the projects you finish.</li>
+        <li><strong>Leaderboards:</strong> your username, points and streak appear on public leaderboards. Your email address and first name never do.</li>
+        <li><strong>Groups:</strong> if you join a group, its admins see your username, the lessons you complete, your average accuracy and when you were last active.</li>
+        <li><strong>Certificates:</strong> the name you choose, the date and the modules you completed are public at the certificate’s link.</li>
+        <li><strong>Feedback:</strong> lesson ratings and comments you send, and 👍/👎 on AI hints.</li>
+      </ul>
+
+      <h2>Services that process data for us</h2>
+      <ul>
+        <li><strong>Google Firebase</strong> (Authentication, Cloud Firestore, Cloud Functions, Hosting) stores your account and progress and runs our server code.</li>
+        <li><strong>Stripe</strong> handles payments. Your card details go directly to Stripe; we only store your Stripe customer and subscription ids and your plan.</li>
+        <li><strong>Google Analytics 4</strong> measures how the site is used, <em>only if you accept analytics</em> in the cookie banner. You can change your choice at any time with “Cookie settings” in the footer.</li>
+        <li><strong>Anthropic</strong> (Claude) writes AI tutor hints. When you ask for a hint, our server sends the exercise, your current code and the failing check’s message to Anthropic. We don’t send your name or email, and we don’t store your code with the hint.</li>
+      </ul>
+
+      <h2>Cookies and local storage</h2>
+      <p>We use local storage for your progress, drafts and settings, and Firebase uses browser storage to keep you signed in. These are needed for the site to work. Analytics cookies are set only after you accept them.</p>
+
+      <h2>How long we keep data</h2>
+      <p>We keep your account data until you delete your account. Hint logs and usage counters are deleted with your account. Payment records are kept by Stripe as the law requires.</p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Change your name and username on your <a href="/account/">account page</a>.</li>
+        <li>Delete your account there too. This removes your profile, progress and hint logs, takes you out of any groups, and replaces your username on past leaderboards with “former learner”. Your certificate is deleted unless you ask for it to stay verifiable.</li>
+        <li>Turn analytics off with “Cookie settings” in the footer.</li>
+      </ul>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

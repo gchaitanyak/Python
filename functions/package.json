@@ -1,0 +1,21 @@
+{
+  "name": "python-exercises-functions",
+  "private": true,
+  "main": "lib/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "node copy-content.mjs && tsc -p tsconfig.json",
+    "typecheck": "node copy-content.mjs && tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "firebase-admin": "^14.5.0",
+    "firebase-functions": "^7.4.0",
+    "stripe": "^23.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

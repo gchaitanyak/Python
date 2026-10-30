@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python Certificate — Python Exercises</title>
+    <meta name="description" content="Finish the core Python course to earn a certificate with a public, verifiable link. Check any Python Exercises certificate by its credential ID." />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1">
+      <section class="page-head container">
+        <h1>Python certificate</h1>
+        <p class="lead">Finish every lesson in modules 1–12 and you can generate a certificate with your name, the modules you completed and a credential ID anyone can check.</p>
+      </section>
+
+      <section class="container cert-grid">
+        <div class="card" aria-labelledby="mine-title">
+          <h2 id="mine-title">Your certificate</h2>
+          <div class="alert" data-status role="status" aria-live="polite" hidden></div>
+          <p data-mine>Checking your progress…</p>
+          <div class="cert-progress" data-progress hidden>
+            <div class="cert-progress__bar" role="progressbar" aria-label="Lessons completed for the certificate" aria-valuemin="0" data-progress-bar><span></span></div>
+            <p class="help-text" data-progress-text></p>
+          </div>
+          <form class="form" data-cert-form novalidate hidden>
+            <p class="help-text">Type your full name as it should appear. It can’t be changed afterwards.</p>
+            <div class="field">
+              <label for="cert-name">Full name</label>
+              <input id="cert-name" name="name" type="text" autocomplete="name" maxlength="80" required />
+            </div>
+            <div class="field">
+              <label for="cert-confirm">Full name again</label>
+              <input id="cert-confirm" name="confirmName" type="text" autocomplete="off" maxlength="80" required />
+            </div>
+            <button class="btn btn--primary" type="submit">Generate my certificate</button>
+          </form>
+        </div>
+
+        <div class="card" aria-labelledby="verify-title">
+          <h2 id="verify-title">Verify a certificate</h2>
+          <p>Enter the 10-character credential ID printed on the certificate.</p>
+          <form class="form" data-verify-form novalidate>
+            <div class="field">
+              <label for="verify-id">Credential ID</label>
+              <input id="verify-id" name="id" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="14" placeholder="e.g. 7KQ2MHXP4R" aria-describedby="verify-error" />
+              <p class="field__error" id="verify-error" data-verify-error role="alert" hidden></p>
+            </div>
+            <button class="btn btn--secondary" type="submit">Look it up</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="container section faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">About the certificate</h2>
+        <details>
+          <summary>What does it show?</summary>
+          <p>Your name, the date it was issued, the modules you completed and a credential ID. Optional modules (13 and 14) are added when you finish them.</p>
+        </details>
+        <details>
+          <summary>How do employers check it?</summary>
+          <p>Every certificate has a public page at <code>/certificate/&lt;credential ID&gt;/</code>. Share the link, or they can search for the ID on this page.</p>
+        </details>
+        <details>
+          <summary>Can I change my name later?</summary>
+          <p>No — the name is fixed once the certificate is issued, so the record stays trustworthy. Check the spelling before you generate it.</p>
+        </details>
+      </section>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

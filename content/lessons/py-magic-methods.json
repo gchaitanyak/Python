@@ -1,0 +1,184 @@
+{
+  "id": "py-magic-methods",
+  "moduleId": "oop",
+  "title": "Magic Methods",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "**Magic methods** (or *dunder* methods, for *double underscore*) let your objects work with Python's built-in operations. `__str__` sets what `print()` shows, `__repr__` sets the developer view, `__eq__` defines `==`, `__lt__` defines `<` (and so sorting), and `__add__` defines `+`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Python calls these for you: `a + b` runs `a.__add__(b)`.",
+      "exampleCode": "class Vector:\n    def __init__(self, x, y):\n        self.x, self.y = x, y\n\n    def __add__(self, other):\n        return Vector(self.x + other.x, self.y + other.y)\n\n    def __eq__(self, other):\n        return (self.x, self.y) == (other.x, other.y)\n\n    def __repr__(self):\n        return f\"Vector({self.x}, {self.y})\"\n\nprint(Vector(1, 2) + Vector(3, 4))\nprint(Vector(1, 2) == Vector(1, 2))",
+      "explanation": "Without `__eq__`, `==` only checks whether two names point to the very same object."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write `Money(amount, currency)` with `__str__` returning text like `12.50 EUR` and `__repr__` returning `Money(12.5, 'EUR')`.",
+      "starterCode": "class Money:\n    pass\n",
+      "solution": "class Money:\n    def __init__(self, amount, currency):\n        self.amount = amount\n        self.currency = currency\n\n    def __str__(self):\n        return f\"{self.amount:.2f} {self.currency}\"\n\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"",
+      "tests": [
+        {
+          "name": "str",
+          "code": "assert str(Money(12.5, 'EUR')) == '12.50 EUR' and f'{Money(3, \"USD\")}' == '3.00 USD', 'str(Money(12.5, \"EUR\")) should be \"12.50 EUR\".'",
+          "message": "Check __str__."
+        },
+        {
+          "name": "repr",
+          "code": "assert repr(Money(12.5, 'EUR')) == \"Money(12.5, 'EUR')\", 'repr should look like the code that creates it.'",
+          "message": "Check __repr__."
+        }
+      ],
+      "hint": "`{self.currency!r}` adds the quotes for you.",
+      "explanation": "`__str__` is for users; `__repr__` is for developers and debugging."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Trio:\n    def __len__(self):\n        return 3\n\nprint(len(Trio()))",
+      "expectedOutput": "3",
+      "hint": "`len()` calls `__len__`.",
+      "explanation": "Your object now works with a built-in function."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write `Vector(x, y)` with `__add__` (adding coordinates, returning a new Vector) and `__eq__` (same x and y).",
+      "starterCode": "class Vector:\n    pass\n",
+      "solution": "class Vector:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def __add__(self, other):\n        return Vector(self.x + other.x, self.y + other.y)\n\n    def __eq__(self, other):\n        return self.x == other.x and self.y == other.y",
+      "tests": [
+        {
+          "name": "add",
+          "code": "v = Vector(1, 2) + Vector(10, 20)\nassert isinstance(v, Vector) and (v.x, v.y) == (11, 22), 'Adding vectors should add their coordinates.'",
+          "message": "Add vectors."
+        },
+        {
+          "name": "eq",
+          "code": "assert Vector(3, 4) == Vector(3, 4) and not (Vector(3, 4) == Vector(4, 3)), '== should compare coordinates.'",
+          "message": "Compare vectors."
+        }
+      ],
+      "hint": "`__add__(self, other)` returns `Vector(…)`.",
+      "explanation": "Operators are just method calls with nicer syntax."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is `__repr__` mainly for?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Making objects faster"
+        },
+        {
+          "id": "b",
+          "text": "An unambiguous description for developers"
+        },
+        {
+          "id": "c",
+          "text": "Converting to a number"
+        },
+        {
+          "id": "d",
+          "text": "Comparing objects"
+        }
+      ],
+      "answer": "b",
+      "hint": "It's what you see in the console and in lists.",
+      "explanation": "A good `__repr__` looks like the code that would create the object."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`Card('A', '♠') == Card('A', '♠')` should be True but is False. Fix `__eq__`.",
+      "starterCode": "class Card:\n    def __init__(self, rank, suit):\n        self.rank = rank\n        self.suit = suit\n\n    def __eq__(self, other):\n        (self.rank, self.suit) == (other.rank, other.suit)\n",
+      "solution": "class Card:\n    def __init__(self, rank, suit):\n        self.rank = rank\n        self.suit = suit\n\n    def __eq__(self, other):\n        return (self.rank, self.suit) == (other.rank, other.suit)\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert Card('A', '♠') == Card('A', '♠') and not (Card('A', '♠') == Card('K', '♠')), '== should compare rank and suit.'",
+          "message": "Compare cards."
+        }
+      ],
+      "hint": "The comparison is calculated… then thrown away.",
+      "explanation": "Magic methods must `return` their result like any function."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method name so `sorted()` can order the parcels by weight.",
+      "template": "class Parcel:\n    def __init__(self, kg):\n        self.kg = kg\n\n    def ___(self, other):\n        return self.kg < other.kg\n\norder = [p.kg for p in sorted([Parcel(5), Parcel(2), Parcel(9)])]",
+      "blanks": [
+        "__lt__"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert order == [2, 5, 9], 'order should be [2, 5, 9].'",
+          "message": "Sort by weight."
+        }
+      ],
+      "hint": "*less than*.",
+      "explanation": "`sorted` compares items with `<`, which calls `__lt__`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `Playlist(songs)` supporting `len(p)`, `p[i]` (the i-th song) and `\"song\" in p`.",
+      "starterCode": "class Playlist:\n    pass\n",
+      "solution": "class Playlist:\n    def __init__(self, songs):\n        self.songs = list(songs)\n\n    def __len__(self):\n        return len(self.songs)\n\n    def __getitem__(self, i):\n        return self.songs[i]\n\n    def __contains__(self, song):\n        return song in self.songs",
+      "tests": [
+        {
+          "name": "value",
+          "code": "p = Playlist(['Intro', 'Run', 'Home'])\nassert len(p) == 3 and p[0] == 'Intro' and p[-1] == 'Home' and 'Run' in p and 'Gone' not in p, 'len, indexing and in should all work.'",
+          "message": "Support len, [] and in."
+        }
+      ],
+      "hint": "`__len__`, `__getitem__` and `__contains__` each pass the work to the list.",
+      "explanation": "With a few dunders, your class behaves like a built-in collection."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Temp:\n    def __init__(self, c):\n        self.c = c\n\n    def __str__(self):\n        return f\"{self.c}°C\"\n\nprint(f\"Today: {Temp(21)}\")",
+      "expectedOutput": "Today: 21°C",
+      "hint": "f-strings use `__str__`.",
+      "explanation": "Anywhere Python needs text for an object, it calls `__str__`."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `Money(amount, currency)` with `__add__` (only for the same currency — otherwise raise `ValueError`), `__eq__`, `__lt__` (comparing amounts) and `__repr__` like `Money(5, 'GBP')`.",
+      "starterCode": "class Money:\n    pass\n",
+      "solution": "class Money:\n    def __init__(self, amount, currency):\n        self.amount = amount\n        self.currency = currency\n\n    def __add__(self, other):\n        if self.currency != other.currency:\n            raise ValueError(\"cannot add different currencies\")\n        return Money(self.amount + other.amount, self.currency)\n\n    def __eq__(self, other):\n        return (self.amount, self.currency) == (other.amount, other.currency)\n\n    def __lt__(self, other):\n        return self.amount < other.amount\n\n    def __repr__(self):\n        return f\"Money({self.amount!r}, {self.currency!r})\"",
+      "tests": [
+        {
+          "name": "add",
+          "code": "assert Money(5, 'GBP') + Money(7, 'GBP') == Money(12, 'GBP'), 'Adding the same currency should work.'",
+          "message": "Add the same currency."
+        },
+        {
+          "name": "mixed",
+          "code": "try:\n    Money(5, 'GBP') + Money(1, 'EUR')\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Adding different currencies should raise ValueError.')",
+          "message": "Refuse mixed currencies."
+        },
+        {
+          "name": "sort",
+          "code": "assert sorted([Money(9, 'GBP'), Money(2, 'GBP'), Money(5, 'GBP')]) == [Money(2, 'GBP'), Money(5, 'GBP'), Money(9, 'GBP')], 'sorted should order by amount.'",
+          "message": "Sort by amount."
+        },
+        {
+          "name": "repr",
+          "code": "assert repr(Money(5, 'GBP')) == \"Money(5, 'GBP')\", 'Check __repr__.'",
+          "message": "Check __repr__."
+        }
+      ],
+      "hint": "Check the currency first in `__add__`.",
+      "explanation": "Operator methods should enforce the same rules as the real world."
+    }
+  ]
+}

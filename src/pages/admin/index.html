@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group admin — Python Exercises</title>
+    <meta name="robots" content="noindex" />
+    <script type="module" src="./main.ts"></script>
+  </head>
+  <body>
+    <!-- @header -->
+    <main id="main" tabindex="-1" class="container admin">
+      <h1>Group admin</h1>
+      <p class="lead">Run a group for your class or team: share an invite link, follow each member’s progress and export it as CSV.</p>
+      <div class="alert" data-status role="status" aria-live="polite" hidden></div>
+      <p data-loading>Loading your groups…</p>
+
+      <div data-admin hidden>
+        <section class="card admin__section" aria-labelledby="groups-title">
+          <h2 id="groups-title">Your groups</h2>
+          <p data-no-groups hidden>You don’t run any groups yet.</p>
+          <div class="field" data-picker hidden>
+            <label for="group-select">Group</label>
+            <select id="group-select" data-group-select></select>
+          </div>
+          <form class="form admin__create" data-create-form novalidate>
+            <div class="field">
+              <label for="group-name">New group name</label>
+              <input id="group-name" name="name" type="text" maxlength="60" required placeholder="e.g. Year 10 Python" />
+            </div>
+            <button class="btn btn--secondary" type="submit">Create group</button>
+          </form>
+        </section>
+
+        <section class="card admin__section" data-group hidden aria-labelledby="group-title">
+          <h2 id="group-title" data-group-name></h2>
+          <dl class="facts">
+            <div><dt>Members</dt><dd data-member-count></dd></div>
+            <div><dt>Premium seats</dt><dd data-seats></dd></div>
+            <div><dt>Group ID</dt><dd><code data-group-id></code></dd></div>
+          </dl>
+          <div class="field">
+            <label for="invite-link">Invite link</label>
+            <div class="admin__invite">
+              <input id="invite-link" type="text" readonly data-invite />
+              <button class="btn btn--secondary" type="button" data-copy>Copy</button>
+              <button class="btn btn--ghost" type="button" data-regenerate>New link</button>
+            </div>
+            <p class="help-text">Anyone with the link can join. Making a new link stops the old one working.</p>
+          </div>
+          <div class="section-head">
+            <h3>Members</h3>
+            <button class="btn btn--secondary" type="button" data-export>Export CSV</button>
+          </div>
+          <p data-empty hidden>No one has joined yet. Share the invite link to get started.</p>
+          <div class="table-wrap" data-table-wrap hidden>
+            <table class="table">
+              <caption class="visually-hidden">Member progress</caption>
+              <thead>
+                <tr><th scope="col">Member</th><th scope="col">Lessons completed</th><th scope="col">Average accuracy</th><th scope="col">Last active</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr>
+              </thead>
+              <tbody data-members></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+    <!-- @footer -->
+  </body>
+</html>

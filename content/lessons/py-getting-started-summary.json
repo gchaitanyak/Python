@@ -1,0 +1,173 @@
+{
+  "id": "py-getting-started-summary",
+  "moduleId": "getting-started",
+  "title": "Getting Started: Skill Summary",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "Time to mix everything from this module: `print()`, sums, `sep` and `end`, comments, docstrings and reading error messages.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Print exactly `Welcome aboard!`",
+      "starterCode": "# your code\n",
+      "solution": "print(\"Welcome aboard!\")",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'Welcome aboard!', 'The output should be exactly: Welcome aboard!'",
+          "message": "The output should be: Welcome aboard!"
+        }
+      ],
+      "hint": "Text goes in quotes inside `print()`.",
+      "explanation": "That's a whole program: one statement."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(10 - 4, 10 * 4, sep=\" | \")",
+      "expectedOutput": "6 | 40",
+      "hint": "Work out each sum, then join them with the separator.",
+      "explanation": "`10 - 4` is 6 and `10 * 4` is 40, joined by ` | `."
+    },
+    {
+      "id": "q03",
+      "type": "fix_code",
+      "prompt": "Python reports an *unexpected indent*. Fix the program so it prints both steps.",
+      "starterCode": "print(\"Step 1: boil water\")\n  print(\"Step 2: add pasta\")\n",
+      "solution": "print(\"Step 1: boil water\")\nprint(\"Step 2: add pasta\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == ['Step 1: boil water', 'Step 2: add pasta'], 'Print both steps, one per line.'",
+          "message": "Print both steps, one per line."
+        }
+      ],
+      "hint": "Plain statements start at the left edge, with no spaces.",
+      "explanation": "Only code inside a block (you'll meet these later) is indented."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Print the number of seconds in one day. Let Python multiply 24 hours × 60 minutes × 60 seconds.",
+      "starterCode": "# your code\n",
+      "solution": "print(24 * 60 * 60)",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == '86400', 'The output should be 86400.'",
+          "message": "The output should be 86400."
+        }
+      ],
+      "hint": "You can chain multiplications: `a * b * c`.",
+      "explanation": "Python multiplies left to right: 24 × 60 = 1440, then × 60 = 86400."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "Which of these lines does Python skip completely?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`print(\"# not a comment\")`"
+        },
+        {
+          "id": "b",
+          "text": "`# print the total`"
+        },
+        {
+          "id": "c",
+          "text": "`\"\"\"Shows totals.\"\"\"`"
+        },
+        {
+          "id": "d",
+          "text": "`print()`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Only one starts with `#`.",
+      "explanation": "A `#` inside quotes is just text. The docstring is stored, and `print()` prints an empty line."
+    },
+    {
+      "id": "q06",
+      "type": "fill_blank",
+      "prompt": "Fill in the blank so the output is `Ready!` — with the `!` straight after the word.",
+      "template": "print(\"Ready\", ___=\"!\")",
+      "blanks": [
+        "end"
+      ],
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__ == 'Ready!', 'The output should be exactly Ready! with no new line after it.'",
+          "message": "The output should be Ready!"
+        }
+      ],
+      "hint": "Which setting controls what goes after the last value?",
+      "explanation": "`end=\"!\"` replaces the usual new line with `!`."
+    },
+    {
+      "id": "q07",
+      "type": "fix_code",
+      "prompt": "This crashes with a *SyntaxError*. Fix it so it prints `See you soon`.",
+      "starterCode": "print(\"See you soon)\n",
+      "solution": "print(\"See you soon\")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip() == 'See you soon', 'The output should be: See you soon'",
+          "message": "The output should be: See you soon"
+        }
+      ],
+      "hint": "Every opening quote needs a closing quote.",
+      "explanation": "Python reached the end of the line while still inside the text, so it couldn't tell where the text ended."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Start the program with the docstring `\"\"\"Daily reminder.\"\"\"`, then print `Drink water` and `Stretch` on separate lines.",
+      "starterCode": "# your code\n",
+      "solution": "\"\"\"Daily reminder.\"\"\"\nprint(\"Drink water\")\nprint(\"Stretch\")\n",
+      "tests": [
+        {
+          "name": "docstring",
+          "code": "assert __doc__ is not None and __doc__.strip() == 'Daily reminder.', 'The first line should be the docstring \"\"\"Daily reminder.\"\"\"'",
+          "message": "Start with the docstring."
+        },
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == ['Drink water', 'Stretch'], 'Print Drink water, then Stretch.'",
+          "message": "Print Drink water, then Stretch."
+        }
+      ],
+      "hint": "The docstring goes first, in triple quotes. Then two `print()` calls.",
+      "explanation": "The docstring says what the program is for; the prints do the work."
+    },
+    {
+      "id": "q09",
+      "type": "write_code",
+      "prompt": "Use **one** `print()` to show this shopping list. Pass the four values `\"Shopping:\"`, `\"milk\"`, `\"bread\"` and `\"eggs\"`, and choose a `sep` that produces:\n\n```\nShopping:\n- milk\n- bread\n- eggs\n```",
+      "starterCode": "print(\"Shopping:\", \"milk\", \"bread\", \"eggs\")\n",
+      "solution": "print(\"Shopping:\", \"milk\", \"bread\", \"eggs\", sep=\"\\n- \")\n",
+      "tests": [
+        {
+          "name": "output",
+          "code": "assert __output__.strip().splitlines() == ['Shopping:', '- milk', '- bread', '- eggs'], 'Each item should be on its own line, starting with \"- \".'",
+          "message": "Each item should start a new line with \"- \"."
+        }
+      ],
+      "hint": "The separator can be more than one character. It can start with `\"\\n\"`.",
+      "explanation": "`sep` goes between every pair of values, so a new line plus `- ` builds the list."
+    },
+    {
+      "id": "q10",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"A\", end=\" \")\nprint(\"B\", end=\" \")\nprint(\"C\")",
+      "expectedOutput": "A B C",
+      "hint": "Each of the first two calls ends with a space instead of a new line.",
+      "explanation": "Only the last `print()` ends the line."
+    }
+  ]
+}

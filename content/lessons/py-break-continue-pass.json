@@ -1,0 +1,169 @@
+{
+  "id": "py-break-continue-pass",
+  "moduleId": "control-flow",
+  "title": "break, continue and pass",
+  "estimatedMinutes": 10,
+  "basePoints": 10,
+  "intro": "`break` leaves a loop straight away. `continue` skips the rest of this pass and moves to the next one. `pass` does nothing — it holds a place where Python needs a statement. A loop can also have an `else` block, which runs only if the loop finished **without** `break`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Here the loop stops at the first digit. The `else` would run only if no digit were found.",
+      "exampleCode": "for ch in \"abc4de\":\n    if ch.isdigit():\n        print(\"First digit:\", ch)\n        break\nelse:\n    print(\"No digits\")",
+      "explanation": "`isdigit()` is a string method that's True for `0`–`9`."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Find the first digit character in `text` and store it in `first_digit`. Use a `for` loop with `break` (`ch.isdigit()` tells you if a character is a digit).",
+      "starterCode": "first_digit = None\n",
+      "solution": "first_digit = None\nfor ch in text:\n    if ch.isdigit():\n        first_digit = ch\n        break",
+      "setupCode": "text = \"Order AB-7731\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = next((c for c in text if c.isdigit()), None)\nassert first_digit == expected, 'first_digit should be the first digit character in text.'",
+          "message": "Find the first digit."
+        }
+      ],
+      "hint": "Inside the loop: if it's a digit, store it, then `break`.",
+      "explanation": "`break` stops at the first match instead of carrying on to the end."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print? (It's one line.)",
+      "code": "for n in range(1, 8):\n    if n % 3 == 0:\n        continue\n    print(n, end=\" \")",
+      "expectedOutput": "1 2 4 5 7",
+      "hint": "`continue` skips the `print` for multiples of 3.",
+      "explanation": "3 and 6 are skipped; everything else is printed."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Build `squashed`: the characters of `text` without its spaces. Use a `for` loop with `continue` to skip spaces.",
+      "starterCode": "squashed = \"\"\n",
+      "solution": "squashed = \"\"\nfor ch in text:\n    if ch == \" \":\n        continue\n    squashed += ch",
+      "setupCode": "text = \"c o d e  b r e a k\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert squashed == text.replace(' ', ''), 'squashed should be text without any spaces.'",
+          "message": "Remove every space."
+        }
+      ],
+      "hint": "If the character is a space, `continue`. Otherwise add it to `squashed`.",
+      "explanation": "`continue` keeps the main work un-indented and easy to read."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "When does a loop's `else` block run?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Every time the loop runs"
+        },
+        {
+          "id": "b",
+          "text": "Only if the loop never ran"
+        },
+        {
+          "id": "c",
+          "text": "Only if the loop finished without `break`"
+        },
+        {
+          "id": "d",
+          "text": "Only after `continue`"
+        }
+      ],
+      "answer": "c",
+      "hint": "Think of it as *no break*.",
+      "explanation": "`else` on a loop means *the loop ran to the end without breaking*."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`found` should be True when `word` contains a `z`, but it only ever checks the first letter. Fix it.",
+      "starterCode": "found = False\nfor ch in word:\n    if ch == \"z\":\n        found = True\n    break\n",
+      "solution": "found = False\nfor ch in word:\n    if ch == \"z\":\n        found = True\n        break\n",
+      "setupCode": "word = \"pizza\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert found == ('z' in word), 'found should be True when word contains z.'",
+          "message": "found should say whether word contains z."
+        }
+      ],
+      "hint": "Where is `break` indented? It should only run once a `z` is found.",
+      "explanation": "Indentation decides which block a line belongs to — here it decides when the loop stops."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Python needs a statement in the empty branch. Fill in the keyword that does nothing.",
+      "template": "for n in range(3):\n    if n == 1:\n        ___\n    else:\n        last = n",
+      "blanks": [
+        "pass"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert last == 2, 'last should be 2.'",
+          "message": "last should be 2."
+        }
+      ],
+      "hint": "It's a four-letter placeholder.",
+      "explanation": "`pass` keeps the code valid while you decide what goes there."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Check whether `n` is **prime** (only divisible by 1 and itself). Try every divisor from 2 to `n - 1`; use `break` and the loop's `else` to set `is_prime`.",
+      "starterCode": "# your loop here\n",
+      "solution": "for d in range(2, n):\n    if n % d == 0:\n        is_prime = False\n        break\nelse:\n    is_prime = True",
+      "setupCode": "n = 91",
+      "tests": [
+        {
+          "name": "value",
+          "code": "expected = n > 1 and all(n % d for d in range(2, n))\nassert is_prime == expected, 'is_prime should be True only if no number from 2 to n - 1 divides n.'",
+          "message": "Check the prime test."
+        }
+      ],
+      "hint": "On the first divisor found: `is_prime = False`, then `break`. The `else` handles *no divisor found*.",
+      "explanation": "Loop `else` is made for search loops: it runs only when nothing was found."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "for c in \"abc\":\n    if c == \"b\":\n        break\n    print(c)\nelse:\n    print(\"done\")",
+      "expectedOutput": "a",
+      "hint": "`break` happens on `b`. Does the `else` run?",
+      "explanation": "The loop broke, so the `else` is skipped."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Allow up to 3 tries at the password `secret`. Ask with `input(\"Password? \")`. On the right answer print `Welcome!` and stop asking. If all 3 are wrong, print `Locked out`. Use `for`, `break` and `else`.",
+      "starterCode": "# your loop here\n",
+      "solution": "for attempt in range(3):\n    guess = input(\"Password? \")\n    if guess == \"secret\":\n        print(\"Welcome!\")\n        break\nelse:\n    print(\"Locked out\")",
+      "setupCode": "__input__ = \"pass1\\nsecret\\n\"",
+      "tests": [
+        {
+          "name": "welcome",
+          "code": "assert __output__.strip().endswith('Welcome!'), 'Print Welcome! as soon as the right password is typed.'",
+          "message": "Print Welcome! on the right password."
+        },
+        {
+          "name": "stops",
+          "code": "assert __output__.count('Password? ') == 2 and 'Locked out' not in __output__, 'Stop asking once the password is right, and don’t print Locked out.'",
+          "message": "Stop after the right answer."
+        }
+      ],
+      "hint": "`break` on success; the loop's `else` prints `Locked out`.",
+      "explanation": "Loop `else` neatly handles *ran out of tries*."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "id": "py-list-methods",
+  "moduleId": "data-structures",
+  "title": "List Methods",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Lists come with **methods** that change them in place: `append` adds one item to the end, `extend` adds several, `insert` puts an item at a position, and `pop` removes and returns one. Assigning a list to a new name doesn't copy it — both names point to the **same** list.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`pop()` with no index takes the last item; `pop(0)` takes the first. `copy()` makes an independent copy.",
+      "exampleCode": "tasks = [\"wash\"]\ntasks.append(\"cook\")\ntasks.extend([\"shop\", \"call\"])\ntasks.insert(0, \"wake\")\nlast = tasks.pop()\nprint(tasks)\nprint(last)",
+      "explanation": "`append` adds one item; `extend` adds each item from another list."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Add `\"Cleo\"` to the **end** of `queue` and `\"Dev\"` to the **front**.",
+      "starterCode": "queue = [\"Ana\", \"Ben\"]\n",
+      "solution": "queue = [\"Ana\", \"Ben\"]\nqueue.append(\"Cleo\")\nqueue.insert(0, \"Dev\")\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert queue == ['Dev', 'Ana', 'Ben', 'Cleo'], 'queue should be [\"Dev\", \"Ana\", \"Ben\", \"Cleo\"].'",
+          "message": "Check the order of queue."
+        }
+      ],
+      "hint": "`append` for the end, `insert(0, …)` for the front.",
+      "explanation": "`insert` takes the position first, then the item."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "nums = [1, 2, 3]\nnums.append([4, 5])\nprint(len(nums))",
+      "expectedOutput": "4",
+      "hint": "`append` adds exactly one item — even if that item is a list.",
+      "explanation": "The list `[4, 5]` becomes a single fourth item. `extend` would have added two."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "`orders` holds today's orders. Remove the most recent one (the last) from the list and store it in `latest`.",
+      "starterCode": "latest = \n",
+      "solution": "latest = orders.pop()",
+      "setupCode": "orders = [\"#101\", \"#102\", \"#103\", \"#104\"]\n_original = list(orders)",
+      "tests": [
+        {
+          "name": "latest",
+          "code": "assert latest == _original[-1], 'latest should be the last order.'",
+          "message": "latest should be the last order."
+        },
+        {
+          "name": "shrunk",
+          "code": "assert orders == _original[:-1], 'The last order should be removed from orders.'",
+          "message": "orders should no longer contain it."
+        }
+      ],
+      "hint": "One method both removes and returns an item.",
+      "explanation": "`pop()` is perfect for taking the newest item off a list."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "After `a = [1, 2]` and `a.extend([3, 4])`, what is `a`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`[1, 2, [3, 4]]`"
+        },
+        {
+          "id": "b",
+          "text": "`[1, 2, 3, 4]`"
+        },
+        {
+          "id": "c",
+          "text": "`[3, 4]`"
+        },
+        {
+          "id": "d",
+          "text": "`[1, 2]`"
+        }
+      ],
+      "answer": "b",
+      "hint": "`extend` adds each item separately.",
+      "explanation": "`append([3, 4])` would give `[1, 2, [3, 4]]` instead."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`backup` should keep the playlist as it was **before** the new song, but it changes too. Fix it.",
+      "starterCode": "playlist = [\"intro\", \"verse\"]\nbackup = playlist\nplaylist.append(\"chorus\")\n",
+      "solution": "playlist = [\"intro\", \"verse\"]\nbackup = playlist.copy()\nplaylist.append(\"chorus\")\n",
+      "tests": [
+        {
+          "name": "backup",
+          "code": "assert backup == ['intro', 'verse'], 'backup should still be [\"intro\", \"verse\"].'",
+          "message": "backup should not change."
+        },
+        {
+          "name": "playlist",
+          "code": "assert playlist == ['intro', 'verse', 'chorus'], 'playlist should have the new song.'",
+          "message": "playlist should have 3 songs."
+        }
+      ],
+      "hint": "`backup = playlist` gives the same list a second name. Make a real copy.",
+      "explanation": "`copy()` (or `playlist[:]`) creates a separate list."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method so `position` is the index of `\"c\"`.",
+      "template": "letters = [\"a\", \"b\", \"c\", \"d\"]\nposition = letters.___(\"c\")",
+      "blanks": [
+        "index"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert position == 2, 'position should be 2.'",
+          "message": "position should be 2."
+        }
+      ],
+      "hint": "Which method finds where an item is?",
+      "explanation": "`index` returns the position of the first match."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`words` is a list of words. Store how many times `\"the\"` appears in `count_the`, then remove the **first** `\"the\"` from the list.",
+      "starterCode": "count_the = \n",
+      "solution": "count_the = words.count(\"the\")\nwords.remove(\"the\")",
+      "setupCode": "words = [\"in\", \"the\", \"end\", \"the\", \"cat\", \"ran\", \"the\"]\n_original = list(words)",
+      "tests": [
+        {
+          "name": "count",
+          "code": "assert count_the == _original.count('the'), 'count_the should be how many times \"the\" appears.'",
+          "message": "Check the count."
+        },
+        {
+          "name": "removed",
+          "code": "expected = list(_original)\nexpected.remove('the')\nassert words == expected, 'Remove only the first \"the\".'",
+          "message": "Remove the first \"the\" only."
+        }
+      ],
+      "hint": "`count` counts; `remove` deletes the first match.",
+      "explanation": "`remove` works by value; `pop` works by position."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "stack = [1, 2, 3]\nstack.pop(0)\nprint(stack)",
+      "expectedOutput": "[2, 3]",
+      "hint": "`pop(0)` removes the item at index 0.",
+      "explanation": "The first item is taken off; the rest shift down."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A to-do app: move `\"buy milk\"` from `todo` to the end of `done`, then add `\"pay rent\"` to the **top** of `todo`.",
+      "starterCode": "todo = [\"email Sam\", \"buy milk\", \"book dentist\"]\ndone = []\n",
+      "solution": "todo = [\"email Sam\", \"buy milk\", \"book dentist\"]\ndone = []\ntodo.remove(\"buy milk\")\ndone.append(\"buy milk\")\ntodo.insert(0, \"pay rent\")\n",
+      "tests": [
+        {
+          "name": "todo",
+          "code": "assert todo == ['pay rent', 'email Sam', 'book dentist'], 'todo should be [\"pay rent\", \"email Sam\", \"book dentist\"].'",
+          "message": "Check todo."
+        },
+        {
+          "name": "done",
+          "code": "assert done == ['buy milk'], 'done should be [\"buy milk\"].'",
+          "message": "Check done."
+        }
+      ],
+      "hint": "Three steps: `remove`, `append`, `insert`.",
+      "explanation": "Each method does one small change; together they move items between lists."
+    }
+  ]
+}

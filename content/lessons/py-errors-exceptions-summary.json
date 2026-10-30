@@ -1,0 +1,189 @@
+{
+  "id": "py-errors-exceptions-summary",
+  "moduleId": "errors-exceptions",
+  "title": "Errors: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: catching specific exceptions, `else` and `finally`, raising with clear messages, custom exceptions, asserts and reading errors.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Write `to_int(text, default=0)` that returns `int(text)`, or `default` when the text isn't a whole number.",
+      "starterCode": "def to_int(text, default=0):\n    pass\n",
+      "solution": "def to_int(text, default=0):\n    try:\n        return int(text)\n    except ValueError:\n        return default",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert to_int('12') == 12 and to_int('x') == 0 and to_int('', default=-1) == -1, 'to_int should fall back to default.'",
+          "message": "Fall back to default."
+        }
+      ],
+      "hint": "`try`/`except ValueError`, returning `default`.",
+      "explanation": "A default parameter makes the fallback configurable."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "d = {}\ntry:\n    d[\"x\"]\nexcept KeyError as e:\n    print(\"missing\", e)",
+      "expectedOutput": "missing 'x'",
+      "hint": "A KeyError's message is the key, shown with quotes.",
+      "explanation": "`str()` of a `KeyError` is the key's repr."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Define `InvalidEmail(Exception)` and write `check_email(email)` that raises it (with the email as the message) if there's no `@`, otherwise returns the email in lowercase.",
+      "starterCode": "class InvalidEmail(Exception):\n    pass\n",
+      "solution": "class InvalidEmail(Exception):\n    pass\n\ndef check_email(email):\n    if '@' not in email:\n        raise InvalidEmail(email)\n    return email.lower()",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert check_email('Ana@Mail.COM') == 'ana@mail.com', 'Valid emails come back lowercase.'",
+          "message": "Return valid emails in lowercase."
+        },
+        {
+          "name": "bad",
+          "code": "try:\n    check_email('ana.mail.com')\nexcept InvalidEmail as e:\n    assert str(e) == 'ana.mail.com', 'Use the email as the message.'\nelse:\n    raise AssertionError('An email without @ should raise InvalidEmail.')",
+          "message": "Raise InvalidEmail."
+        }
+      ],
+      "hint": "Check for `@`, raise, otherwise return.",
+      "explanation": "Custom exceptions make error handling read like the problem domain."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`classify(\"x\")` should return `\"bad number\"`, but it returns `\"other\"`. Fix the order of the `except` blocks.",
+      "starterCode": "def classify(text):\n    try:\n        int(text)\n        return \"ok\"\n    except Exception:\n        return \"other\"\n    except ValueError:\n        return \"bad number\"\n",
+      "solution": "def classify(text):\n    try:\n        int(text)\n        return \"ok\"\n    except ValueError:\n        return \"bad number\"\n    except Exception:\n        return \"other\"\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert classify('x') == 'bad number' and classify('5') == 'ok' and classify(None) == 'other', 'Specific exceptions must be caught before general ones.'",
+          "message": "Catch specific errors first."
+        }
+      ],
+      "hint": "Python uses the first `except` that matches, and `Exception` matches everything.",
+      "explanation": "Order `except` blocks from most to least specific."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "When does a `finally` block run?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Only when there's an error"
+        },
+        {
+          "id": "b",
+          "text": "Only when there's no error"
+        },
+        {
+          "id": "c",
+          "text": "Always — error or not"
+        },
+        {
+          "id": "d",
+          "text": "Only after `else`"
+        }
+      ],
+      "answer": "c",
+      "hint": "It's for clean-up that must always happen.",
+      "explanation": "`finally` runs whether the `try` succeeded, failed or returned."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `load_number(text)` that returns `float(text)`. If that fails, raise `ValueError(f\"not a number: {text}\")` **from** the original error, so the cause is kept.",
+      "starterCode": "def load_number(text):\n    pass\n",
+      "solution": "def load_number(text):\n    try:\n        return float(text)\n    except ValueError as err:\n        raise ValueError(f\"not a number: {text}\") from err",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert load_number('2.5') == 2.5, 'load_number(\"2.5\") should be 2.5.'",
+          "message": "Return the number."
+        },
+        {
+          "name": "chained",
+          "code": "try:\n    load_number('abc')\nexcept ValueError as e:\n    assert str(e) == 'not a number: abc', 'Use the message: not a number: abc'\n    assert isinstance(e.__cause__, ValueError), 'Raise it from the original error (raise … from err).'\nelse:\n    raise AssertionError('load_number(\"abc\") should raise ValueError.')",
+          "message": "Raise a clearer error from the original."
+        }
+      ],
+      "hint": "`raise NewError(...) from err` inside the `except` block.",
+      "explanation": "`from err` keeps the original traceback for debugging."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the keyword so the file is always closed.",
+      "template": "log = []\ntry:\n    log.append(\"open\")\n    1 / 0\nexcept ZeroDivisionError:\n    log.append(\"error\")\n___:\n    log.append(\"close\")",
+      "blanks": [
+        "finally"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert log == ['open', 'error', 'close'], 'log should be [\"open\", \"error\", \"close\"].'",
+          "message": "log should end with close."
+        }
+      ],
+      "hint": "The block that always runs.",
+      "explanation": "`finally` guarantees the clean-up step."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Keep asking `Quantity? ` until the user types a positive whole number (print `Try again.` after each bad answer). Then print `Ordered N`.",
+      "starterCode": "# your code\n",
+      "solution": "while True:\n    try:\n        qty = int(input(\"Quantity? \"))\n    except ValueError:\n        print(\"Try again.\")\n        continue\n    if qty > 0:\n        break\n    print(\"Try again.\")\nprint(f\"Ordered {qty}\")",
+      "setupCode": "__input__ = \"ten\\n-3\\n7\\n\"",
+      "tests": [
+        {
+          "name": "retries",
+          "code": "assert __output__.count('Try again.') == 2, 'Print Try again. after each bad answer.'",
+          "message": "Ask again after bad answers."
+        },
+        {
+          "name": "result",
+          "code": "assert __output__.strip().endswith('Ordered 7'), 'Finish with Ordered 7.'",
+          "message": "Print Ordered N."
+        }
+      ],
+      "hint": "`int()` fails on `ten`; `-3` converts fine but isn't positive.",
+      "explanation": "Two kinds of bad input — wrong type and out of range — need two checks."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def f():\n    try:\n        raise ValueError(\"a\")\n    except ValueError:\n        return \"handled\"\n    else:\n        return \"no error\"\n\nprint(f())",
+      "expectedOutput": "handled",
+      "hint": "Was an exception raised?",
+      "explanation": "`else` only runs when the `try` block finishes without an exception."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Write `safe_average(values)` for a list of strings. Skip any that aren't numbers and return the average of the rest, rounded to 2 decimals. If none are valid, raise `ValueError(\"no valid numbers\")`.",
+      "starterCode": "def safe_average(values):\n    pass\n",
+      "solution": "def safe_average(values):\n    numbers = []\n    for v in values:\n        try:\n            numbers.append(float(v))\n        except ValueError:\n            continue\n    if not numbers:\n        raise ValueError(\"no valid numbers\")\n    return round(sum(numbers) / len(numbers), 2)",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "assert safe_average(['4', 'x', '5.5', '']) == 4.75, 'Skip bad values and average the rest.'",
+          "message": "Average the valid numbers."
+        },
+        {
+          "name": "none",
+          "code": "try:\n    safe_average(['a', 'b'])\nexcept ValueError as e:\n    assert str(e) == 'no valid numbers', 'Use the message: no valid numbers'\nelse:\n    raise AssertionError('No valid numbers should raise ValueError.')",
+          "message": "Raise when nothing is valid."
+        }
+      ],
+      "hint": "Collect what converts; raise at the end if the list is empty.",
+      "explanation": "Skipping bad rows but refusing to invent an answer keeps results honest."
+    }
+  ]
+}

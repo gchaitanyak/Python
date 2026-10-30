@@ -1,0 +1,188 @@
+{
+  "id": "py-oop-summary",
+  "moduleId": "oop",
+  "title": "OOP: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: classes and instances, methods and properties, inheritance, polymorphism, encapsulation and magic methods.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "Write `Task(title, done=False)` with `complete()` (sets done) and `__str__` returning `[x] title` when done, `[ ] title` otherwise.",
+      "starterCode": "class Task:\n    pass\n",
+      "solution": "class Task:\n    def __init__(self, title, done=False):\n        self.title = title\n        self.done = done\n\n    def complete(self):\n        self.done = True\n\n    def __str__(self):\n        return f\"[{'x' if self.done else ' '}] {self.title}\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "t = Task('Water plants')\nassert str(t) == '[ ] Water plants'\nt.complete()\nassert str(t) == '[x] Water plants' and str(Task('Pay rent', True)) == '[x] Pay rent', 'Check __str__ before and after complete().'",
+          "message": "Check both states."
+        }
+      ],
+      "hint": "A conditional expression inside the f-string picks `x` or a space.",
+      "explanation": "A small class with state, a method and `__str__`."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "An instance attribute hides a class attribute with the same name. What does this print?",
+      "code": "class Config:\n    mode = 'light'\n\na = Config()\nb = Config()\na.mode = 'dark'\nprint(a.mode, b.mode, Config.mode)",
+      "expectedOutput": "dark light light",
+      "hint": "Assigning `a.mode` creates an attribute on `a` only.",
+      "explanation": "`b` still finds the class attribute."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Write a base `Shape` whose `area()` raises `NotImplementedError`, and subclasses `Circle(r)` and `Rect(w, h)` that implement it (`3.14159 * r * r` and `w * h`).",
+      "starterCode": "class Shape:\n    pass\n",
+      "solution": "class Shape:\n    def area(self):\n        raise NotImplementedError\n\nclass Circle(Shape):\n    def __init__(self, r):\n        self.r = r\n\n    def area(self):\n        return 3.14159 * self.r * self.r\n\nclass Rect(Shape):\n    def __init__(self, w, h):\n        self.w = w\n        self.h = h\n\n    def area(self):\n        return self.w * self.h",
+      "tests": [
+        {
+          "name": "subclasses",
+          "code": "assert Rect(2, 3).area() == 6 and round(Circle(2).area(), 2) == 12.57, 'Each subclass should compute its area.'",
+          "message": "Implement area() in subclasses."
+        },
+        {
+          "name": "base",
+          "code": "try:\n    Shape().area()\nexcept NotImplementedError:\n    pass\nelse:\n    raise AssertionError('Shape().area() should raise NotImplementedError.')",
+          "message": "The base class should refuse."
+        }
+      ],
+      "hint": "`raise NotImplementedError` marks a method subclasses must provide.",
+      "explanation": "The base class defines the interface; children fill it in."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "Every team shares one member list, so adding to one adds to all. Fix it so each team has its own.",
+      "starterCode": "class Team:\n    members = []\n\n    def __init__(self, name):\n        self.name = name\n\n    def join(self, person):\n        self.members.append(person)\n",
+      "solution": "class Team:\n    def __init__(self, name):\n        self.name = name\n        self.members = []\n\n    def join(self, person):\n        self.members.append(person)\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "a, b = Team('red'), Team('blue')\na.join('Ana')\nassert a.members == ['Ana'] and b.members == [], 'Each team should keep its own members.'",
+          "message": "Give each team its own list."
+        }
+      ],
+      "hint": "A list defined on the class is shared by every instance.",
+      "explanation": "Create mutable attributes in `__init__`."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "A `Car` has an `Engine`. Which design fits best?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`class Car(Engine)`"
+        },
+        {
+          "id": "b",
+          "text": "Give `Car` an `engine` attribute holding an `Engine` object"
+        },
+        {
+          "id": "c",
+          "text": "`class Engine(Car)`"
+        },
+        {
+          "id": "d",
+          "text": "Make both the same class"
+        }
+      ],
+      "answer": "b",
+      "hint": "*has a* versus *is a*.",
+      "explanation": "Composition (*has a*) fits; inheritance is for *is a* relationships."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Write `Student(name, grade)` where `grade` is a property validated in its setter (0–100, else `ValueError`), plus a read-only property `passed` (grade 50 or more).",
+      "starterCode": "class Student:\n    pass\n",
+      "solution": "class Student:\n    def __init__(self, name, grade):\n        self.name = name\n        self.grade = grade\n\n    @property\n    def grade(self):\n        return self._grade\n\n    @grade.setter\n    def grade(self, value):\n        if not 0 <= value <= 100:\n            raise ValueError(\"grade must be 0-100\")\n        self._grade = value\n\n    @property\n    def passed(self):\n        return self._grade >= 50",
+      "tests": [
+        {
+          "name": "ok",
+          "code": "s = Student('Ana', 49)\nassert not s.passed\ns.grade = 50\nassert s.passed, 'passed should follow the grade.'",
+          "message": "passed follows the grade."
+        },
+        {
+          "name": "validate",
+          "code": "try:\n    Student('Ben', 101)\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('A grade above 100 should raise ValueError.')",
+          "message": "Validate the grade."
+        }
+      ],
+      "hint": "One property with a setter, one without.",
+      "explanation": "Validation and derived values both live in properties."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the call that runs the parent's `__init__`.",
+      "template": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\nclass Cat(Animal):\n    def __init__(self, name, indoor):\n        ___.__init__(name)\n        self.indoor = indoor\n\ntom = Cat(\"Tom\", True)",
+      "blanks": [
+        "super()"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert (tom.name, tom.indoor) == ('Tom', True), 'tom should have name and indoor.'",
+          "message": "Set both attributes."
+        }
+      ],
+      "hint": "It gives access to the parent class.",
+      "explanation": "`super().__init__(name)` sets up `name` via `Animal`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `Coordinate(lat, lon)` with `__eq__` and `__hash__` (based on the `(lat, lon)` tuple) so duplicates collapse in a set, and `__repr__` like `Coordinate(38.7, -9.1)`.",
+      "starterCode": "class Coordinate:\n    pass\n",
+      "solution": "class Coordinate:\n    def __init__(self, lat, lon):\n        self.lat = lat\n        self.lon = lon\n\n    def __eq__(self, other):\n        return (self.lat, self.lon) == (other.lat, other.lon)\n\n    def __hash__(self):\n        return hash((self.lat, self.lon))\n\n    def __repr__(self):\n        return f\"Coordinate({self.lat}, {self.lon})\"",
+      "tests": [
+        {
+          "name": "set",
+          "code": "s = {Coordinate(38.7, -9.1), Coordinate(38.7, -9.1), Coordinate(51.5, -0.1)}\nassert len(s) == 2, 'Equal coordinates should collapse to one in a set.'",
+          "message": "Deduplicate in a set."
+        },
+        {
+          "name": "repr",
+          "code": "assert repr(Coordinate(38.7, -9.1)) == 'Coordinate(38.7, -9.1)', 'Check __repr__.'",
+          "message": "Check __repr__."
+        }
+      ],
+      "hint": "Objects that are equal must have equal hashes — hash the same tuple you compare.",
+      "explanation": "`__eq__` plus `__hash__` makes objects usable in sets and as dictionary keys."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "class Dog:\n    def sound(self):\n        return \"woof\"\n\nclass Fox:\n    def sound(self):\n        return \"?\"\n\nprint(\" \".join(a.sound() for a in [Dog(), Fox(), Dog()]))",
+      "expectedOutput": "woof ? woof",
+      "hint": "Each object answers in its own way.",
+      "explanation": "Polymorphism: one loop, different behaviour."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A tiny library: `Book(book_id, title)` and `Library` with `add(book)`, `checkout(book_id, member)` and `return_book(book_id)`. Raise `KeyError` for unknown ids and `ValueError` when checking out a book that's already out. `available()` returns the titles not checked out, sorted.",
+      "starterCode": "class Book:\n    pass\n\nclass Library:\n    pass\n",
+      "solution": "class Book:\n    def __init__(self, book_id, title):\n        self.book_id = book_id\n        self.title = title\n        self.borrower = None\n\nclass Library:\n    def __init__(self):\n        self._books = {}\n\n    def add(self, book):\n        self._books[book.book_id] = book\n\n    def _get(self, book_id):\n        if book_id not in self._books:\n            raise KeyError(book_id)\n        return self._books[book_id]\n\n    def checkout(self, book_id, member):\n        book = self._get(book_id)\n        if book.borrower is not None:\n            raise ValueError(\"already checked out\")\n        book.borrower = member\n\n    def return_book(self, book_id):\n        self._get(book_id).borrower = None\n\n    def available(self):\n        return sorted(b.title for b in self._books.values() if b.borrower is None)",
+      "tests": [
+        {
+          "name": "flow",
+          "code": "lib = Library()\nfor i, t in [(1, 'Dune'), (2, 'Beloved'), (3, 'Emma')]:\n    lib.add(Book(i, t))\nlib.checkout(2, 'ana')\nassert lib.available() == ['Dune', 'Emma']\nlib.return_book(2)\nassert lib.available() == ['Beloved', 'Dune', 'Emma'], 'checkout and return_book should update available().'",
+          "message": "Check out and return books."
+        },
+        {
+          "name": "errors",
+          "code": "lib = Library()\nlib.add(Book(1, 'Dune'))\nlib.checkout(1, 'ana')\ntry:\n    lib.checkout(1, 'ben')\nexcept ValueError:\n    pass\nelse:\n    raise AssertionError('Checking out a book that is out should raise ValueError.')\ntry:\n    lib.checkout(9, 'ben')\nexcept KeyError:\n    pass\nelse:\n    raise AssertionError('Unknown ids should raise KeyError.')",
+          "message": "Raise the right errors."
+        }
+      ],
+      "hint": "Keep books in a private dictionary keyed by id; a helper `_get` raises `KeyError`.",
+      "explanation": "Two small classes, each with a clear job, working together."
+    }
+  ]
+}

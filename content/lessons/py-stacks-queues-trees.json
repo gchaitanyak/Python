@@ -1,0 +1,180 @@
+{
+  "id": "py-stacks-queues-trees",
+  "moduleId": "optional-tracks",
+  "title": "Stacks, Queues and Trees",
+  "estimatedMinutes": 14,
+  "basePoints": 10,
+  "intro": "Data structures are ways of arranging data so certain jobs are easy. A **stack** is last-in, first-out (like plates): a Python list with `append` and `pop`. A **queue** is first-in, first-out (like a line at a shop): `collections.deque` with `append` and `popleft`. A **tree** is made of nodes, each pointing to children — perfect for anything nested.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "`list.pop(0)` shifts every item along, so it gets slow on long lists. `deque.popleft()` is instant at any size.",
+      "exampleCode": "from collections import deque\n\nstack = []\nfor page in [\"home\", \"about\", \"contact\"]:\n    stack.append(page)        # visit pages\nprint(\"back to\", stack.pop())  # contact — the last one in\n\nqueue = deque([\"Ana\", \"Ben\"])\nqueue.append(\"Caro\")          # joins the end of the line\nprint(\"serving\", queue.popleft())  # Ana — the first one in",
+      "explanation": "The *Back* button of a browser is a stack; a printer's job list is a queue."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write a class `Stack` with `push(item)`, `pop()` (returns the top item; raises `IndexError` if empty), `peek()` (returns the top without removing it), `is_empty()` and `len()` support via `__len__`.",
+      "starterCode": "class Stack:\n    pass\n",
+      "solution": "class Stack:\n    def __init__(self):\n        self._items = []\n\n    def push(self, item):\n        self._items.append(item)\n\n    def pop(self):\n        if not self._items:\n            raise IndexError(\"pop from empty stack\")\n        return self._items.pop()\n\n    def peek(self):\n        return self._items[-1]\n\n    def is_empty(self):\n        return not self._items\n\n    def __len__(self):\n        return len(self._items)",
+      "tests": [
+        {
+          "name": "lifo",
+          "code": "s = Stack()\nfor _x in 'abc':\n    s.push(_x)\nassert len(s) == 3 and s.peek() == 'c' and s.pop() == 'c' and s.pop() == 'b' and len(s) == 1, 'The last item pushed comes out first.'",
+          "message": "Last in, first out."
+        },
+        {
+          "name": "empty",
+          "code": "s = Stack()\nassert s.is_empty()\ntry:\n    s.pop()\nexcept IndexError:\n    pass\nelse:\n    raise AssertionError('pop() on an empty stack should raise IndexError.')",
+          "message": "Handle an empty stack."
+        }
+      ],
+      "hint": "Keep a list; the end of the list is the top.",
+      "explanation": "Wrapping the list hides operations a stack shouldn't allow, like inserting in the middle."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "Use a stack to write `balanced(text)`: `True` if every `(`, `[` and `{` is closed by the matching bracket in the right order, ignoring other characters.",
+      "starterCode": "def balanced(text):\n    pass\n",
+      "solution": "def balanced(text):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for ch in text:\n        if ch in '([{':\n            stack.append(ch)\n        elif ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n    return not stack",
+      "tests": [
+        {
+          "name": "good",
+          "code": "assert balanced('print(len([1, {2: 3}]))') and balanced('') and balanced('no brackets'), 'Correctly nested brackets are balanced.'",
+          "message": "Accept balanced text."
+        },
+        {
+          "name": "bad",
+          "code": "assert not balanced('(]') and not balanced('([)]') and not balanced('((') and not balanced('())'), 'Wrong order, wrong type or leftovers are not balanced.'",
+          "message": "Reject unbalanced text."
+        }
+      ],
+      "hint": "Push opening brackets. For a closing one, the top of the stack must be its partner.",
+      "explanation": "Code editors and compilers check brackets exactly like this."
+    },
+    {
+      "id": "q04",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "from collections import deque\n\nline = deque()\nfor name in ['Ana', 'Ben', 'Caro']:\n    line.append(name)\nline.appendleft('VIP')\nprint(line.popleft(), line.popleft(), len(line))",
+      "expectedOutput": "VIP Ana 2",
+      "hint": "`appendleft` adds to the front.",
+      "explanation": "The VIP skips the queue; then the line is served in arrival order."
+    },
+    {
+      "id": "q05",
+      "type": "write_code",
+      "prompt": "A printer queue: write `print_jobs(jobs)` that takes a list of `(name, pages)` and returns a list of strings like `Ana: 3 pages` in the order the jobs arrived — but any job over 10 pages goes to the **back** of the queue once (it's printed after the short jobs that were waiting). Use `collections.deque`.",
+      "starterCode": "from collections import deque\n\ndef print_jobs(jobs):\n    pass\n",
+      "solution": "from collections import deque\n\ndef print_jobs(jobs):\n    queue = deque((name, pages, False) for name, pages in jobs)\n    printed = []\n    while queue:\n        name, pages, moved = queue.popleft()\n        if pages > 10 and not moved:\n            queue.append((name, pages, True))\n            continue\n        printed.append(f\"{name}: {pages} pages\")\n    return printed",
+      "tests": [
+        {
+          "name": "order",
+          "code": "assert print_jobs([('Ana', 3), ('Ben', 40), ('Caro', 1), ('Dev', 12), ('Eli', 2)]) == ['Ana: 3 pages', 'Caro: 1 pages', 'Eli: 2 pages', 'Ben: 40 pages', 'Dev: 12 pages'], 'Short jobs first; long ones once moved to the back, in their order.'",
+          "message": "Move long jobs back once."
+        },
+        {
+          "name": "simple",
+          "code": "assert print_jobs([('A', 1), ('B', 2)]) == ['A: 1 pages', 'B: 2 pages'] and print_jobs([]) == [], 'Short jobs print in order.'",
+          "message": "Keep arrival order."
+        }
+      ],
+      "hint": "Store a flag with each job saying whether it has already been moved. `popleft`, and either print it or `append` it back.",
+      "explanation": "Queues model anything served in turn: print jobs, network packets, tasks waiting for a worker."
+    },
+    {
+      "id": "q06",
+      "type": "explain",
+      "prompt": "A **binary tree** node has a value and up to two children. In a **binary search tree** (BST), everything in the left subtree is smaller and everything in the right is larger, so searching is like binary search.",
+      "exampleCode": "class Node:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n#        8\n#      /   \\\n#     3     10\n#    / \\      \\\n#   1   6      14\nroot = Node(8, Node(3, Node(1), Node(6)), Node(10, None, Node(14)))\n\ndef in_order(node):\n    if node is None:\n        return []\n    return in_order(node.left) + [node.value] + in_order(node.right)\n\nprint(in_order(root))   # [1, 3, 6, 8, 10, 14] — sorted!",
+      "explanation": "Trees are recursive: a tree is a node plus two smaller trees. Recursive functions fit them naturally."
+    },
+    {
+      "id": "q07",
+      "type": "write_code",
+      "prompt": "Using `Node` (defined for you), write `height(node)`: the number of levels in the tree (`0` for an empty tree, `1` for a single node).",
+      "starterCode": "class Node:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\ndef height(node):\n    pass\n",
+      "solution": "class Node:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\ndef height(node):\n    if node is None:\n        return 0\n    return 1 + max(height(node.left), height(node.right))",
+      "tests": [
+        {
+          "name": "heights",
+          "code": "assert height(None) == 0 and height(Node(1)) == 1, 'Empty is 0; one node is 1.'\nassert height(Node(8, Node(3, Node(1), Node(6, Node(4))), Node(10))) == 4, 'Count the longest path of nodes.'",
+          "message": "Measure the height."
+        }
+      ],
+      "hint": "Height = 1 + the taller of the two subtrees.",
+      "explanation": "Many tree functions share this shape: handle `None`, then combine the answers from both children."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `insert(node, value)` that adds `value` to a binary search tree and returns the (possibly new) root, and `contains(node, value)` that returns whether the value is in the tree. Ignore duplicates.",
+      "starterCode": "class Node:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\ndef insert(node, value):\n    pass\n\n\ndef contains(node, value):\n    pass\n",
+      "solution": "class Node:\n    def __init__(self, value, left=None, right=None):\n        self.value = value\n        self.left = left\n        self.right = right\n\n\ndef insert(node, value):\n    if node is None:\n        return Node(value)\n    if value < node.value:\n        node.left = insert(node.left, value)\n    elif value > node.value:\n        node.right = insert(node.right, value)\n    return node\n\n\ndef contains(node, value):\n    while node is not None:\n        if value == node.value:\n            return True\n        node = node.left if value < node.value else node.right\n    return False",
+      "tests": [
+        {
+          "name": "bst",
+          "code": "root = None\nfor _v in [50, 30, 70, 20, 40, 60, 80, 30]:\n    root = insert(root, _v)\nassert root.value == 50 and root.left.value == 30 and root.right.left.value == 60, 'Smaller values go left, larger go right.'\nassert all(contains(root, v) for v in [20, 40, 80]) and not contains(root, 45) and not contains(None, 1), 'contains should find exactly the inserted values.'",
+          "message": "Insert and search."
+        },
+        {
+          "name": "sorted",
+          "code": "def _walk(n):\n    return [] if n is None else _walk(n.left) + [n.value] + _walk(n.right)\nroot = None\nfor _v in [5, 2, 8, 2, 9, 1]:\n    root = insert(root, _v)\nassert _walk(root) == [1, 2, 5, 8, 9], 'An in-order walk should give sorted values without duplicates.'",
+          "message": "Keep the BST order."
+        }
+      ],
+      "hint": "If the tree is empty, the new node is the root. Otherwise go left or right and insert there.",
+      "explanation": "A balanced BST finds values in O(log n), like binary search — and stays sorted as you insert."
+    },
+    {
+      "id": "q09",
+      "type": "multiple_choice",
+      "prompt": "Which structure fits *undo* in a text editor?",
+      "options": [
+        {
+          "id": "a",
+          "text": "A queue — first in, first out"
+        },
+        {
+          "id": "b",
+          "text": "A stack — last in, first out"
+        },
+        {
+          "id": "c",
+          "text": "A sorted list"
+        },
+        {
+          "id": "d",
+          "text": "A set"
+        }
+      ],
+      "answer": "b",
+      "hint": "Which change do you undo first?",
+      "explanation": "Undo reverses the most recent change first, so changes go on a stack."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A file system is a tree. Given nested dictionaries (folders) whose leaves are file sizes in KB, write `total_size(folder)` that returns the total size of everything inside.",
+      "starterCode": "def total_size(folder):\n    pass\n",
+      "solution": "def total_size(folder):\n    total = 0\n    for item in folder.values():\n        total += total_size(item) if isinstance(item, dict) else item\n    return total",
+      "tests": [
+        {
+          "name": "nested",
+          "code": "tree = {'notes.txt': 4, 'photos': {'cat.jpg': 900, 'dog.jpg': 1100, 'old': {'a.jpg': 300}}, 'code': {'main.py': 12}}\nassert total_size(tree) == 2316, 'Add every file at every level.'",
+          "message": "Add nested sizes."
+        },
+        {
+          "name": "empty",
+          "code": "assert total_size({}) == 0 and total_size({'empty': {}}) == 0, 'Empty folders have size 0.'",
+          "message": "Handle empty folders."
+        }
+      ],
+      "hint": "For each item: if it's a dict, recurse; otherwise it's a size.",
+      "explanation": "Any nested structure — folders, comments with replies, organisation charts — is a tree."
+    }
+  ]
+}

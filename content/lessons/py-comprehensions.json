@@ -1,0 +1,164 @@
+{
+  "id": "py-comprehensions",
+  "moduleId": "data-structures",
+  "title": "Comprehensions",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **comprehension** builds a list in one line from a loop: `[n * n for n in range(5)]`. Add `if` at the end to keep only some items. The same shape builds sets `{…}` and dictionaries `{key: value for …}`.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Read it as *make this, for each item, if this is true*.",
+      "exampleCode": "squares = [n * n for n in range(5)]\nevens = [n for n in range(10) if n % 2 == 0]\nlengths = {w: len(w) for w in [\"hi\", \"hello\"]}\nletters = {c for c in \"banana\"}\nprint(squares)\nprint(evens)\nprint(lengths)\nprint(sorted(letters))",
+      "explanation": "A comprehension replaces *create empty list, loop, append*."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Store each price in `prices` with 20% tax added, rounded to 2 decimals, in `with_tax`. Use a list comprehension.",
+      "starterCode": "with_tax = \n",
+      "solution": "with_tax = [round(p * 1.2, 2) for p in prices]",
+      "setupCode": "prices = [10.0, 4.5, 19.99, 0.75]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert with_tax == [round(p * 1.2, 2) for p in prices], 'with_tax should be each price × 1.2, rounded to 2 places.'",
+          "message": "Add 20% and round."
+        }
+      ],
+      "hint": "`[expression for p in prices]`.",
+      "explanation": "The expression on the left is applied to every item."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print([c.upper() for c in \"abc\"])",
+      "expectedOutput": "['A', 'B', 'C']",
+      "hint": "One item per character.",
+      "explanation": "Comprehensions work over any sequence, including strings."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Store the temperatures above 20 from `temps` in `warm_days`, keeping their order.",
+      "starterCode": "warm_days = \n",
+      "solution": "warm_days = [t for t in temps if t > 20]",
+      "setupCode": "temps = [18, 22, 25, 19, 21, 30, 15]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert warm_days == [t for t in temps if t > 20], 'warm_days should keep only temperatures above 20.'",
+          "message": "Keep temperatures above 20."
+        }
+      ],
+      "hint": "Put the condition at the end: `… for t in temps if …`.",
+      "explanation": "The `if` filters; the left part says what to keep."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What does `{x % 3 for x in range(10)}` produce?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`[0, 1, 2, 0, 1, 2, 0, 1, 2, 0]`"
+        },
+        {
+          "id": "b",
+          "text": "`{0, 1, 2}`"
+        },
+        {
+          "id": "c",
+          "text": "`{0, 3, 6, 9}`"
+        },
+        {
+          "id": "d",
+          "text": "`3`"
+        }
+      ],
+      "answer": "b",
+      "hint": "Curly brackets with single values make a set.",
+      "explanation": "The remainders repeat, but a set keeps each once."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "This should list the length of each word, but it raises a *NameError*. Fix it.",
+      "starterCode": "lengths = [len(word) for words in words]\n",
+      "solution": "lengths = [len(word) for word in words]\n",
+      "setupCode": "words = [\"sky\", \"ocean\", \"sun\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert lengths == [len(w) for w in words], 'lengths should be the length of each word.'",
+          "message": "Check lengths."
+        }
+      ],
+      "hint": "The loop variable must match the name used on the left.",
+      "explanation": "`for word in words` names each item `word`."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the value so `lengths` maps each name to its length.",
+      "template": "names = [\"Ana\", \"Bo\", \"Cleo\"]\nlengths = {name: ___ for name in names}",
+      "blanks": [
+        "len(name)"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert lengths == {'Ana': 3, 'Bo': 2, 'Cleo': 4}, 'lengths should map each name to its length.'",
+          "message": "Check lengths."
+        }
+      ],
+      "hint": "What goes after the colon is the value.",
+      "explanation": "A dict comprehension needs `key: value`."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`emails` is a list of addresses. Store the **different** domains (the part after `@`) as a sorted list in `domains`. Build a set comprehension first.",
+      "starterCode": "domains = \n",
+      "solution": "domains = sorted({e.split(\"@\")[1] for e in emails})",
+      "setupCode": "emails = [\"ana@mail.com\", \"ben@work.org\", \"cleo@mail.com\", \"dev@uni.edu\", \"eli@work.org\"]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert domains == sorted({e.split('@')[1] for e in emails}), 'domains should be the distinct parts after @, sorted.'",
+          "message": "Distinct domains, sorted."
+        }
+      ],
+      "hint": "`e.split(\"@\")[1]` is the domain. A set comprehension removes repeats.",
+      "explanation": "Comprehensions combine nicely with `sorted()`."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print([n for n in range(10) if n % 4 == 0])",
+      "expectedOutput": "[0, 4, 8]",
+      "hint": "Which numbers below 10 divide by 4?",
+      "explanation": "0, 4 and 8 leave no remainder."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "`products` is a list of `(name, price, in_stock)` tuples. Build a dictionary `available` mapping name → price, for items that are in stock **and** cost under 50. Use a dict comprehension.",
+      "starterCode": "available = \n",
+      "solution": "available = {name: price for name, price, in_stock in products if in_stock and price < 50}",
+      "setupCode": "products = [(\"mug\", 8.5, True), (\"lamp\", 45.0, False), (\"chair\", 79.0, True), (\"rug\", 39.9, True), (\"vase\", 12.0, False)]",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert available == {n: p for n, p, s in products if s and p < 50}, 'available should include only in-stock items under 50.'",
+          "message": "Check the filter."
+        }
+      ],
+      "hint": "Unpack the three values in the `for` part, then filter with `if … and …`.",
+      "explanation": "Unpacking, filtering and building a dict — all in one readable line."
+    }
+  ]
+}

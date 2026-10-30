@@ -1,0 +1,178 @@
+{
+  "id": "py-strings-summary",
+  "moduleId": "strings",
+  "title": "Strings: Skill Summary",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "Mix everything from this module: indexing, slicing, string methods and f-strings.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "write_code",
+      "prompt": "`raw` has stray spaces and odd capitals. Store it tidied in `tidy`: no outer spaces, first letter capital, the rest lowercase.",
+      "starterCode": "tidy = \n",
+      "solution": "tidy = raw.strip().capitalize()",
+      "setupCode": "raw = \"  hello WORLD \"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert tidy == raw.strip().capitalize(), 'tidy should be stripped, then capitalised.'",
+          "message": "Strip, then capitalise."
+        }
+      ],
+      "hint": "`capitalize()` makes the first letter upper case and the rest lower.",
+      "explanation": "Strip first, or the first character would be a space."
+    },
+    {
+      "id": "q02",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "s = \"Python\"\nprint(s[1:4] + s[-1])",
+      "expectedOutput": "ythn",
+      "hint": "Work out the slice, then add the last character.",
+      "explanation": "`s[1:4]` is `yth` and `s[-1]` is `n`."
+    },
+    {
+      "id": "q03",
+      "type": "write_code",
+      "prompt": "`code` looks like `ab-1234-xy`. Store the 4 digits in the middle as a **number** in `number`.",
+      "starterCode": "number = \n",
+      "solution": "number = int(code[3:7])",
+      "setupCode": "code = \"qz-5071-mn\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert number == int(code[3:7]) and isinstance(number, int), 'number should be the 4 middle digits as an int.'",
+          "message": "number should be an int from the middle digits."
+        }
+      ],
+      "hint": "Slice out the digits, then convert with `int()`.",
+      "explanation": "Slicing and converting often go together when reading codes."
+    },
+    {
+      "id": "q04",
+      "type": "fix_code",
+      "prompt": "`shout` should be the message in capitals, but it holds something strange. Fix it.",
+      "starterCode": "message = \"fire drill\"\nshout = message.upper\n",
+      "solution": "message = \"fire drill\"\nshout = message.upper()\n",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert shout == 'FIRE DRILL', 'shout should be FIRE DRILL.'",
+          "message": "shout should be FIRE DRILL."
+        }
+      ],
+      "hint": "A method needs brackets to actually run.",
+      "explanation": "Without `()` you store the method itself instead of calling it."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What is `\"a-b-c\".split(\"-\")`?",
+      "options": [
+        {
+          "id": "a",
+          "text": "`\"abc\"`"
+        },
+        {
+          "id": "b",
+          "text": "`['a', 'b', 'c']`"
+        },
+        {
+          "id": "c",
+          "text": "`['a-b-c']`"
+        },
+        {
+          "id": "d",
+          "text": "`3`"
+        }
+      ],
+      "answer": "b",
+      "hint": "`split` breaks at every `-`.",
+      "explanation": "It returns the three pieces between the separators."
+    },
+    {
+      "id": "q06",
+      "type": "write_code",
+      "prompt": "Show `amount` as money in `shown`: a `$`, thousands separators and exactly 2 decimals — like `$1,234.50`.",
+      "starterCode": "shown = \n",
+      "solution": "shown = f\"${amount:,.2f}\"",
+      "setupCode": "amount = 1234.5",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert shown == f'${amount:,.2f}', 'shown should look like $1,234.50.'",
+          "message": "Check the money format."
+        }
+      ],
+      "hint": "Combine `,` and `.2f` in one format spec.",
+      "explanation": "Format specs can be combined: thousands separator, then precision."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Fill in the method so `count` is the number of `e`s in `text`.",
+      "template": "text = \"excellence\"\ncount = text.___(\"e\")",
+      "blanks": [
+        "count"
+      ],
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert count == 4, 'count should be 4.'",
+          "message": "count should be 4."
+        }
+      ],
+      "hint": "The method has the same name as the variable.",
+      "explanation": "`count` returns how many times the text appears."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "`full_name` holds a first and last name with messy spacing and capitals. Store the capitalised initials in `initials` (like `AL`) and `display` as `Last, First` in title case (like `Lovelace, Ada`).",
+      "starterCode": "parts = full_name.split()\ninitials = \ndisplay = \n",
+      "solution": "parts = full_name.split()\ninitials = parts[0][0].upper() + parts[1][0].upper()\ndisplay = f\"{parts[1].title()}, {parts[0].title()}\"",
+      "setupCode": "full_name = \"  grace   HOPPER \"",
+      "tests": [
+        {
+          "name": "initials",
+          "code": "p = full_name.split()\nassert initials == p[0][0].upper() + p[1][0].upper(), 'initials should be the capitalised first letter of each name.'",
+          "message": "Check the initials."
+        },
+        {
+          "name": "display",
+          "code": "p = full_name.split()\nassert display == f'{p[1].title()}, {p[0].title()}', 'display should be Last, First in title case.'",
+          "message": "Check the Last, First format."
+        }
+      ],
+      "hint": "`split()` gives the two names; index each one, then use `[0]` for its first letter.",
+      "explanation": "`split()` with no argument also ignores the extra spaces."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "print(\"ab\" * 2 + \"c\".upper())",
+      "expectedOutput": "ababC",
+      "hint": "Repeat first, then join the capital letter.",
+      "explanation": "`\"ab\" * 2` is `abab`, then `C` is added."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "Blog addresses use a **slug**: lowercase with dashes instead of spaces. Store the slug for `title` in `slug` — e.g. `my-first-blog-post`.",
+      "starterCode": "slug = \n",
+      "solution": "slug = title.strip().lower().replace(\" \", \"-\")",
+      "setupCode": "title = \"Ten Tips For Clean Code\"",
+      "tests": [
+        {
+          "name": "value",
+          "code": "assert slug == title.strip().lower().replace(' ', '-'), 'slug should be lowercase with - instead of spaces.'",
+          "message": "Lowercase and swap spaces for dashes."
+        }
+      ],
+      "hint": "Lowercase, then `replace` spaces.",
+      "explanation": "Small chains of methods turn messy titles into clean web addresses."
+    }
+  ]
+}

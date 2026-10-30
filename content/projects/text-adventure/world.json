@@ -1,0 +1,56 @@
+{
+  "start": "Gatehouse",
+  "goal": {
+    "room": "Treasury",
+    "item": "crown"
+  },
+  "rooms": {
+    "Gatehouse": {
+      "description": "A cold stone gatehouse. Wind whistles through the arrow slits.",
+      "exits": {
+        "north": "Courtyard"
+      },
+      "items": [
+        "lantern"
+      ]
+    },
+    "Courtyard": {
+      "description": "An overgrown courtyard with a dry fountain.",
+      "exits": {
+        "south": "Gatehouse",
+        "east": "Library",
+        "north": "Great Hall"
+      },
+      "items": []
+    },
+    "Library": {
+      "description": "Shelves of mouldy books. Something glints under a desk.",
+      "exits": {
+        "west": "Courtyard"
+      },
+      "items": [
+        "brass key"
+      ]
+    },
+    "Great Hall": {
+      "description": "A long hall with a locked iron door to the east.",
+      "exits": {
+        "south": "Courtyard",
+        "east": "Treasury"
+      },
+      "items": [
+        "torn map"
+      ]
+    },
+    "Treasury": {
+      "description": "Gold dust on the floor, and a crown on a pedestal.",
+      "exits": {
+        "west": "Great Hall"
+      },
+      "items": [
+        "crown"
+      ],
+      "locked_by": "brass key"
+    }
+  }
+}

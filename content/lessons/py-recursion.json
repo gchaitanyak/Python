@@ -1,0 +1,179 @@
+{
+  "id": "py-recursion",
+  "moduleId": "functions",
+  "title": "Recursion",
+  "estimatedMinutes": 12,
+  "basePoints": 10,
+  "intro": "A **recursive** function calls itself on a smaller version of the problem. It needs a **base case** that stops the calls, and a **recursive case** that moves towards it. Without a base case, Python stops with a *RecursionError*.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "explain",
+      "prompt": "Each call waits for the smaller call to finish. `factorial(3)` is `3 * factorial(2)`, which is `2 * factorial(1)`, which is the base case.",
+      "exampleCode": "def countdown(n):\n    if n == 0:\n        print(\"Go!\")\n        return\n    print(n)\n    countdown(n - 1)\n\ndef factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\ncountdown(3)\nprint(factorial(5))",
+      "explanation": "The base case is the simplest input you can answer directly."
+    },
+    {
+      "id": "q02",
+      "type": "write_code",
+      "prompt": "Write a recursive `factorial(n)`: `n × (n − 1) × … × 1`, with `factorial(0)` and `factorial(1)` both 1.",
+      "starterCode": "def factorial(n):\n    pass\n",
+      "solution": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)",
+      "tests": [
+        {
+          "name": "small",
+          "code": "assert factorial(0) == 1 and factorial(1) == 1, 'factorial(0) and factorial(1) should be 1.'",
+          "message": "Check the base case."
+        },
+        {
+          "name": "values",
+          "code": "assert factorial(5) == 120 and factorial(10) == 3628800, 'factorial(5) should be 120.'",
+          "message": "Check larger values."
+        }
+      ],
+      "hint": "Base case: `n <= 1`. Otherwise return `n * factorial(n - 1)`.",
+      "explanation": "Each call shrinks `n` by one until it reaches the base case."
+    },
+    {
+      "id": "q03",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def f(n):\n    if n == 0:\n        return 0\n    return n + f(n - 1)\n\nprint(f(4))",
+      "expectedOutput": "10",
+      "hint": "Unfold it: 4 + f(3) = 4 + 3 + f(2) …",
+      "explanation": "4 + 3 + 2 + 1 + 0 = 10."
+    },
+    {
+      "id": "q04",
+      "type": "write_code",
+      "prompt": "Write a recursive `sum_digits(n)` that adds up the digits of a non-negative whole number — for example `sum_digits(507)` is 12.",
+      "starterCode": "def sum_digits(n):\n    pass\n",
+      "solution": "def sum_digits(n):\n    if n < 10:\n        return n\n    return n % 10 + sum_digits(n // 10)",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert sum_digits(507) == 12 and sum_digits(9) == 9 and sum_digits(0) == 0 and sum_digits(98765) == 35, 'sum_digits should add every digit.'",
+          "message": "Add every digit."
+        }
+      ],
+      "hint": "A single digit is its own sum. Otherwise: last digit + sum of the rest.",
+      "explanation": "`% 10` and `// 10` split off the last digit, just like with a `while` loop."
+    },
+    {
+      "id": "q05",
+      "type": "multiple_choice",
+      "prompt": "What happens if a recursive function never reaches a base case?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It returns `None`"
+        },
+        {
+          "id": "b",
+          "text": "It runs forever"
+        },
+        {
+          "id": "c",
+          "text": "Python stops it with a *RecursionError*"
+        },
+        {
+          "id": "d",
+          "text": "It returns 0"
+        }
+      ],
+      "answer": "c",
+      "hint": "Python limits how deep calls can go.",
+      "explanation": "After about 1000 nested calls, Python raises *RecursionError: maximum recursion depth exceeded*."
+    },
+    {
+      "id": "q06",
+      "type": "fix_code",
+      "prompt": "`power(2, 3)` should be 8, but this raises a *RecursionError*. Fix it.",
+      "starterCode": "def power(b, e):\n    if e == 0:\n        return 1\n    return b * power(b, e)\n",
+      "solution": "def power(b, e):\n    if e == 0:\n        return 1\n    return b * power(b, e - 1)\n",
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert power(2, 3) == 8 and power(5, 0) == 1 and power(3, 4) == 81, 'power(b, e) should be b to the power e.'",
+          "message": "Check power."
+        }
+      ],
+      "hint": "The recursive call must move towards the base case.",
+      "explanation": "Without `e - 1`, every call is the same and the base case is never reached."
+    },
+    {
+      "id": "q07",
+      "type": "fill_blank",
+      "prompt": "Complete the slice so `is_pal` checks the inside of the word.",
+      "template": "def is_pal(s):\n    if len(s) <= 1:\n        return True\n    return s[0] == s[-1] and is_pal(s[___])",
+      "blanks": [
+        "1:-1"
+      ],
+      "tests": [
+        {
+          "name": "values",
+          "code": "assert is_pal('racecar') and is_pal('') and not is_pal('abca') and is_pal('noon'), 'is_pal should spot palindromes.'",
+          "message": "Check palindromes."
+        }
+      ],
+      "hint": "Drop the first and last characters.",
+      "explanation": "`s[1:-1]` is the word without its outer letters."
+    },
+    {
+      "id": "q08",
+      "type": "write_code",
+      "prompt": "Write `flatten(items)` that turns nested lists into one flat list, in order — `flatten([1, [2, [3, 4]], 5])` is `[1, 2, 3, 4, 5]`. Use `isinstance(x, list)` to spot a nested list.",
+      "starterCode": "def flatten(items):\n    pass\n",
+      "solution": "def flatten(items):\n    flat = []\n    for x in items:\n        if isinstance(x, list):\n            flat.extend(flatten(x))\n        else:\n            flat.append(x)\n    return flat",
+      "tests": [
+        {
+          "name": "nested",
+          "code": "assert flatten([1, [2, [3, 4]], 5]) == [1, 2, 3, 4, 5], 'flatten([1, [2, [3, 4]], 5]) should be [1, 2, 3, 4, 5].'",
+          "message": "Flatten nested lists."
+        },
+        {
+          "name": "deep",
+          "code": "assert flatten([[[['x']]], 'y']) == ['x', 'y'], 'Any depth of nesting should work.'",
+          "message": "Handle deep nesting."
+        },
+        {
+          "name": "empty",
+          "code": "assert flatten([]) == [] and flatten([[], []]) == [], 'Empty lists flatten to [].'",
+          "message": "Handle empty lists."
+        }
+      ],
+      "hint": "For each item: if it's a list, flatten it and `extend`; otherwise `append`.",
+      "explanation": "Recursion fits naturally when data contains smaller copies of itself."
+    },
+    {
+      "id": "q09",
+      "type": "predict_output",
+      "prompt": "What does this print?",
+      "code": "def fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\nprint([fib(i) for i in range(7)])",
+      "expectedOutput": "[0, 1, 1, 2, 3, 5, 8]",
+      "hint": "Each number is the sum of the two before it.",
+      "explanation": "This is the Fibonacci sequence, with two base cases: 0 and 1."
+    },
+    {
+      "id": "q10",
+      "type": "write_code",
+      "prompt": "A folder is a dictionary like `{\"files\": [\"a.txt\"], \"folders\": [ …more folders… ]}`. Write `count_files(folder)` that returns the total number of files in it and all its sub-folders.",
+      "starterCode": "def count_files(folder):\n    pass\n",
+      "solution": "def count_files(folder):\n    total = len(folder[\"files\"])\n    for sub in folder[\"folders\"]:\n        total += count_files(sub)\n    return total",
+      "tests": [
+        {
+          "name": "flat",
+          "code": "assert count_files({'files': ['a', 'b'], 'folders': []}) == 2, 'A folder with no sub-folders has just its own files.'",
+          "message": "Count a single folder."
+        },
+        {
+          "name": "nested",
+          "code": "tree = {'files': ['r.txt'], 'folders': [{'files': ['a', 'b'], 'folders': [{'files': ['c'], 'folders': []}]}, {'files': [], 'folders': []}]}\nassert count_files(tree) == 4, 'Files in every sub-folder should be counted.'",
+          "message": "Count nested folders."
+        }
+      ],
+      "hint": "Count this folder's files, then add `count_files` of each sub-folder.",
+      "explanation": "Folder trees are a classic real-world use of recursion."
+    }
+  ]
+}

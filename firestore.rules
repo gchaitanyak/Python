@@ -1,0 +1,126 @@
+rules_version = '2';
+// Security rules (ARCHITECTURE §5.1). Anything not matched is denied.
+// Scores, entitlements, usernames and progress are written only by Cloud Functions (admin SDK bypasses rules).
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+    function userPath() { return /databases/$(db)/documents/users/$(request.auth.uid); }
+    function isPremium() {
+      let user = get(userPath()).data;
+      return signedIn() && exists(userPath())
+        && user.get('entitlement', 'free') == 'premium'
+        && (user.get('premiumUntil', null) == null || user.premiumUntil > request.time);
+    }
+    function validProfile(d) {
+      return d.firstName is string && d.firstName.size() <= 50
+        && d.tz is string && d.tz.size() <= 64;
+    }
+
+    match /users/{uid} {
+      allow read: if isSelf(uid);
+      // Profile fields only. entitlement, points, streak and username are server-written.
+      allow create: if isSelf(uid)
+        && request.resource.data.keys().hasOnly(['firstName', 'tz', 'createdAt'])
+        && request.resource.data.keys().hasAll(['firstName', 'tz', 'createdAt'])
+        && validProfile(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName', 'tz'])
+        && validProfile(request.resource.data);
+      allow delete: if false;
+
+      match /progress/{lessonId} {
+        allow read: if isSelf(uid);
+        // Clients may only keep question drafts; completion, accuracy and scoring are server-written.
+        allow update: if isSelf(uid)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['questionState'])
+          && request.resource.data.questionState is map;
+        allow create, delete: if false;
+      }
+
+      match /attempts/{id} {
+        allow read: if isSelf(uid);
+        allow write: if false;
+      }
+
+      // Finished projects (no points, so the learner may record this themselves).
+      match /projects/{projectId} {
+        allow read: if isSelf(uid);
+        allow create, update: if isSelf(uid)
+          && projectId.matches('^[a-z0-9-]{1,60}$')
+          && request.resource.data.keys().hasOnly(['completed', 'completedAt'])
+          && request.resource.data.completed == true
+          && request.resource.data.completedAt == request.time;
+        allow delete: if false;
+      }
+    }
+
+    match /usernames/{name} {
+      allow read: if true; // availability check while registering
+      allow write: if false;
+    }
+
+    // Premium lesson content: the paywall lives here, not only in the UI.
+    match /lessonContent/{lessonId} {
+      allow read: if isPremium();
+      allow write: if false;
+    }
+
+    // Premium projects (steps and dataset files), same paywall as lessons.
+    match /projectContent/{projectId} {
+      allow read: if isPremium();
+      allow write: if false;
+    }
+
+    match /dailyScores/{day}/users/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /dailyChallenges/{day} {
+      allow read: if true;
+      allow write: if false;
+      match /results/{uid} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+
+    match /certificates/{id} {
+      allow read: if resource.data.public == true || isSelf(resource.data.uid);
+      allow write: if false;
+    }
+
+    match /groups/{gid} {
+      allow read: if signedIn() && request.auth.uid in resource.data.adminUids;
+      allow write: if false;
+      match /members/{uid} {
+        allow read: if isSelf(uid)
+          || (signedIn() && request.auth.uid in get(/databases/$(db)/documents/groups/$(gid)).data.adminUids);
+        allow write: if false;
+      }
+    }
+
+    match /feedback/{id} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'lessonId', 'rating', 'text', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.lessonId is string && request.resource.data.lessonId.size() <= 80
+        && request.resource.data.rating in ['up', 'down']
+        && (!('text' in request.resource.data) || (request.resource.data.text is string && request.resource.data.text.size() <= 2000))
+        && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if false;
+    }
+
+    match /hintLogs/{id} {
+      allow read: if signedIn() && resource.data.uid == request.auth.uid;
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['helpful'])
+        && request.resource.data.helpful is bool;
+      allow create, delete: if false;
+    }
+
+    // Function-only bookkeeping (rate limits etc.) falls through to the default deny.
+  }
+}
